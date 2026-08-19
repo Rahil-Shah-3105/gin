@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -29,6 +30,7 @@ import (
 // params[1]=response status (custom compare status) default:"200 OK"
 // params[2]=response body (custom compare content)  default:"it worked"
 func testRequest(t *testing.T, params ...string) {
+	logritelog.Default().Printf(">>> Entering testRequest(t=%v,params=%v)", t, params)
 	if len(params) == 0 {
 		t.Fatal("url cannot be empty")
 	}
@@ -55,18 +57,22 @@ func testRequest(t *testing.T, params ...string) {
 	responseBody := "it worked"
 	if len(params) > 2 && params[2] != "" {
 		responseBody = params[2]
+		logritelog.Default().Printf("testRequest(t=%v,params=%v): responseBody → %v", t, params, responseBody)
 	}
 
 	assert.Equal(t, responseStatus, resp.Status, "should get a "+responseStatus)
 	if responseStatus == "200 OK" {
 		assert.Equal(t, responseBody, string(body), "resp body should match")
 	}
+	logritelog.Default().Printf("<<< Exiting testRequest(t=%v,params=%v)", t, params)
 }
 
 func TestRunEmpty(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRunEmpty(t=%v)", t)
 	os.Setenv("PORT", "")
 	router := New()
 	go func() {
+	logritelog.Default().Printf("<<< Exiting TestRunEmpty(t=%v)", t)
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		assert.NoError(t, router.Run())
 	}()
@@ -80,26 +86,34 @@ func TestRunEmpty(t *testing.T) {
 }
 
 func TestBadTrustedCIDRs(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadTrustedCIDRs(t=%v)", t)
 	router := New()
 	require.Error(t, router.SetTrustedProxies([]string{"hello/world"}))
+	logritelog.Default().Printf("<<< Exiting TestBadTrustedCIDRs(t=%v)", t)
 }
 
 /* legacy tests
 func TestBadTrustedCIDRsForRun(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadTrustedCIDRsForRun(t=%v)", t)
 	os.Setenv("PORT", "")
 	router := New()
 	router.TrustedProxies = []string{"hello/world"}
+	logritelog.Default().Printf("TestBadTrustedCIDRsForRun(t=%v): router.TrustedProxies → %v", t, router.TrustedProxies)
 	require.Error(t, router.Run(":8080"))
+	logritelog.Default().Printf("<<< Exiting TestBadTrustedCIDRsForRun(t=%v)", t)
 }
 
 func TestBadTrustedCIDRsForRunUnix(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadTrustedCIDRsForRunUnix(t=%v)", t)
 	router := New()
 	router.TrustedProxies = []string{"hello/world"}
+	logritelog.Default().Printf("TestBadTrustedCIDRsForRunUnix(t=%v): router.TrustedProxies → %v", t, router.TrustedProxies)
 
 	unixTestSocket := filepath.Join(os.TempDir(), "unix_unit_test")
 
 	defer os.Remove(unixTestSocket)
 
+	logritelog.Default().Printf("<<< Exiting TestBadTrustedCIDRsForRunUnix(t=%v)", t)
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		require.Error(t, router.RunUnix(unixTestSocket))
@@ -110,8 +124,10 @@ func TestBadTrustedCIDRsForRunUnix(t *testing.T) {
 }
 
 func TestBadTrustedCIDRsForRunFd(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadTrustedCIDRsForRunFd(t=%v)", t)
 	router := New()
 	router.TrustedProxies = []string{"hello/world"}
+	logritelog.Default().Printf("TestBadTrustedCIDRsForRunFd(t=%v): router.TrustedProxies → %v", t, router.TrustedProxies)
 
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	require.NoError(t, err)
@@ -120,6 +136,7 @@ func TestBadTrustedCIDRsForRunFd(t *testing.T) {
 	socketFile, err := listener.File()
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("<<< Exiting TestBadTrustedCIDRsForRunFd(t=%v)", t)
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		require.Error(t, router.RunFd(int(socketFile.Fd())))
@@ -130,14 +147,17 @@ func TestBadTrustedCIDRsForRunFd(t *testing.T) {
 }
 
 func TestBadTrustedCIDRsForRunListener(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadTrustedCIDRsForRunListener(t=%v)", t)
 	router := New()
 	router.TrustedProxies = []string{"hello/world"}
+	logritelog.Default().Printf("TestBadTrustedCIDRsForRunListener(t=%v): router.TrustedProxies → %v", t, router.TrustedProxies)
 
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	require.NoError(t, err)
 	listener, err := net.ListenTCP("tcp", addr)
 	require.NoError(t, err)
 	go func() {
+	logritelog.Default().Printf("<<< Exiting TestBadTrustedCIDRsForRunListener(t=%v)", t)
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		require.Error(t, router.RunListener(listener))
 	}()
@@ -147,14 +167,18 @@ func TestBadTrustedCIDRsForRunListener(t *testing.T) {
 }
 
 func TestBadTrustedCIDRsForRunTLS(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadTrustedCIDRsForRunTLS(t=%v)", t)
 	os.Setenv("PORT", "")
 	router := New()
 	router.TrustedProxies = []string{"hello/world"}
+	logritelog.Default().Printf("TestBadTrustedCIDRsForRunTLS(t=%v): router.TrustedProxies → %v", t, router.TrustedProxies)
 	require.Error(t, router.RunTLS(":8080", "./testdata/certificate/cert.pem", "./testdata/certificate/key.pem"))
+	logritelog.Default().Printf("<<< Exiting TestBadTrustedCIDRsForRunTLS(t=%v)", t)
 }
 */
 
 func TestRunTLS(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRunTLS(t=%v)", t)
 	router := New()
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
@@ -171,6 +195,7 @@ func TestRunTLS(t *testing.T) {
 }
 
 func TestPusher(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestPusher(t=%v)", t)
 	html := template.Must(template.New("https").Parse(`
 <html>
 <head>
@@ -208,9 +233,11 @@ func TestPusher(t *testing.T) {
 }
 
 func TestRunEmptyWithEnv(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRunEmptyWithEnv(t=%v)", t)
 	os.Setenv("PORT", "3123")
 	router := New()
 	go func() {
+	logritelog.Default().Printf("<<< Exiting TestRunEmptyWithEnv(t=%v)", t)
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		assert.NoError(t, router.Run())
 	}()
@@ -224,13 +251,16 @@ func TestRunEmptyWithEnv(t *testing.T) {
 }
 
 func TestRunTooMuchParams(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRunTooMuchParams(t=%v)", t)
 	router := New()
 	assert.Panics(t, func() {
 		require.NoError(t, router.Run("2", "2"))
 	})
+	logritelog.Default().Printf("<<< Exiting TestRunTooMuchParams(t=%v)", t)
 }
 
 func TestRunWithPort(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRunWithPort(t=%v)", t)
 	router := New()
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
@@ -246,12 +276,14 @@ func TestRunWithPort(t *testing.T) {
 }
 
 func TestUnixSocket(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestUnixSocket(t=%v)", t)
 	router := New()
 
 	unixTestSocket := filepath.Join(os.TempDir(), "unix_unit_test")
 
 	defer os.Remove(unixTestSocket)
 
+	logritelog.Default().Printf("<<< Exiting TestUnixSocket(t=%v)", t)
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		assert.NoError(t, router.RunUnix(unixTestSocket))
@@ -275,11 +307,14 @@ func TestUnixSocket(t *testing.T) {
 }
 
 func TestBadUnixSocket(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadUnixSocket(t=%v)", t)
 	router := New()
 	require.Error(t, router.RunUnix("#/tmp/unix_unit_test"))
+	logritelog.Default().Printf("<<< Exiting TestBadUnixSocket(t=%v)", t)
 }
 
 func TestRunQUIC(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRunQUIC(t=%v)", t)
 	router := New()
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
@@ -296,6 +331,7 @@ func TestRunQUIC(t *testing.T) {
 }
 
 func TestFileDescriptor(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestFileDescriptor(t=%v)", t)
 	router := New()
 
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
@@ -308,6 +344,7 @@ func TestFileDescriptor(t *testing.T) {
 		require.Error(t, err)
 	} else {
 		require.NoError(t, err)
+		logritelog.Default().Printf(">>> Entering isWindows()")
 	}
 
 	if socketFile == nil {
@@ -334,20 +371,25 @@ func TestFileDescriptor(t *testing.T) {
 	response := responseBuilder.String()
 	assert.Contains(t, response, "HTTP/1.0 200", "should get a 200")
 	assert.Contains(t, response, "it worked", "resp body should match")
+	logritelog.Default().Printf("<<< Exiting TestFileDescriptor(t=%v)", t)
 }
 
 func TestBadFileDescriptor(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadFileDescriptor(t=%v)", t)
 	router := New()
 	require.Error(t, router.RunFd(0))
+	logritelog.Default().Printf("<<< Exiting TestBadFileDescriptor(t=%v)", t)
 }
 
 func TestListener(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestListener(t=%v)", t)
 	router := New()
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	require.NoError(t, err)
 	listener, err := net.ListenTCP("tcp", addr)
 	require.NoError(t, err)
 	go func() {
+	logritelog.Default().Printf("<<< Exiting TestListener(t=%v)", t)
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		assert.NoError(t, router.RunListener(listener))
 	}()
@@ -370,6 +412,7 @@ func TestListener(t *testing.T) {
 }
 
 func TestBadListener(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBadListener(t=%v)", t)
 	router := New()
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:10086")
 	require.NoError(t, err)
@@ -377,9 +420,11 @@ func TestBadListener(t *testing.T) {
 	require.NoError(t, err)
 	listener.Close()
 	require.Error(t, router.RunListener(listener))
+	logritelog.Default().Printf("<<< Exiting TestBadListener(t=%v)", t)
 }
 
 func TestWithHttptestWithAutoSelectedPort(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestWithHttptestWithAutoSelectedPort(t=%v)", t)
 	router := New()
 	router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 
@@ -387,9 +432,11 @@ func TestWithHttptestWithAutoSelectedPort(t *testing.T) {
 	defer ts.Close()
 
 	testRequest(t, ts.URL+"/example")
+	logritelog.Default().Printf("<<< Exiting TestWithHttptestWithAutoSelectedPort(t=%v)", t)
 }
 
 func TestConcurrentHandleContext(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestConcurrentHandleContext(t=%v)", t)
 	router := New()
 	router.GET("/", func(c *Context) {
 		c.Request.URL.Path = "/example"
@@ -401,6 +448,7 @@ func TestConcurrentHandleContext(t *testing.T) {
 	iterations := 200
 	wg.Add(iterations)
 	for range iterations {
+	logritelog.Default().Printf("<<< Exiting TestConcurrentHandleContext(t=%v)", t)
 		go func() {
 			req, err := http.NewRequest(http.MethodGet, "/", nil)
 			assert.NoError(t, err)
@@ -432,6 +480,7 @@ func TestConcurrentHandleContext(t *testing.T) {
 // }
 
 func TestTreeRunDynamicRouting(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestTreeRunDynamicRouting(t=%v)", t)
 	router := New()
 	router.GET("/aa/*xx", func(c *Context) { c.String(http.StatusOK, "/aa/*xx") })
 	router.GET("/ab/*xx", func(c *Context) { c.String(http.StatusOK, "/ab/*xx") })
@@ -575,13 +624,16 @@ func TestTreeRunDynamicRouting(t *testing.T) {
 	testRequest(t, ts.URL+"/a/dd", "404 Not Found")
 	testRequest(t, ts.URL+"/addr/dd/aa", "404 Not Found")
 	testRequest(t, ts.URL+"/something/secondthing/121", "404 Not Found")
+	logritelog.Default().Printf("<<< Exiting TestTreeRunDynamicRouting(t=%v)", t)
 }
 
 func isWindows() bool {
+	logritelog.Default().Printf(">>> Entering isWindows()")
 	return runtime.GOOS == "windows"
 }
 
 func TestEscapedColon(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestEscapedColon(t=%v)", t)
 	router := New()
 	f := func(u string) {
 		router.GET(u, func(c *Context) { c.String(http.StatusOK, u) })
@@ -604,4 +656,5 @@ func TestEscapedColon(t *testing.T) {
 	testRequest(t, ts.URL+"/r/r/r123", "", "/r/r/:r")
 	testRequest(t, ts.URL+"/r/r/:r", "", "/r/r/\\:r")
 	testRequest(t, ts.URL+"/r/r/r:r", "", "/r/r/r\\:r")
+	logritelog.Default().Printf("<<< Exiting TestEscapedColon(t=%v)", t)
 }

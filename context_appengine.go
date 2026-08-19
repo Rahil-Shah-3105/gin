@@ -5,7 +5,11 @@
 //go:build appengine
 
 package gin
+import logritelog "log"
 
 func init() {
+	logritelog.Default().Printf(">>> Entering init()")
+	logritelog.Default().Printf("init(): defaultPlatform → %v", defaultPlatform)
+logritelog.Default().Printf("<<< Exiting init()")
 	defaultPlatform = PlatformGoogleAppEngine
 }

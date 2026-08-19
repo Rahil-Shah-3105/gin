@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -17,6 +18,7 @@ import (
 )
 
 func TestBindingMsgPack(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBindingMsgPack(t=%v)", t)
 	test := FooStruct{
 		Foo: "bar",
 	}
@@ -34,9 +36,11 @@ func TestBindingMsgPack(t *testing.T) {
 		MsgPack, "msgpack",
 		"/", "/",
 		string(data), string(data[1:]))
+		logritelog.Default().Printf("<<< Exiting TestBindingMsgPack(t=%v)", t)
 }
 
 func testMsgPackBodyBinding(t *testing.T, b Binding, name, path, badPath, body, badBody string) {
+	logritelog.Default().Printf(">>> Entering testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
 	assert.Equal(t, name, b.Name())
 
 	obj := FooStruct{}
@@ -47,13 +51,19 @@ func testMsgPackBodyBinding(t *testing.T, b Binding, name, path, badPath, body, 
 	assert.Equal(t, "bar", obj.Foo)
 
 	obj = FooStruct{}
+	logritelog.Default().Printf("testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): obj → %v", t, b, name, path, badPath, body, badBody, obj)
+	logritelog.Default().Printf("testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	req = requestWithBody(http.MethodPost, badPath, badBody)
 	req.Header.Add("Content-Type", MIMEMSGPACK)
 	err = MsgPack.Bind(req, &obj)
 	require.Error(t, err)
+	logritelog.Default().Printf("testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
+	logritelog.Default().Printf("<<< Exiting testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
 }
 
 func TestBindingDefaultMsgPack(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBindingDefaultMsgPack(t=%v)", t)
 	assert.Equal(t, MsgPack, Default(http.MethodPost, MIMEMSGPACK))
 	assert.Equal(t, MsgPack, Default(http.MethodPut, MIMEMSGPACK2))
+	logritelog.Default().Printf("<<< Exiting TestBindingDefaultMsgPack(t=%v)", t)
 }

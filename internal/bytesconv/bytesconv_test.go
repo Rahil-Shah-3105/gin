@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package bytesconv
+import logritelog "log"
 
 import (
 	"bytes"
@@ -19,35 +20,42 @@ var (
 )
 
 func rawBytesToStr(b []byte) string {
+	logritelog.Default().Printf(">>> Entering rawBytesToStr(b=%v)", b)
 	return string(b)
 }
 
 func rawStrToBytes(s string) []byte {
+	logritelog.Default().Printf(">>> Entering rawStrToBytes(s=%v)", s)
 	return []byte(s)
 }
 
 // go test -v
 
 func TestBytesToString(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBytesToString(t=%v)", t)
 	data := make([]byte, 1024)
 	for range 100 {
 		_, err := cRand.Read(data)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in TestBytesToString(t=%v): %v", t, err)
 			t.Fatal(err)
 		}
 		if rawBytesToStr(data) != BytesToString(data) {
 			t.Fatal("don't match")
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting TestBytesToString(t=%v)", t)
 }
 
 func TestBytesToStringEmpty(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestBytesToStringEmpty(t=%v)", t)
 	if got := BytesToString([]byte{}); got != "" {
 		t.Fatalf("BytesToString([]byte{}) = %q; want empty string", got)
 	}
 	if got := BytesToString(nil); got != "" {
 		t.Fatalf("BytesToString(nil) = %q; want empty string", got)
 	}
+	logritelog.Default().Printf("<<< Exiting TestBytesToStringEmpty(t=%v)", t)
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -60,6 +68,7 @@ const (
 var src = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func RandStringBytesMaskImprSrcSB(n int) string {
+	logritelog.Default().Printf(">>> Entering RandStringBytesMaskImprSrcSB(n=%v)", n)
 	sb := strings.Builder{}
 	sb.Grow(n)
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
@@ -75,19 +84,23 @@ func RandStringBytesMaskImprSrcSB(n int) string {
 		remain--
 	}
 
+	logritelog.Default().Printf("<<< Exiting RandStringBytesMaskImprSrcSB(n=%v)", n)
 	return sb.String()
 }
 
 func TestStringToBytes(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestStringToBytes(t=%v)", t)
 	for range 100 {
 		s := RandStringBytesMaskImprSrcSB(64)
 		if !bytes.Equal(rawStrToBytes(s), StringToBytes(s)) {
 			t.Fatal("don't match")
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting TestStringToBytes(t=%v)", t)
 }
 
 func TestStringToBytesEmpty(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestStringToBytesEmpty(t=%v)", t)
 	b := StringToBytes("")
 	if len(b) != 0 {
 		t.Fatalf(`StringToBytes("") length = %d; want 0`, len(b))
@@ -95,30 +108,39 @@ func TestStringToBytesEmpty(t *testing.T) {
 	if !bytes.Equal(b, []byte("")) {
 		t.Fatalf(`StringToBytes("") = %v; want []byte("")`, b)
 	}
+	logritelog.Default().Printf("<<< Exiting TestStringToBytesEmpty(t=%v)", t)
 }
 
 // go test -v -run=none -bench=^BenchmarkBytesConv -benchmem=true
 
 func BenchmarkBytesConvBytesToStrRaw(b *testing.B) {
+	logritelog.Default().Printf(">>> Entering BenchmarkBytesConvBytesToStrRaw(b=%v)", b)
 	for b.Loop() {
 		rawBytesToStr(testBytes)
 	}
+	logritelog.Default().Printf("<<< Exiting BenchmarkBytesConvBytesToStrRaw(b=%v)", b)
 }
 
 func BenchmarkBytesConvBytesToStr(b *testing.B) {
+	logritelog.Default().Printf(">>> Entering BenchmarkBytesConvBytesToStr(b=%v)", b)
 	for b.Loop() {
 		BytesToString(testBytes)
 	}
+	logritelog.Default().Printf("<<< Exiting BenchmarkBytesConvBytesToStr(b=%v)", b)
 }
 
 func BenchmarkBytesConvStrToBytesRaw(b *testing.B) {
+	logritelog.Default().Printf(">>> Entering BenchmarkBytesConvStrToBytesRaw(b=%v)", b)
 	for b.Loop() {
 		rawStrToBytes(testString)
 	}
+	logritelog.Default().Printf("<<< Exiting BenchmarkBytesConvStrToBytesRaw(b=%v)", b)
 }
 
 func BenchmarkBytesConvStrToBytes(b *testing.B) {
+	logritelog.Default().Printf(">>> Entering BenchmarkBytesConvStrToBytes(b=%v)", b)
 	for b.Loop() {
 		StringToBytes(testString)
 	}
+	logritelog.Default().Printf("<<< Exiting BenchmarkBytesConvStrToBytes(b=%v)", b)
 }

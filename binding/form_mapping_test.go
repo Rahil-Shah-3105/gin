@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"encoding"
@@ -20,6 +21,7 @@ import (
 )
 
 func TestMappingBaseTypes(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingBaseTypes(t=%v)", t)
 	intPtr := func(i int) *int {
 		return &i
 	}
@@ -66,9 +68,11 @@ func TestMappingBaseTypes(t *testing.T) {
 		actual := val.Elem().Field(0).Interface()
 		assert.Equal(t, tt.expect, actual, testName)
 	}
+	logritelog.Default().Printf("<<< Exiting TestMappingBaseTypes(t=%v)", t)
 }
 
 func TestMappingDefault(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingDefault(t=%v)", t)
 	var s struct {
 		Str   string `form:",default=defaultVal"`
 		Int   int    `form:",default=9"`
@@ -82,9 +86,11 @@ func TestMappingDefault(t *testing.T) {
 	assert.Equal(t, 9, s.Int)
 	assert.Equal(t, []int{9}, s.Slice)
 	assert.Equal(t, [1]int{9}, s.Array)
+	logritelog.Default().Printf("<<< Exiting TestMappingDefault(t=%v)", t)
 }
 
 func TestMappingSkipField(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingSkipField(t=%v)", t)
 	var s struct {
 		A int
 	}
@@ -92,9 +98,11 @@ func TestMappingSkipField(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, 0, s.A)
+	logritelog.Default().Printf("<<< Exiting TestMappingSkipField(t=%v)", t)
 }
 
 func TestMappingIgnoreField(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingIgnoreField(t=%v)", t)
 	var s struct {
 		A int `form:"A"`
 		B int `form:"-"`
@@ -104,9 +112,11 @@ func TestMappingIgnoreField(t *testing.T) {
 
 	assert.Equal(t, 9, s.A)
 	assert.Equal(t, 0, s.B)
+	logritelog.Default().Printf("<<< Exiting TestMappingIgnoreField(t=%v)", t)
 }
 
 func TestMappingUnexportedField(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingUnexportedField(t=%v)", t)
 	var s struct {
 		A int `form:"a"`
 		b int `form:"b"`
@@ -116,18 +126,22 @@ func TestMappingUnexportedField(t *testing.T) {
 
 	assert.Equal(t, 9, s.A)
 	assert.Equal(t, 0, s.b)
+	logritelog.Default().Printf("<<< Exiting TestMappingUnexportedField(t=%v)", t)
 }
 
 func TestMappingPrivateField(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingPrivateField(t=%v)", t)
 	var s struct {
 		f int `form:"field"`
 	}
 	err := mappingByPtr(&s, formSource{"field": {"6"}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, 0, s.f)
+	logritelog.Default().Printf("<<< Exiting TestMappingPrivateField(t=%v)", t)
 }
 
 func TestMappingUnknownFieldType(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingUnknownFieldType(t=%v)", t)
 	var s struct {
 		U uintptr
 	}
@@ -135,54 +149,66 @@ func TestMappingUnknownFieldType(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"U": {"unknown"}}, "form")
 	require.Error(t, err)
 	assert.Equal(t, errUnknownType, err)
+	logritelog.Default().Printf("<<< Exiting TestMappingUnknownFieldType(t=%v)", t)
 }
 
 func TestMappingURI(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingURI(t=%v)", t)
 	var s struct {
 		F int `uri:"field"`
 	}
 	err := mapURI(&s, map[string][]string{"field": {"6"}})
 	require.NoError(t, err)
 	assert.Equal(t, 6, s.F)
+	logritelog.Default().Printf("<<< Exiting TestMappingURI(t=%v)", t)
 }
 
 func TestMappingForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingForm(t=%v)", t)
 	var s struct {
 		F int `form:"field"`
 	}
 	err := mapForm(&s, map[string][]string{"field": {"6"}})
 	require.NoError(t, err)
 	assert.Equal(t, 6, s.F)
+	logritelog.Default().Printf("<<< Exiting TestMappingForm(t=%v)", t)
 }
 
 func TestMappingFormFieldNotSent(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingFormFieldNotSent(t=%v)", t)
 	var s struct {
 		F string `form:"field,default=defVal"`
 	}
 	err := mapForm(&s, map[string][]string{})
 	require.NoError(t, err)
 	assert.Equal(t, "defVal", s.F)
+	logritelog.Default().Printf("<<< Exiting TestMappingFormFieldNotSent(t=%v)", t)
 }
 
 func TestMappingFormWithEmptyToDefault(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingFormWithEmptyToDefault(t=%v)", t)
 	var s struct {
 		F string `form:"field,default=DefVal"`
 	}
 	err := mapForm(&s, map[string][]string{"field": {""}})
 	require.NoError(t, err)
 	assert.Equal(t, "DefVal", s.F)
+	logritelog.Default().Printf("<<< Exiting TestMappingFormWithEmptyToDefault(t=%v)", t)
 }
 
 func TestMapFormWithTag(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMapFormWithTag(t=%v)", t)
 	var s struct {
 		F int `externalTag:"field"`
 	}
 	err := MapFormWithTag(&s, map[string][]string{"field": {"6"}}, "externalTag")
 	require.NoError(t, err)
 	assert.Equal(t, 6, s.F)
+	logritelog.Default().Printf("<<< Exiting TestMapFormWithTag(t=%v)", t)
 }
 
 func TestMappingTime(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingTime(t=%v)", t)
 	var s struct {
 		Time      time.Time
 		LocalTime time.Time `time_format:"2006-01-02"`
@@ -204,6 +230,7 @@ func TestMappingTime(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("TestMappingTime(t=%v): err → %v", t, err)
 	assert.Equal(t, "2019-01-20 16:02:58 +0000 UTC", s.Time.String())
 	assert.Equal(t, "2019-01-20 00:00:00 +0100 CET", s.LocalTime.String())
 	assert.Equal(t, "2019-01-19 23:00:00 +0000 UTC", s.LocalTime.UTC().String())
@@ -225,6 +252,7 @@ func TestMappingTime(t *testing.T) {
 	}
 	err = mapForm(&wrongTime, map[string][]string{"Time": {"wrong"}})
 	require.Error(t, err)
+	logritelog.Default().Printf("<<< Exiting TestMappingTime(t=%v)", t)
 }
 
 type bindTestData struct {
@@ -234,6 +262,7 @@ type bindTestData struct {
 }
 
 func TestMappingTimeUnixNano(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingTimeUnixNano(t=%v)", t)
 	type needFixUnixNanoEmpty struct {
 		CreateTime time.Time `form:"createTime" time_format:"unixNano"`
 	}
@@ -249,9 +278,11 @@ func TestMappingTimeUnixNano(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, v.need, v.got)
 	}
+	logritelog.Default().Printf("<<< Exiting TestMappingTimeUnixNano(t=%v)", t)
 }
 
 func TestMappingTimeDuration(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingTimeDuration(t=%v)", t)
 	type needFixDurationEmpty struct {
 		Duration time.Duration `form:"duration"`
 	}
@@ -279,9 +310,12 @@ func TestMappingTimeDuration(t *testing.T) {
 	// error
 	err = mappingByPtr(&s, formSource{"D": {"wrong"}}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("TestMappingTimeDuration(t=%v): err → %v", t, err)
+	logritelog.Default().Printf("<<< Exiting TestMappingTimeDuration(t=%v)", t)
 }
 
 func TestMappingSlice(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingSlice(t=%v)", t)
 	var s struct {
 		Slice []int `form:"slice,default=9"`
 	}
@@ -296,12 +330,15 @@ func TestMappingSlice(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []int{3, 4}, s.Slice)
 
+	logritelog.Default().Printf("TestMappingSlice(t=%v): err → %v", t, err)
 	// error
 	err = mappingByPtr(&s, formSource{"slice": {"wrong"}}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("<<< Exiting TestMappingSlice(t=%v)", t)
 }
 
 func TestMappingArray(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingArray(t=%v)", t)
 	var s struct {
 		Array [2]int `form:"array,default=9"`
 	}
@@ -315,6 +352,7 @@ func TestMappingArray(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, [2]int{3, 4}, s.Array)
 
+	logritelog.Default().Printf("TestMappingArray(t=%v): err → %v", t, err)
 	// error - not enough vals
 	err = mappingByPtr(&s, formSource{"array": {"3"}}, "form")
 	require.Error(t, err)
@@ -322,9 +360,11 @@ func TestMappingArray(t *testing.T) {
 	// error - wrong value
 	err = mappingByPtr(&s, formSource{"array": {"wrong"}}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("<<< Exiting TestMappingArray(t=%v)", t)
 }
 
 func TestMappingCollectionFormat(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCollectionFormat(t=%v)", t)
 	var s struct {
 		SliceMulti []int  `form:"slice_multi" collection_format:"multi"`
 		SliceCsv   []int  `form:"slice_csv" collection_format:"csv"`
@@ -361,9 +401,11 @@ func TestMappingCollectionFormat(t *testing.T) {
 	assert.Equal(t, [2]int{1, 2}, s.ArraySsv)
 	assert.Equal(t, [2]int{1, 2}, s.ArrayTsv)
 	assert.Equal(t, [2]int{1, 2}, s.ArrayPipes)
+	logritelog.Default().Printf("<<< Exiting TestMappingCollectionFormat(t=%v)", t)
 }
 
 func TestMappingCollectionFormatInvalid(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCollectionFormatInvalid(t=%v)", t)
 	var s struct {
 		SliceCsv []int `form:"slice_csv" collection_format:"xxx"`
 	}
@@ -379,9 +421,12 @@ func TestMappingCollectionFormatInvalid(t *testing.T) {
 		"array_csv": {"1,2"},
 	}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("TestMappingCollectionFormatInvalid(t=%v): err → %v", t, err)
+	logritelog.Default().Printf("<<< Exiting TestMappingCollectionFormatInvalid(t=%v)", t)
 }
 
 func TestMappingMultipleDefaultWithCollectionFormat(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingMultipleDefaultWithCollectionFormat(t=%v)", t)
 	var s struct {
 		SliceMulti       []int     `form:",default=1;2;3" collection_format:"multi"`
 		SliceCsv         []int     `form:",default=1;2;3" collection_format:"csv"`
@@ -427,9 +472,11 @@ func TestMappingMultipleDefaultWithCollectionFormat(t *testing.T) {
 	assert.Equal(t, [2]string{"1", "2"}, s.ArrayStringSsv)
 	assert.Equal(t, [2]string{"1", "2"}, s.ArrayStringTsv)
 	assert.Equal(t, [2]string{"1", "2"}, s.ArrayStringPipes)
+	logritelog.Default().Printf("<<< Exiting TestMappingMultipleDefaultWithCollectionFormat(t=%v)", t)
 }
 
 func TestMappingStructField(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingStructField(t=%v)", t)
 	var s struct {
 		J struct {
 			I int
@@ -439,9 +486,11 @@ func TestMappingStructField(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"J": {`{"I": 9}`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, 9, s.J.I)
+	logritelog.Default().Printf("<<< Exiting TestMappingStructField(t=%v)", t)
 }
 
 func TestMappingPtrField(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingPtrField(t=%v)", t)
 	type ptrStruct struct {
 		Key int64 `json:"key"`
 	}
@@ -458,6 +507,7 @@ func TestMappingPtrField(t *testing.T) {
 	require.NoError(t, err)
 	assert.Empty(t, req0.Items)
 
+	logritelog.Default().Printf("TestMappingPtrField(t=%v): err → %v", t, err)
 	// With 1 item.
 	var req1 ptrRequest
 	err = mappingByPtr(&req1, formSource{"items": {`{"key": 1}`}}, "form")
@@ -472,9 +522,11 @@ func TestMappingPtrField(t *testing.T) {
 	assert.Len(t, req2.Items, 2)
 	assert.EqualValues(t, 1, req2.Items[0].Key)
 	assert.EqualValues(t, 2, req2.Items[1].Key)
+	logritelog.Default().Printf("<<< Exiting TestMappingPtrField(t=%v)", t)
 }
 
 func TestMappingMapField(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingMapField(t=%v)", t)
 	var s struct {
 		M map[string]int
 	}
@@ -482,9 +534,11 @@ func TestMappingMapField(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"M": {`{"one": 1}`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, map[string]int{"one": 1}, s.M)
+	logritelog.Default().Printf("<<< Exiting TestMappingMapField(t=%v)", t)
 }
 
 func TestMappingIgnoredCircularRef(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingIgnoredCircularRef(t=%v)", t)
 	type S struct {
 		S *S `form:"-"`
 	}
@@ -492,6 +546,7 @@ func TestMappingIgnoredCircularRef(t *testing.T) {
 
 	err := mappingByPtr(&s, formSource{}, "form")
 	require.NoError(t, err)
+	logritelog.Default().Printf("<<< Exiting TestMappingIgnoredCircularRef(t=%v)", t)
 }
 
 type customUnmarshalParamHex int
@@ -506,6 +561,7 @@ func (f *customUnmarshalParamHex) UnmarshalParam(param string) error {
 }
 
 func TestMappingCustomUnmarshalParamHexWithFormTag(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomUnmarshalParamHexWithFormTag(t=%v)", t)
 	var s struct {
 		Foo customUnmarshalParamHex `form:"foo"`
 	}
@@ -513,9 +569,11 @@ func TestMappingCustomUnmarshalParamHexWithFormTag(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 245, s.Foo)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomUnmarshalParamHexWithFormTag(t=%v)", t)
 }
 
 func TestMappingCustomUnmarshalParamHexWithURITag(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomUnmarshalParamHexWithURITag(t=%v)", t)
 	var s struct {
 		Foo customUnmarshalParamHex `uri:"foo"`
 	}
@@ -523,9 +581,11 @@ func TestMappingCustomUnmarshalParamHexWithURITag(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 245, s.Foo)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomUnmarshalParamHexWithURITag(t=%v)", t)
 }
 
 func TestMappingCustomUnmarshalParamHexDefault(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomUnmarshalParamHexDefault(t=%v)", t)
 	var s struct {
 		Foo customUnmarshalParamHex `form:"foo,default=f5"`
 	}
@@ -533,6 +593,7 @@ func TestMappingCustomUnmarshalParamHexDefault(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 0xf5, s.Foo)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomUnmarshalParamHexDefault(t=%v)", t)
 }
 
 type customUnmarshalParamType struct {
@@ -553,6 +614,7 @@ func (f *customUnmarshalParamType) UnmarshalParam(param string) error {
 }
 
 func TestMappingCustomStructTypeWithFormTag(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomStructTypeWithFormTag(t=%v)", t)
 	var s struct {
 		FileData customUnmarshalParamType `form:"data"`
 	}
@@ -562,9 +624,11 @@ func TestMappingCustomStructTypeWithFormTag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomStructTypeWithFormTag(t=%v)", t)
 }
 
 func TestMappingCustomStructTypeWithURITag(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomStructTypeWithURITag(t=%v)", t)
 	var s struct {
 		FileData customUnmarshalParamType `uri:"data"`
 	}
@@ -574,9 +638,11 @@ func TestMappingCustomStructTypeWithURITag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomStructTypeWithURITag(t=%v)", t)
 }
 
 func TestMappingCustomPointerStructTypeWithFormTag(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomPointerStructTypeWithFormTag(t=%v)", t)
 	var s struct {
 		FileData *customUnmarshalParamType `form:"data"`
 	}
@@ -586,9 +652,11 @@ func TestMappingCustomPointerStructTypeWithFormTag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomPointerStructTypeWithFormTag(t=%v)", t)
 }
 
 func TestMappingCustomPointerStructTypeWithURITag(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomPointerStructTypeWithURITag(t=%v)", t)
 	var s struct {
 		FileData *customUnmarshalParamType `uri:"data"`
 	}
@@ -598,6 +666,7 @@ func TestMappingCustomPointerStructTypeWithURITag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomPointerStructTypeWithURITag(t=%v)", t)
 }
 
 type customPath []string
@@ -614,6 +683,7 @@ func (p *customPath) UnmarshalParam(param string) error {
 }
 
 func TestMappingCustomSliceUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceUri(t=%v)", t)
 	var s struct {
 		FileData customPath `uri:"path"`
 	}
@@ -622,9 +692,11 @@ func TestMappingCustomSliceUri(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceUri(t=%v)", t)
 }
 
 func TestMappingCustomSliceForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceForm(t=%v)", t)
 	var s struct {
 		FileData customPath `form:"path"`
 	}
@@ -633,33 +705,40 @@ func TestMappingCustomSliceForm(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceForm(t=%v)", t)
 }
 
 func TestMappingCustomSliceStopsWhenError(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceStopsWhenError(t=%v)", t)
 	var s struct {
 		FileData customPath `form:"path"`
 	}
 	err := mappingByPtr(&s, formSource{"path": {"invalid"}}, "form")
 	require.ErrorContains(t, err, "invalid format")
 	require.Empty(t, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceStopsWhenError(t=%v)", t)
 }
 
 func TestMappingCustomSliceOfSliceUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceOfSliceUri(t=%v)", t)
 	var s struct {
 		FileData []customPath `uri:"path" collection_format:"csv"`
 	}
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []customPath{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceOfSliceUri(t=%v)", t)
 }
 
 func TestMappingCustomSliceOfSliceForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceOfSliceForm(t=%v)", t)
 	var s struct {
 		FileData []customPath `form:"path" collection_format:"csv"`
 	}
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []customPath{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceOfSliceForm(t=%v)", t)
 }
 
 type objectID [12]byte
@@ -667,6 +746,8 @@ type objectID [12]byte
 func (o *objectID) UnmarshalParam(param string) error {
 	oid, err := convertTo(param)
 	if err != nil {
+		logritelog.Default().Printf(">>> Entering convertTo(s=%v)", s)
+		logritelog.Default().Printf("<<< Exiting convertTo(s=%v)", s)
 		return err
 	}
 
@@ -690,6 +771,7 @@ func convertTo(s string) (objectID, error) {
 }
 
 func TestMappingCustomArrayUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayUri(t=%v)", t)
 	var s struct {
 		FileData objectID `uri:"id"`
 	}
@@ -699,9 +781,11 @@ func TestMappingCustomArrayUri(t *testing.T) {
 
 	expected, _ := convertTo(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayUri(t=%v)", t)
 }
 
 func TestMappingCustomArrayForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayForm(t=%v)", t)
 	var s struct {
 		FileData objectID `form:"id"`
 	}
@@ -711,9 +795,11 @@ func TestMappingCustomArrayForm(t *testing.T) {
 
 	expected, _ := convertTo(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayForm(t=%v)", t)
 }
 
 func TestMappingCustomArrayOfArrayUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayOfArrayUri(t=%v)", t)
 	id1, _ := convertTo(`664a062ac74a8ad104e0e80e`)
 	id2, _ := convertTo(`664a062ac74a8ad104e0e80f`)
 
@@ -723,9 +809,11 @@ func TestMappingCustomArrayOfArrayUri(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []objectID{id1, id2}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayOfArrayUri(t=%v)", t)
 }
 
 func TestMappingCustomArrayOfArrayForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayOfArrayForm(t=%v)", t)
 	id1, _ := convertTo(`664a062ac74a8ad104e0e80e`)
 	id2, _ := convertTo(`664a062ac74a8ad104e0e80f`)
 
@@ -735,6 +823,7 @@ func TestMappingCustomArrayOfArrayForm(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []objectID{id1, id2}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayOfArrayForm(t=%v)", t)
 }
 
 // ====  TextUnmarshaler tests START ====
@@ -754,30 +843,36 @@ func (f *customUnmarshalTextHex) UnmarshalText(text []byte) error {
 var _ encoding.TextUnmarshaler = (*customUnmarshalTextHex)(nil)
 
 func TestMappingCustomUnmarshalTextHexUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomUnmarshalTextHexUri(t=%v)", t)
 	var s struct {
 		Field customUnmarshalTextHex `uri:"field,parser=encoding.TextUnmarshaler"`
 	}
 	err := mappingByPtr(&s, formSource{"field": {`f5`}}, "uri")
 	require.NoError(t, err)
 	assert.EqualValues(t, 245, s.Field)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomUnmarshalTextHexUri(t=%v)", t)
 }
 
 func TestMappingCustomUnmarshalTextHexForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomUnmarshalTextHexForm(t=%v)", t)
 	var s struct {
 		Field customUnmarshalTextHex `form:"field,parser=encoding.TextUnmarshaler"`
 	}
 	err := mappingByPtr(&s, formSource{"field": {`f5`}}, "form")
 	require.NoError(t, err)
 	assert.EqualValues(t, 245, s.Field)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomUnmarshalTextHexForm(t=%v)", t)
 }
 
 func TestMappingCustomUnmarshalTextHexDefault(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomUnmarshalTextHexDefault(t=%v)", t)
 	var s struct {
 		Field customUnmarshalTextHex `form:"field,default=f5,parser=encoding.TextUnmarshaler"`
 	}
 	err := mappingByPtr(&s, formSource{"field1": {}}, "form")
 	require.NoError(t, err)
 	assert.EqualValues(t, 0xf5, s.Field)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomUnmarshalTextHexDefault(t=%v)", t)
 }
 
 type customUnmarshalTextType struct {
@@ -800,6 +895,7 @@ func (f *customUnmarshalTextType) UnmarshalText(text []byte) error {
 var _ encoding.TextUnmarshaler = (*customUnmarshalTextType)(nil)
 
 func TestMappingCustomStructTypeUnmarshalTextForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomStructTypeUnmarshalTextForm(t=%v)", t)
 	var s struct {
 		FileData customUnmarshalTextType `form:"data,parser=encoding.TextUnmarshaler"`
 	}
@@ -809,9 +905,11 @@ func TestMappingCustomStructTypeUnmarshalTextForm(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomStructTypeUnmarshalTextForm(t=%v)", t)
 }
 
 func TestMappingCustomStructTypeUnmarshalTextUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomStructTypeUnmarshalTextUri(t=%v)", t)
 	var s struct {
 		FileData customUnmarshalTextType `uri:"data,parser=encoding.TextUnmarshaler"`
 	}
@@ -821,9 +919,11 @@ func TestMappingCustomStructTypeUnmarshalTextUri(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomStructTypeUnmarshalTextUri(t=%v)", t)
 }
 
 func TestMappingCustomPointerStructTypeUnmarshalTextForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomPointerStructTypeUnmarshalTextForm(t=%v)", t)
 	var s struct {
 		FileData *customUnmarshalTextType `form:"data,parser=encoding.TextUnmarshaler"`
 	}
@@ -833,9 +933,11 @@ func TestMappingCustomPointerStructTypeUnmarshalTextForm(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomPointerStructTypeUnmarshalTextForm(t=%v)", t)
 }
 
 func TestMappingCustomPointerStructTypeUnmarshalTextUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomPointerStructTypeUnmarshalTextUri(t=%v)", t)
 	var s struct {
 		FileData *customUnmarshalTextType `uri:"data,parser=encoding.TextUnmarshaler"`
 	}
@@ -845,6 +947,7 @@ func TestMappingCustomPointerStructTypeUnmarshalTextUri(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomPointerStructTypeUnmarshalTextUri(t=%v)", t)
 }
 
 type customPathUnmarshalText []string
@@ -863,6 +966,7 @@ func (p *customPathUnmarshalText) UnmarshalText(text []byte) error {
 var _ encoding.TextUnmarshaler = (*customPathUnmarshalText)(nil)
 
 func TestMappingCustomSliceUnmarshalTextUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceUnmarshalTextUri(t=%v)", t)
 	var s struct {
 		FileData customPathUnmarshalText `uri:"path,parser=encoding.TextUnmarshaler"`
 	}
@@ -871,9 +975,11 @@ func TestMappingCustomSliceUnmarshalTextUri(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceUnmarshalTextUri(t=%v)", t)
 }
 
 func TestMappingCustomSliceUnmarshalTextForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceUnmarshalTextForm(t=%v)", t)
 	var s struct {
 		FileData customPathUnmarshalText `form:"path,parser=encoding.TextUnmarshaler"`
 	}
@@ -882,42 +988,51 @@ func TestMappingCustomSliceUnmarshalTextForm(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceUnmarshalTextForm(t=%v)", t)
 }
 
 func TestMappingCustomSliceUnmarshalTextStopsWhenError(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceUnmarshalTextStopsWhenError(t=%v)", t)
 	var s struct {
 		FileData customPathUnmarshalText `form:"path,parser=encoding.TextUnmarshaler"`
 	}
 	err := mappingByPtr(&s, formSource{"path": {"invalid"}}, "form")
 	require.ErrorContains(t, err, "invalid format")
 	require.Empty(t, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceUnmarshalTextStopsWhenError(t=%v)", t)
 }
 
 func TestMappingCustomSliceOfSliceUnmarshalTextUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceOfSliceUnmarshalTextUri(t=%v)", t)
 	var s struct {
 		FileData []customPathUnmarshalText `uri:"path,parser=encoding.TextUnmarshaler" collection_format:"csv"`
 	}
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []customPathUnmarshalText{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceOfSliceUnmarshalTextUri(t=%v)", t)
 }
 
 func TestMappingCustomSliceOfSliceUnmarshalTextForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceOfSliceUnmarshalTextForm(t=%v)", t)
 	var s struct {
 		FileData []customPathUnmarshalText `form:"path,parser=encoding.TextUnmarshaler" collection_format:"csv"`
 	}
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []customPathUnmarshalText{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceOfSliceUnmarshalTextForm(t=%v)", t)
 }
 
 func TestMappingCustomSliceOfSliceUnmarshalTextDefault(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomSliceOfSliceUnmarshalTextDefault(t=%v)", t)
 	var s struct {
 		FileData []customPathUnmarshalText `form:"path,default=bar/foo;bar/foo/spam,parser=encoding.TextUnmarshaler" collection_format:"csv"`
 	}
 	err := mappingByPtr(&s, formSource{"path": {}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []customPathUnmarshalText{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomSliceOfSliceUnmarshalTextDefault(t=%v)", t)
 }
 
 type objectIDUnmarshalText [12]byte
@@ -925,6 +1040,8 @@ type objectIDUnmarshalText [12]byte
 func (o *objectIDUnmarshalText) UnmarshalText(text []byte) error {
 	oid, err := convertToOidUnmarshalText(string(text))
 	if err != nil {
+		logritelog.Default().Printf(">>> Entering convertToOidUnmarshalText(s=%v)", s)
+		logritelog.Default().Printf("<<< Exiting convertToOidUnmarshalText(s=%v)", s)
 		return err
 	}
 
@@ -940,6 +1057,7 @@ func convertToOidUnmarshalText(s string) (objectIDUnmarshalText, error) {
 var _ encoding.TextUnmarshaler = (*objectIDUnmarshalText)(nil)
 
 func TestMappingCustomArrayUnmarshalTextUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayUnmarshalTextUri(t=%v)", t)
 	var s struct {
 		FileData objectIDUnmarshalText `uri:"id,parser=encoding.TextUnmarshaler"`
 	}
@@ -949,9 +1067,11 @@ func TestMappingCustomArrayUnmarshalTextUri(t *testing.T) {
 
 	expected, _ := convertToOidUnmarshalText(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayUnmarshalTextUri(t=%v)", t)
 }
 
 func TestMappingCustomArrayUnmarshalTextForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayUnmarshalTextForm(t=%v)", t)
 	var s struct {
 		FileData objectIDUnmarshalText `form:"id,parser=encoding.TextUnmarshaler"`
 	}
@@ -961,9 +1081,11 @@ func TestMappingCustomArrayUnmarshalTextForm(t *testing.T) {
 
 	expected, _ := convertToOidUnmarshalText(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayUnmarshalTextForm(t=%v)", t)
 }
 
 func TestMappingCustomArrayOfArrayUnmarshalTextUri(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayOfArrayUnmarshalTextUri(t=%v)", t)
 	id1, _ := convertToOidUnmarshalText(`664a062ac74a8ad104e0e80e`)
 	id2, _ := convertToOidUnmarshalText(`664a062ac74a8ad104e0e80f`)
 
@@ -973,9 +1095,11 @@ func TestMappingCustomArrayOfArrayUnmarshalTextUri(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []objectIDUnmarshalText{id1, id2}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayOfArrayUnmarshalTextUri(t=%v)", t)
 }
 
 func TestMappingCustomArrayOfArrayUnmarshalTextForm(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayOfArrayUnmarshalTextForm(t=%v)", t)
 	id1, _ := convertToOidUnmarshalText(`664a062ac74a8ad104e0e80e`)
 	id2, _ := convertToOidUnmarshalText(`664a062ac74a8ad104e0e80f`)
 
@@ -985,9 +1109,11 @@ func TestMappingCustomArrayOfArrayUnmarshalTextForm(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []objectIDUnmarshalText{id1, id2}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayOfArrayUnmarshalTextForm(t=%v)", t)
 }
 
 func TestMappingCustomArrayOfArrayUnmarshalTextDefault(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingCustomArrayOfArrayUnmarshalTextDefault(t=%v)", t)
 	id1, _ := convertToOidUnmarshalText(`664a062ac74a8ad104e0e80e`)
 	id2, _ := convertToOidUnmarshalText(`664a062ac74a8ad104e0e80f`)
 
@@ -997,11 +1123,13 @@ func TestMappingCustomArrayOfArrayUnmarshalTextDefault(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []objectIDUnmarshalText{id1, id2}, s.FileData)
+	logritelog.Default().Printf("<<< Exiting TestMappingCustomArrayOfArrayUnmarshalTextDefault(t=%v)", t)
 }
 
 // If someone specifies parser=TextUnmarshaler and it's not defined for the type, gin should revert to using its default
 // binding logic.
 func TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyBindUnmarshalerDefined(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyBindUnmarshalerDefined(t=%v)", t)
 	var s struct {
 		Hex                customUnmarshalParamHex `form:"hex"`
 		HexByUnmarshalText customUnmarshalParamHex `form:"hex2,parser=encoding.TextUnmarshaler"`
@@ -1014,12 +1142,14 @@ func TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyBindUnmarshalerDef
 
 	assert.EqualValues(t, 0xf5, s.Hex)
 	assert.EqualValues(t, 0xf5, s.HexByUnmarshalText) // reverts to BindUnmarshaler binding
+	logritelog.Default().Printf("<<< Exiting TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyBindUnmarshalerDefined(t=%v)", t)
 }
 
 // If someone does not specify parser=TextUnmarshaler even when it's defined for the type, gin should ignore the
 // UnmarshalText logic and continue using its default binding logic. (This ensures gin does not break backwards
 // compatibility)
 func TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyTextUnmarshalerDefined(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyTextUnmarshalerDefined(t=%v)", t)
 	var s struct {
 		Hex                customUnmarshalTextHex `form:"hex"`
 		HexByUnmarshalText customUnmarshalTextHex `form:"hex2,parser=encoding.TextUnmarshaler"`
@@ -1032,6 +1162,7 @@ func TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyTextUnmarshalerDef
 
 	assert.EqualValues(t, 11, s.Hex)                  // this is using default int binding, not our custom hex binding. 0x11 should be 17 in decimal
 	assert.EqualValues(t, 0x11, s.HexByUnmarshalText) // correct expected value for normal hex binding
+	logritelog.Default().Printf("<<< Exiting TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyTextUnmarshalerDefined(t=%v)", t)
 }
 
 type customHexUnmarshalParamAndUnmarshalText int
@@ -1052,6 +1183,7 @@ func (f *customHexUnmarshalParamAndUnmarshalText) UnmarshalText(text []byte) err
 // If a type has both UnmarshalParam and UnmarshalText methods defined, but the parser tag is set to TextUnmarshaler,
 // then only the UnmarshalText method should be invoked.
 func TestMappingUsingTextUnmarshalerWhenBindUnmarshalerAlsoDefined(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingUsingTextUnmarshalerWhenBindUnmarshalerAlsoDefined(t=%v)", t)
 	var s struct {
 		Hex customHexUnmarshalParamAndUnmarshalText `form:"hex,parser=encoding.TextUnmarshaler"`
 	}
@@ -1061,11 +1193,13 @@ func TestMappingUsingTextUnmarshalerWhenBindUnmarshalerAlsoDefined(t *testing.T)
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 0xf5, s.Hex)
+	logritelog.Default().Printf("<<< Exiting TestMappingUsingTextUnmarshalerWhenBindUnmarshalerAlsoDefined(t=%v)", t)
 }
 
 // ====  TextUnmarshaler tests END ====
 
 func TestMappingEmptyValues(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMappingEmptyValues(t=%v)", t)
 	t.Run("slice with default", func(t *testing.T) {
 		var s struct {
 			Slice []int `form:"slice,default=5"`
@@ -1081,6 +1215,7 @@ func TestMappingEmptyValues(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, []int{5}, s.Slice)
 
+		logritelog.Default().Printf("TestMappingEmptyValues(t=%v): err → %v", t, err)
 		// field present with values
 		err = mappingByPtr(&s, formSource{"slice": {"1", "2", "3"}}, "form")
 		require.NoError(t, err)
@@ -1143,4 +1278,5 @@ func TestMappingEmptyValues(t *testing.T) {
 		assert.Equal(t, []int{1, 2, 3}, s.SliceMulti)
 		assert.Equal(t, []int{1, 2, 3}, s.SliceCsv)
 	})
+	logritelog.Default().Printf("<<< Exiting TestMappingEmptyValues(t=%v)", t)
 }
