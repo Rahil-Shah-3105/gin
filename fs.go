@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -16,8 +17,11 @@ type OnlyFilesFS struct {
 
 // Open passes `Open` to the upstream implementation without `Readdir` functionality.
 func (o OnlyFilesFS) Open(name string) (http.File, error) {
+	logritelog.Default().Printf(">>> Entering Open(name=%v)", name)
 	f, err := o.FileSystem.Open(name)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in Open(name=%v): %v", name, err)
+	logritelog.Default().Printf("<<< Exiting Open(name=%v)", name)
 		return nil, err
 	}
 
@@ -31,7 +35,9 @@ type neutralizedReaddirFile struct {
 
 // Readdir overrides the http.File default implementation and always returns nil.
 func (n neutralizedReaddirFile) Readdir(_ int) ([]os.FileInfo, error) {
+	logritelog.Default().Printf(">>> Entering Readdir()")
 	// this disables directory listing
+	logritelog.Default().Printf("<<< Exiting Readdir()")
 	return nil, nil
 }
 
@@ -40,9 +46,11 @@ func (n neutralizedReaddirFile) Readdir(_ int) ([]os.FileInfo, error) {
 // if listDirectory == true, then it works the same as http.Dir(),
 // otherwise it returns a filesystem that prevents http.FileServer() to list the directory files.
 func Dir(root string, listDirectory bool) http.FileSystem {
+	logritelog.Default().Printf(">>> Entering Dir(root=%v,listDirectory=%v)", root, listDirectory)
 	fs := http.Dir(root)
 
 	if listDirectory {
+	logritelog.Default().Printf("<<< Exiting Dir(root=%v,listDirectory=%v)", root, listDirectory)
 		return fs
 	}
 

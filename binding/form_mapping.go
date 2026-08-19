@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"encoding"
@@ -30,20 +31,24 @@ var (
 )
 
 func mapURI(ptr any, m map[string][]string) error {
+	logritelog.Default().Printf(">>> Entering mapURI(ptr=%v,m=%v)", ptr, m)
 	return mapFormByTag(ptr, m, "uri")
 }
 
 func mapForm(ptr any, form map[string][]string) error {
+	logritelog.Default().Printf(">>> Entering mapForm(ptr=%v,form=%v)", ptr, form)
 	return mapFormByTag(ptr, form, "form")
 }
 
 func MapFormWithTag(ptr any, form map[string][]string, tag string) error {
+	logritelog.Default().Printf(">>> Entering MapFormWithTag(ptr=%v,form=%v,tag=%v)", ptr, form, tag)
 	return mapFormByTag(ptr, form, tag)
 }
 
 var emptyField = reflect.StructField{}
 
 func mapFormByTag(ptr any, form map[string][]string, tag string) error {
+	logritelog.Default().Printf(">>> Entering mapFormByTag(ptr=%v,form=%v,tag=%v)", ptr, form, tag)
 	// Check if ptr is a map
 	ptrVal := reflect.ValueOf(ptr)
 	var pointed any
@@ -51,11 +56,14 @@ func mapFormByTag(ptr any, form map[string][]string, tag string) error {
 		ptrVal = ptrVal.Elem()
 		pointed = ptrVal.Interface()
 	}
+		logritelog.Default().Printf("mapFormByTag(ptr=%v,form=%v,tag=%v): ptrVal → %v", ptr, form, tag, ptrVal)
+		logritelog.Default().Printf("mapFormByTag(ptr=%v,form=%v,tag=%v): pointed → %v", ptr, form, tag, pointed)
 	if ptrVal.Kind() == reflect.Map &&
 		ptrVal.Type().Key().Kind() == reflect.String {
 		if pointed != nil {
 			ptr = pointed
 		}
+	logritelog.Default().Printf("<<< Exiting mapFormByTag(ptr=%v,form=%v,tag=%v)", ptr, form, tag)
 		return setFormMap(ptr, form)
 	}
 
@@ -73,15 +81,19 @@ var _ setter = formSource(nil)
 
 // TrySet tries to set a value by request's form source (like map[string][]string)
 func (form formSource) TrySet(value reflect.Value, field reflect.StructField, tagValue string, opt setOptions) (isSet bool, err error) {
+	logritelog.Default().Printf(">>> Entering TrySet(value=%v,field=%v,tagValue=%v,opt=%v)", value, field, tagValue, opt)
 	return setByForm(value, field, form, tagValue, opt)
 }
 
 func mappingByPtr(ptr any, setter setter, tag string) error {
+	logritelog.Default().Printf(">>> Entering mappingByPtr(ptr=%v,setter=%v,tag=%v)", ptr, setter, tag)
 	_, err := mapping(reflect.ValueOf(ptr), emptyField, setter, tag)
+	logritelog.Default().Printf("<<< Exiting mappingByPtr(ptr=%v,setter=%v,tag=%v)", ptr, setter, tag)
 	return err
 }
 
 func mapping(value reflect.Value, field reflect.StructField, setter setter, tag string) (bool, error) {
+	logritelog.Default().Printf(">>> Entering mapping(value=%v,field=%v,setter=%v,tag=%v)", value, field, setter, tag)
 	if field.Tag.Get(tag) == "-" { // just ignoring this field
 		return false, nil
 	}
@@ -93,10 +105,13 @@ func mapping(value reflect.Value, field reflect.StructField, setter setter, tag 
 		vPtr := value
 		if value.IsNil() {
 			isNew = true
+			logritelog.Default().Printf("mapping(value=%v,field=%v,setter=%v,tag=%v): isNew → %v", value, field, setter, tag, isNew)
+			logritelog.Default().Printf("mapping(value=%v,field=%v,setter=%v,tag=%v): vPtr → %v", value, field, setter, tag, vPtr)
 			vPtr = reflect.New(value.Type().Elem())
 		}
 		isSet, err := mapping(vPtr.Elem(), field, setter, tag)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in mapping(value=%v,field=%v,setter=%v,tag=%v): %v", value, field, setter, tag, err)
 			return false, err
 		}
 		if isNew && isSet {
@@ -108,6 +123,11 @@ func mapping(value reflect.Value, field reflect.StructField, setter setter, tag 
 	if vKind != reflect.Struct || !field.Anonymous {
 		ok, err := tryToSetValue(value, field, setter, tag)
 		if err != nil {
+			logritelog.Default().Printf(">>> Entering tryToSetValue(value=%v,field=%v,setter=%v,tag=%v)", value, field, setter, tag)
+			logritelog.Default().Printf("tryToSetValue(value=%v,field=%v,setter=%v,tag=%v): setOpt.isDefaultExists → %v", value, field, setter, tag, setOpt.isDefaultExists)
+			logritelog.Default().Printf("tryToSetValue(value=%v,field=%v,setter=%v,tag=%v): setOpt.defaultValue → %v", value, field, setter, tag, setOpt.defaultValue)
+			logritelog.Default().Printf("tryToSetValue(value=%v,field=%v,setter=%v,tag=%v): setOpt.parser → %v", value, field, setter, tag, setOpt.parser)
+			logritelog.Default().Printf("<<< Exiting tryToSetValue(value=%v,field=%v,setter=%v,tag=%v)", value, field, setter, tag)
 			return false, err
 		}
 		if ok {
@@ -129,7 +149,9 @@ func mapping(value reflect.Value, field reflect.StructField, setter setter, tag 
 				return false, err
 			}
 			isSet = isSet || ok
+			logritelog.Default().Printf("mapping(value=%v,field=%v,setter=%v,tag=%v): isSet → %v", value, field, setter, tag, isSet)
 		}
+	logritelog.Default().Printf("<<< Exiting mapping(value=%v,field=%v,setter=%v,tag=%v)", value, field, setter, tag)
 		return isSet, nil
 	}
 	return false, nil
@@ -189,8 +211,10 @@ type BindUnmarshaler interface {
 // If the value implements the BindUnmarshaler interface, it will be used to set the value, we will return `true`
 // to skip the default value setting.
 func trySetCustom(val string, value reflect.Value) (isSet bool, err error) {
+	logritelog.Default().Printf(">>> Entering trySetCustom(val=%v,value=%v)", val, value)
 	switch v := value.Addr().Interface().(type) {
 	case BindUnmarshaler:
+	logritelog.Default().Printf("<<< Exiting trySetCustom(val=%v,value=%v)", val, value)
 		return true, v.UnmarshalParam(val)
 	}
 	return false, nil
@@ -199,18 +223,21 @@ func trySetCustom(val string, value reflect.Value) (isSet bool, err error) {
 // trySetUsingParser tries to set a custom type value based on the presence of the "parser" tag on the field.
 // If the parser tag does not exist or does not match any of the supported parsers, gin will skip over this.
 func trySetUsingParser(val string, value reflect.Value, parser string) (isSet bool, err error) {
+	logritelog.Default().Printf(">>> Entering trySetUsingParser(val=%v,value=%v,parser=%v)", val, value, parser)
 	switch parser {
 	case "encoding.TextUnmarshaler":
 		v, ok := value.Addr().Interface().(encoding.TextUnmarshaler)
 		if !ok {
 			return false, nil
 		}
+	logritelog.Default().Printf("<<< Exiting trySetUsingParser(val=%v,value=%v,parser=%v)", val, value, parser)
 		return true, v.UnmarshalText([]byte(val))
 	}
 	return false, nil
 }
 
 func trySplit(vs []string, field reflect.StructField) (newVs []string, err error) {
+	logritelog.Default().Printf(">>> Entering trySplit(vs=%v,field=%v)", vs, field)
 	cfTag := field.Tag.Get("collection_format")
 	if cfTag == "" || cfTag == "multi" {
 		return vs, nil
@@ -220,6 +247,7 @@ func trySplit(vs []string, field reflect.StructField) (newVs []string, err error
 	switch cfTag {
 	case "csv":
 		sep = ","
+		logritelog.Default().Printf("trySplit(vs=%v,field=%v): sep → %v", vs, field, sep)
 	case "ssv":
 		sep = " "
 	case "tsv":
@@ -236,13 +264,16 @@ func trySplit(vs []string, field reflect.StructField) (newVs []string, err error
 	}
 	newVs = make([]string, 0, totalLength)
 	for _, v := range vs {
+	logritelog.Default().Printf("trySplit(vs=%v,field=%v): newVs → %v", vs, field, newVs)
 		newVs = append(newVs, strings.Split(v, sep)...)
 	}
 
+	logritelog.Default().Printf("<<< Exiting trySplit(vs=%v,field=%v)", vs, field)
 	return newVs, nil
 }
 
 func setByForm(value reflect.Value, field reflect.StructField, form map[string][]string, tagValue string, opt setOptions) (isSet bool, err error) {
+	logritelog.Default().Printf(">>> Entering setByForm(value=%v,field=%v,form=%v,tagValue=%v,opt=%v)", value, field, form, tagValue, opt)
 	vs, ok := form[tagValue]
 	if !ok && !opt.isDefaultExists {
 		return false, nil
@@ -307,6 +338,7 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 		var val string
 		if !ok || len(vs) == 0 || (len(vs) > 0 && vs[0] == "") {
 			val = opt.defaultValue
+			logritelog.Default().Printf("setByForm(value=%v,field=%v,form=%v,tagValue=%v,opt=%v): val → %v", value, field, form, tagValue, opt, val)
 		} else if len(vs) > 0 {
 			val = vs[0]
 		}
@@ -314,6 +346,7 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 		if ok, err = trySetUsingParser(val, value, opt.parser); ok {
 			return ok, err
 		} else if ok, err = trySetCustom(val, value); ok {
+		logritelog.Default().Printf("<<< Exiting setByForm(value=%v,field=%v,form=%v,tagValue=%v,opt=%v)", value, field, form, tagValue, opt)
 			return ok, err
 		}
 		return true, setWithProperType(val, value, field, opt)
@@ -321,6 +354,7 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 }
 
 func setWithProperType(val string, value reflect.Value, field reflect.StructField, opt setOptions) error {
+	logritelog.Default().Printf(">>> Entering setWithProperType(val=%v,value=%v,field=%v,opt=%v)", val, value, field, opt)
 	// this if-check is required for parsing nested types like []MyId, where MyId is [12]byte
 	if ok, err := trySetUsingParser(val, value, opt.parser); ok {
 		return err
@@ -345,6 +379,8 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 	case reflect.Int64:
 		switch value.Interface().(type) {
 		case time.Duration:
+			logritelog.Default().Printf(">>> Entering setIntField(val=%v,bitSize=%v,field=%v)", val, bitSize, field)
+			logritelog.Default().Printf("<<< Exiting setIntField(val=%v,bitSize=%v,field=%v)", val, bitSize, field)
 			return setTimeDuration(val, value)
 		}
 		return setIntField(val, 64, value)
@@ -382,6 +418,7 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 		}
 		return setWithProperType(val, value.Elem(), field, opt)
 	default:
+	logritelog.Default().Printf("<<< Exiting setWithProperType(val=%v,value=%v,field=%v,opt=%v)", val, value, field, opt)
 		return errUnknownType
 	}
 	return nil
@@ -399,6 +436,7 @@ func setIntField(val string, bitSize int, field reflect.Value) error {
 }
 
 func setUintField(val string, bitSize int, field reflect.Value) error {
+	logritelog.Default().Printf(">>> Entering setUintField(val=%v,bitSize=%v,field=%v)", val, bitSize, field)
 	if val == "" {
 		val = "0"
 	}
@@ -406,10 +444,12 @@ func setUintField(val string, bitSize int, field reflect.Value) error {
 	if err == nil {
 		field.SetUint(uintVal)
 	}
+	logritelog.Default().Printf("<<< Exiting setUintField(val=%v,bitSize=%v,field=%v)", val, bitSize, field)
 	return err
 }
 
 func setBoolField(val string, field reflect.Value) error {
+	logritelog.Default().Printf(">>> Entering setBoolField(val=%v,field=%v)", val, field)
 	if val == "" {
 		val = "false"
 	}
@@ -417,10 +457,12 @@ func setBoolField(val string, field reflect.Value) error {
 	if err == nil {
 		field.SetBool(boolVal)
 	}
+	logritelog.Default().Printf("<<< Exiting setBoolField(val=%v,field=%v)", val, field)
 	return err
 }
 
 func setFloatField(val string, bitSize int, field reflect.Value) error {
+	logritelog.Default().Printf(">>> Entering setFloatField(val=%v,bitSize=%v,field=%v)", val, bitSize, field)
 	if val == "" {
 		val = "0.0"
 	}
@@ -428,10 +470,12 @@ func setFloatField(val string, bitSize int, field reflect.Value) error {
 	if err == nil {
 		field.SetFloat(floatVal)
 	}
+	logritelog.Default().Printf("<<< Exiting setFloatField(val=%v,bitSize=%v,field=%v)", val, bitSize, field)
 	return err
 }
 
 func setTimeField(val string, structField reflect.StructField, value reflect.Value) error {
+	logritelog.Default().Printf(">>> Entering setTimeField(val=%v,structField=%v,value=%v)", val, structField, value)
 	timeFormat := structField.Tag.Get("time_format")
 	if timeFormat == "" {
 		timeFormat = time.RFC3339
@@ -446,6 +490,7 @@ func setTimeField(val string, structField reflect.StructField, value reflect.Val
 	case "unix", "unixmilli", "unixmicro", "unixnano":
 		tv, err := strconv.ParseInt(val, 10, 64)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in setTimeField(val=%v,structField=%v,value=%v): %v", val, structField, value, err)
 			return err
 		}
 
@@ -484,48 +529,61 @@ func setTimeField(val string, structField reflect.StructField, value reflect.Val
 	}
 
 	value.Set(reflect.ValueOf(t))
+	logritelog.Default().Printf("<<< Exiting setTimeField(val=%v,structField=%v,value=%v)", val, structField, value)
 	return nil
 }
 
 func setArray(vals []string, value reflect.Value, field reflect.StructField, opt setOptions) error {
+	logritelog.Default().Printf(">>> Entering setArray(vals=%v,value=%v,field=%v,opt=%v)", vals, value, field, opt)
 	for i, s := range vals {
 		err := setWithProperType(s, value.Index(i), field, opt)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in setArray(vals=%v,value=%v,field=%v,opt=%v): %v", vals, value, field, opt, err)
 			return err
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting setArray(vals=%v,value=%v,field=%v,opt=%v)", vals, value, field, opt)
 	return nil
 }
 
 func setSlice(vals []string, value reflect.Value, field reflect.StructField, opt setOptions) error {
+	logritelog.Default().Printf(">>> Entering setSlice(vals=%v,value=%v,field=%v,opt=%v)", vals, value, field, opt)
 	slice := reflect.MakeSlice(value.Type(), len(vals), len(vals))
 	err := setArray(vals, slice, field, opt)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in setSlice(vals=%v,value=%v,field=%v,opt=%v): %v", vals, value, field, opt, err)
 		return err
 	}
 	value.Set(slice)
+	logritelog.Default().Printf("<<< Exiting setSlice(vals=%v,value=%v,field=%v,opt=%v)", vals, value, field, opt)
 	return nil
 }
 
 func setTimeDuration(val string, value reflect.Value) error {
+	logritelog.Default().Printf(">>> Entering setTimeDuration(val=%v,value=%v)", val, value)
 	if val == "" {
 		val = "0"
 	}
 
 	d, err := time.ParseDuration(val)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in setTimeDuration(val=%v,value=%v): %v", val, value, err)
 		return err
 	}
 	value.Set(reflect.ValueOf(d))
+	logritelog.Default().Printf("<<< Exiting setTimeDuration(val=%v,value=%v)", val, value)
 	return nil
 }
 
 func head(str, sep string) (head string, tail string) {
+	logritelog.Default().Printf(">>> Entering head(str=%v,sep=%v)", str, sep)
 	head, tail, _ = strings.Cut(str, sep)
+	logritelog.Default().Printf("<<< Exiting head(str=%v,sep=%v)", str, sep)
 	return head, tail
 }
 
 func setFormMap(ptr any, form map[string][]string) error {
+	logritelog.Default().Printf(">>> Entering setFormMap(ptr=%v,form=%v)", ptr, form)
 	el := reflect.TypeOf(ptr).Elem()
 
 	if el.Kind() == reflect.Slice {
@@ -546,5 +604,6 @@ func setFormMap(ptr any, form map[string][]string) error {
 		ptrMap[k] = v[len(v)-1] // pick last
 	}
 
+	logritelog.Default().Printf("<<< Exiting setFormMap(ptr=%v,form=%v)", ptr, form)
 	return nil
 }

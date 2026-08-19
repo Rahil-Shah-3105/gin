@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -41,18 +42,26 @@ var _ error = (*Error)(nil)
 
 // SetType sets the error's type.
 func (msg *Error) SetType(flags ErrorType) *Error {
+	logritelog.Default().Printf(">>> Entering SetType(flags=%v)", flags)
+	logritelog.Default().Printf("SetType(flags=%v): msg.Type → %v", flags, msg.Type)
+	logritelog.Default().Printf("<<< Exiting SetType(flags=%v)", flags)
 	msg.Type = flags
 	return msg
 }
 
 // SetMeta sets the error's meta data.
 func (msg *Error) SetMeta(data any) *Error {
+	logritelog.Default().Printf(">>> Entering SetMeta(data=%v)", data)
+	logritelog.Default().Printf("SetMeta(data=%v): msg.Meta → %v", data, msg.Meta)
+	logritelog.Default().Printf("<<< Exiting SetMeta(data=%v)", data)
 	msg.Meta = data
 	return msg
+	logritelog.Default().Printf(">>> Entering Error()")
 }
 
 // JSON creates a properly formatted JSON
 func (msg *Error) JSON() any {
+	logritelog.Default().Printf(">>> Entering JSON()")
 	jsonData := H{}
 	if msg.Meta != nil {
 		value := reflect.ValueOf(msg.Meta)
@@ -70,11 +79,13 @@ func (msg *Error) JSON() any {
 	if _, ok := jsonData["error"]; !ok {
 		jsonData["error"] = msg.Error()
 	}
+	logritelog.Default().Printf("<<< Exiting JSON()")
 	return jsonData
 }
 
 // MarshalJSON implements the json.Marshaller interface.
 func (msg *Error) MarshalJSON() ([]byte, error) {
+	logritelog.Default().Printf(">>> Entering MarshalJSON()")
 	return json.API.Marshal(msg.JSON())
 }
 
@@ -85,17 +96,20 @@ func (msg Error) Error() string {
 
 // IsType judges one error.
 func (msg *Error) IsType(flags ErrorType) bool {
+	logritelog.Default().Printf(">>> Entering IsType(flags=%v)", flags)
 	return (msg.Type & flags) > 0
 }
 
 // Unwrap returns the wrapped error, to allow interoperability with errors.Is(), errors.As() and errors.Unwrap()
 func (msg Error) Unwrap() error {
+	logritelog.Default().Printf(">>> Entering Unwrap()")
 	return msg.Err
 }
 
 // ByType returns a readonly copy filtered the byte.
 // ie ByType(gin.ErrorTypePublic) returns a slice of errors with type=ErrorTypePublic.
 func (a errorMsgs) ByType(typ ErrorType) errorMsgs {
+	logritelog.Default().Printf(">>> Entering ByType(typ=%v)", typ)
 	if len(a) == 0 {
 		return nil
 	}
@@ -108,13 +122,16 @@ func (a errorMsgs) ByType(typ ErrorType) errorMsgs {
 			result = append(result, msg)
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting ByType(typ=%v)", typ)
 	return result
 }
 
 // Last returns the last error in the slice. It returns nil if the array is empty.
 // Shortcut for errors[len(errors)-1].
 func (a errorMsgs) Last() *Error {
+	logritelog.Default().Printf(">>> Entering Last()")
 	if length := len(a); length > 0 {
+	logritelog.Default().Printf("<<< Exiting Last()")
 		return a[length-1]
 	}
 	return nil
@@ -128,6 +145,7 @@ func (a errorMsgs) Last() *Error {
 //	c.Error(errors.New("third"))
 //	c.Errors.Errors() // == []string{"first", "second", "third"}
 func (a errorMsgs) Errors() []string {
+	logritelog.Default().Printf(">>> Entering Errors()")
 	if len(a) == 0 {
 		return nil
 	}
@@ -135,6 +153,7 @@ func (a errorMsgs) Errors() []string {
 	for i, err := range a {
 		errorStrings[i] = err.Error()
 	}
+	logritelog.Default().Printf("<<< Exiting Errors()")
 	return errorStrings
 }
 
@@ -159,6 +178,7 @@ func (a errorMsgs) MarshalJSON() ([]byte, error) {
 }
 
 func (a errorMsgs) String() string {
+	logritelog.Default().Printf(">>> Entering String()")
 	if len(a) == 0 {
 		return ""
 	}
@@ -169,5 +189,6 @@ func (a errorMsgs) String() string {
 			fmt.Fprintf(&buffer, "     Meta: %v\n", msg.Meta)
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting String()")
 	return buffer.String()
 }

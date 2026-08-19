@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -16,6 +17,7 @@ import (
 )
 
 func TestMsgpackBindingBindBody(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestMsgpackBindingBindBody(t=%v)", t)
 	type teststruct struct {
 		Foo string `msgpack:"foo"`
 	}
@@ -23,12 +25,15 @@ func TestMsgpackBindingBindBody(t *testing.T) {
 	err := msgpackBinding{}.BindBody(msgpackBody(t, teststruct{"FOO"}), &s)
 	require.NoError(t, err)
 	assert.Equal(t, "FOO", s.Foo)
+	logritelog.Default().Printf("<<< Exiting TestMsgpackBindingBindBody(t=%v)", t)
 }
 
 func msgpackBody(t *testing.T, obj any) []byte {
+	logritelog.Default().Printf(">>> Entering msgpackBody(t=%v,obj=%v)", t, obj)
 	var bs bytes.Buffer
 	h := &codec.MsgpackHandle{}
 	err := codec.NewEncoder(&bs, h).Encode(obj)
 	require.NoError(t, err)
+	logritelog.Default().Printf("<<< Exiting msgpackBody(t=%v,obj=%v)", t, obj)
 	return bs.Bytes()
 }
