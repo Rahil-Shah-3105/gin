@@ -4,6 +4,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"runtime"
@@ -70,13 +71,16 @@ var cleanTests = []cleanPathTest{
 }
 
 func TestPathClean(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestPathClean(t=%v)", t)
 	for _, test := range cleanTests {
 		assert.Equal(t, test.result, cleanPath(test.path))
 		assert.Equal(t, test.result, cleanPath(test.result))
 	}
+	logritelog.Default().Printf("<<< Exiting TestPathClean(t=%v)", t)
 }
 
 func TestPathCleanMallocs(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestPathCleanMallocs(t=%v)", t)
 	if testing.Short() {
 		t.Skip("skipping malloc count in short mode")
 	}
@@ -89,9 +93,11 @@ func TestPathCleanMallocs(t *testing.T) {
 		allocs := testing.AllocsPerRun(100, func() { cleanPath(test.result) })
 		assert.InDelta(t, 0, allocs, 0.01)
 	}
+	logritelog.Default().Printf("<<< Exiting TestPathCleanMallocs(t=%v)", t)
 }
 
 func BenchmarkPathClean(b *testing.B) {
+	logritelog.Default().Printf(">>> Entering BenchmarkPathClean(b=%v)", b)
 	b.ReportAllocs()
 
 	for b.Loop() {
@@ -99,9 +105,11 @@ func BenchmarkPathClean(b *testing.B) {
 			cleanPath(test.path)
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting BenchmarkPathClean(b=%v)", b)
 }
 
 func genLongPaths() (testPaths []cleanPathTest) {
+	logritelog.Default().Printf(">>> Entering genLongPaths()")
 	for i := 1; i <= 1234; i++ {
 		ss := strings.Repeat("a", i)
 
@@ -120,19 +128,23 @@ func genLongPaths() (testPaths []cleanPathTest) {
 			result: correctPath,
 		})
 	}
+	logritelog.Default().Printf("<<< Exiting genLongPaths()")
 	return
 }
 
 func TestPathCleanLong(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestPathCleanLong(t=%v)", t)
 	cleanTests := genLongPaths()
 
 	for _, test := range cleanTests {
 		assert.Equal(t, test.result, cleanPath(test.path))
 		assert.Equal(t, test.result, cleanPath(test.result))
 	}
+	logritelog.Default().Printf("<<< Exiting TestPathCleanLong(t=%v)", t)
 }
 
 func BenchmarkPathCleanLong(b *testing.B) {
+	logritelog.Default().Printf(">>> Entering BenchmarkPathCleanLong(b=%v)", b)
 	cleanTests := genLongPaths()
 
 	b.ReportAllocs()
@@ -142,9 +154,11 @@ func BenchmarkPathCleanLong(b *testing.B) {
 			cleanPath(test.path)
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting BenchmarkPathCleanLong(b=%v)", b)
 }
 
 func TestRemoveRepeatedChar(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRemoveRepeatedChar(t=%v)", t)
 	testCases := []struct {
 		name string
 		str  string
@@ -189,4 +203,5 @@ func TestRemoveRepeatedChar(t *testing.T) {
 			assert.Equal(t, tc.want, res)
 		})
 	}
+	logritelog.Default().Printf("<<< Exiting TestRemoveRepeatedChar(t=%v)", t)
 }

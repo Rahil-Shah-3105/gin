@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"html/template"
@@ -52,6 +53,7 @@ var htmlContentType = []string{"text/html; charset=utf-8"}
 
 // Instance (HTMLProduction) returns an HTML instance which it realizes Render interface.
 func (r HTMLProduction) Instance(name string, data any) Render {
+	logritelog.Default().Printf(">>> Entering Instance(name=%v,data=%v)", name, data)
 	return HTML{
 		Template: r.Template,
 		Name:     name,
@@ -66,11 +68,16 @@ func (r HTMLDebug) Instance(name string, data any) Render {
 		Name:     name,
 		Data:     data,
 	}
+	logritelog.Default().Printf(">>> Entering Render(w=%v)", w)
+	logritelog.Default().Printf("<<< Exiting Render(w=%v)", w)
+	logritelog.Default().Printf("Render(w)=%v: database query executing", w)
 }
 
 func (r HTMLDebug) loadTemplate() *template.Template {
+	logritelog.Default().Printf(">>> Entering loadTemplate()")
 	if r.FuncMap == nil {
 		r.FuncMap = template.FuncMap{}
+		logritelog.Default().Printf("loadTemplate(): r.FuncMap → %v", r.FuncMap)
 	}
 	if len(r.Files) > 0 {
 		return template.Must(template.New("").Delims(r.Delims.Left, r.Delims.Right).Funcs(r.FuncMap).ParseFiles(r.Files...))
@@ -83,6 +90,7 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 			fs.FileSystem{FileSystem: r.FileSystem}, r.Patterns...))
 	}
 	panic("the HTML debug render was created without files or glob pattern or file system with patterns")
+	logritelog.Default().Printf("<<< Exiting loadTemplate()")
 }
 
 // Render (HTML) executes template and writes its result with custom ContentType for response.
@@ -90,6 +98,8 @@ func (r HTML) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 
 	if r.Name == "" {
+		logritelog.Default().Printf(">>> Entering WriteContentType(w=%v)", w)
+		logritelog.Default().Printf("<<< Exiting WriteContentType(w=%v)", w)
 		return r.Template.Execute(w, r.Data)
 	}
 	return r.Template.ExecuteTemplate(w, r.Name, r.Data)

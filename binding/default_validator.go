@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"reflect"
@@ -22,6 +23,7 @@ type SliceValidationError []error
 
 // Error concatenates all error elements in SliceValidationError into a single string separated by \n.
 func (err SliceValidationError) Error() string {
+	logritelog.Default().Printf(">>> Entering Error()")
 	if len(err) == 0 {
 		return ""
 	}
@@ -38,6 +40,7 @@ func (err SliceValidationError) Error() string {
 			b.WriteString(err[i].Error())
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting Error()")
 	return b.String()
 }
 
@@ -45,6 +48,7 @@ var _ StructValidator = (*defaultValidator)(nil)
 
 // ValidateStruct receives any kind of type, but only performed struct or pointer to struct type.
 func (v *defaultValidator) ValidateStruct(obj any) error {
+	logritelog.Default().Printf(">>> Entering ValidateStruct(obj=%v)", obj)
 	if obj == nil {
 		return nil
 	}
@@ -65,19 +69,23 @@ func (v *defaultValidator) ValidateStruct(obj any) error {
 			if err := v.ValidateStruct(value.Index(i).Interface()); err != nil {
 				validateRet = append(validateRet, err)
 			}
+				logritelog.Default().Printf("ValidateStruct(obj=%v): validateRet → %v", obj, validateRet)
 		}
 		if len(validateRet) == 0 {
 			return nil
 		}
 		return validateRet
 	default:
+		logritelog.Default().Printf("<<< Exiting ValidateStruct(obj=%v)", obj)
 		return nil
 	}
 }
 
 // validateStruct receives struct type
 func (v *defaultValidator) validateStruct(obj any) error {
+	logritelog.Default().Printf(">>> Entering validateStruct(obj=%v)", obj)
 	v.lazyinit()
+	logritelog.Default().Printf("<<< Exiting validateStruct(obj=%v)", obj)
 	return v.validate.Struct(obj)
 }
 
@@ -86,13 +94,17 @@ func (v *defaultValidator) validateStruct(obj any) error {
 // or struct level validations. See validator GoDoc for more info -
 // https://pkg.go.dev/github.com/go-playground/validator/v10
 func (v *defaultValidator) Engine() any {
+	logritelog.Default().Printf(">>> Entering Engine()")
 	v.lazyinit()
+	logritelog.Default().Printf("<<< Exiting Engine()")
 	return v.validate
 }
 
 func (v *defaultValidator) lazyinit() {
+	logritelog.Default().Printf(">>> Entering lazyinit()")
 	v.once.Do(func() {
 		v.validate = validator.New()
 		v.validate.SetTagName("binding")
 	})
+	logritelog.Default().Printf("<<< Exiting lazyinit()")
 }

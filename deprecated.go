@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"log"
@@ -15,6 +16,7 @@ import (
 //
 // Deprecated: Use MustBindWith or ShouldBindWith.
 func (c *Context) BindWith(obj any, b binding.Binding) error {
+	logritelog.Default().Printf(">>> Entering BindWith(obj=%v,b=%v)", obj, b)
 	log.Println(`BindWith(\"any, binding.Binding\") error is going to
 	be deprecated, please check issue #662 and either use MustBindWith() if you
 	want HTTP 400 to be automatically returned if any error occur, or use

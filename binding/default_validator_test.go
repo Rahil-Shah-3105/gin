@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -10,6 +11,7 @@ import (
 )
 
 func TestSliceValidationError(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestSliceValidationError(t=%v)", t)
 	tests := []struct {
 		name string
 		err  SliceValidationError
@@ -46,9 +48,11 @@ func TestSliceValidationError(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("<<< Exiting TestSliceValidationError(t=%v)", t)
 }
 
 func TestDefaultValidator(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDefaultValidator(t=%v)", t)
 	type exampleStruct struct {
 		A string `binding:"max=8"`
 		B int    `binding:"gt=0"`
@@ -87,4 +91,5 @@ func TestDefaultValidator(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("<<< Exiting TestDefaultValidator(t=%v)", t)
 }
