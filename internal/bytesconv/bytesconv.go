@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package bytesconv
+import logritelog "log"
 
 import (
 	"unsafe"
@@ -11,11 +12,13 @@ import (
 // StringToBytes converts string to byte slice without a memory allocation.
 // For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
 func StringToBytes(s string) []byte {
+	logritelog.Default().Printf(">>> Entering StringToBytes(s=%v)", s)
 	return unsafe.Slice(unsafe.StringData(s), len(s))
 }
 
 // BytesToString converts byte slice to string without a memory allocation.
 // For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
 func BytesToString(b []byte) string {
+	logritelog.Default().Printf(">>> Entering BytesToString(b=%v)", b)
 	return unsafe.String(unsafe.SliceData(b), len(b))
 }

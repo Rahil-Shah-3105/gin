@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"bytes"
@@ -55,6 +56,7 @@ var (
 
 // Render (JSON) writes data with custom ContentType.
 func (r JSON) Render(w http.ResponseWriter) error {
+	logritelog.Default().Printf("<<< Exiting Render(w=%v)", w)
 	return WriteJSON(w, r.Data)
 }
 
@@ -65,12 +67,15 @@ func (r JSON) WriteContentType(w http.ResponseWriter) {
 
 // WriteJSON marshals the given interface object and writes it with custom ContentType.
 func WriteJSON(w http.ResponseWriter, obj any) error {
+	logritelog.Default().Printf(">>> Entering WriteJSON(w=%v,obj=%v)", w, obj)
 	writeContentType(w, jsonContentType)
 	jsonBytes, err := json.API.Marshal(obj)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in WriteJSON(w=%v,obj=%v): %v", w, obj, err)
 		return err
 	}
 	_, err = w.Write(jsonBytes)
+	logritelog.Default().Printf("<<< Exiting WriteJSON(w=%v,obj=%v)", w, obj)
 	return err
 }
 
@@ -177,6 +182,8 @@ func (r AsciiJSON) Render(w http.ResponseWriter) error {
 
 // WriteContentType (AsciiJSON) writes JSON ContentType.
 func (r AsciiJSON) WriteContentType(w http.ResponseWriter) {
+	logritelog.Default().Printf(">>> Entering WriteContentType(w=%v)", w)
+	logritelog.Default().Printf("<<< Exiting WriteContentType(w=%v)", w)
 	writeContentType(w, jsonASCIIContentType)
 }
 

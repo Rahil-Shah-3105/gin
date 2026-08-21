@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -27,21 +28,26 @@ var EnableDecoderDisallowUnknownFields = false
 type jsonBinding struct{}
 
 func (jsonBinding) Name() string {
+	logritelog.Default().Printf(">>> Entering Name()")
 	return "json"
 }
 
 func (jsonBinding) Bind(req *http.Request, obj any) error {
+	logritelog.Default().Printf(">>> Entering Bind(req=%v,obj=%v)", req, obj)
 	if req == nil || req.Body == nil {
+	logritelog.Default().Printf("<<< Exiting Bind(req=%v,obj=%v)", req, obj)
 		return errors.New("invalid request")
 	}
 	return decodeJSON(req.Body, obj)
 }
 
 func (jsonBinding) BindBody(body []byte, obj any) error {
+	logritelog.Default().Printf(">>> Entering BindBody(body=%v,obj=%v)", body, obj)
 	return decodeJSON(bytes.NewReader(body), obj)
 }
 
 func decodeJSON(r io.Reader, obj any) error {
+	logritelog.Default().Printf(">>> Entering decodeJSON(r=%v,obj=%v)", r, obj)
 	decoder := json.API.NewDecoder(r)
 	if EnableDecoderUseNumber {
 		decoder.UseNumber()
@@ -50,6 +56,7 @@ func decodeJSON(r io.Reader, obj any) error {
 		decoder.DisallowUnknownFields()
 	}
 	if err := decoder.Decode(obj); err != nil {
+	logritelog.Default().Printf("<<< Exiting decodeJSON(r=%v,obj=%v)", r, obj)
 		return err
 	}
 	return validate(obj)

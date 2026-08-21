@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"testing"
@@ -12,9 +13,11 @@ import (
 )
 
 func TestXMLBindingBindBody(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestXMLBindingBindBody(t=%v)", t)
 	var s struct {
 		Foo string `xml:"foo"`
 	}
+	logritelog.Default().Printf("<<< Exiting TestXMLBindingBindBody(t=%v)", t)
 	xmlBody := `<?xml version="1.0" encoding="UTF-8"?>
 <root>
    <foo>FOO</foo>

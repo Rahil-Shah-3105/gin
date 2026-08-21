@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -58,7 +59,9 @@ type HandlersChain []HandlerFunc
 
 // Last returns the last handler in the chain. i.e. the last handler is the main one.
 func (c HandlersChain) Last() HandlerFunc {
+	logritelog.Default().Printf(">>> Entering Last()")
 	if length := len(c); length > 0 {
+	logritelog.Default().Printf("<<< Exiting Last()")
 		return c[length-1]
 	}
 	return nil
@@ -200,6 +203,7 @@ var _ IRouter = (*Engine)(nil)
 // - UseEscapedPath: 		 false
 // - UnescapePathValues:     true
 func New(opts ...OptionFunc) *Engine {
+	logritelog.Default().Printf(">>> Entering New(opts=%v)", opts)
 	debugPrintWARNINGNew()
 	engine := &Engine{
 		RouterGroup: RouterGroup{
@@ -226,7 +230,9 @@ func New(opts ...OptionFunc) *Engine {
 		trustedCIDRs:           defaultTrustedCIDRs,
 	}
 	engine.engine = engine
+	logritelog.Default().Printf("New(opts=%v): engine.engine → %v", opts, engine.engine)
 	engine.pool.New = func() any {
+	logritelog.Default().Printf("<<< Exiting New(opts=%v)", opts)
 		return engine.allocateContext(engine.maxParams)
 	}
 	return engine.With(opts...)
@@ -234,35 +240,47 @@ func New(opts ...OptionFunc) *Engine {
 
 // Default returns an Engine instance with the Logger and Recovery middleware already attached.
 func Default(opts ...OptionFunc) *Engine {
+	logritelog.Default().Printf(">>> Entering Default(opts=%v)", opts)
 	debugPrintWARNINGDefault()
 	engine := New()
 	engine.Use(Logger(), Recovery())
+	logritelog.Default().Printf("<<< Exiting Default(opts=%v)", opts)
 	return engine.With(opts...)
 }
 
 func (engine *Engine) Handler() http.Handler {
+	logritelog.Default().Printf(">>> Entering Handler()")
 	if !engine.UseH2C {
 		return engine
 	}
 
 	h2s := &http2.Server{}
+	logritelog.Default().Printf("<<< Exiting Handler()")
 	return h2c.NewHandler(engine, h2s)
 }
 
 func (engine *Engine) allocateContext(maxParams uint16) *Context {
+	logritelog.Default().Printf(">>> Entering allocateContext(maxParams=%v)", maxParams)
 	v := make(Params, 0, maxParams)
 	skippedNodes := make([]skippedNode, 0, engine.maxSections)
+	logritelog.Default().Printf("<<< Exiting allocateContext(maxParams=%v)", maxParams)
 	return &Context{engine: engine, params: &v, skippedNodes: &skippedNodes}
 }
 
 // Delims sets template left and right delims and returns an Engine instance.
 func (engine *Engine) Delims(left, right string) *Engine {
+	logritelog.Default().Printf(">>> Entering Delims(left=%v,right=%v)", left, right)
+	logritelog.Default().Printf("Delims(left=%v,right=%v): engine.delims → %v", left, right, engine.delims)
+	logritelog.Default().Printf("<<< Exiting Delims(left=%v,right=%v)", left, right)
 	engine.delims = render.Delims{Left: left, Right: right}
 	return engine
 }
 
 // SecureJsonPrefix sets the secureJSONPrefix used in Context.SecureJSON.
 func (engine *Engine) SecureJsonPrefix(prefix string) *Engine {
+	logritelog.Default().Printf(">>> Entering SecureJsonPrefix(prefix=%v)", prefix)
+	logritelog.Default().Printf("SecureJsonPrefix(prefix=%v): engine.secureJSONPrefix → %v", prefix, engine.secureJSONPrefix)
+	logritelog.Default().Printf("<<< Exiting SecureJsonPrefix(prefix=%v)", prefix)
 	engine.secureJSONPrefix = prefix
 	return engine
 }
@@ -270,6 +288,7 @@ func (engine *Engine) SecureJsonPrefix(prefix string) *Engine {
 // LoadHTMLGlob loads HTML files identified by glob pattern
 // and associates the result with HTML renderer.
 func (engine *Engine) LoadHTMLGlob(pattern string) {
+	logritelog.Default().Printf(">>> Entering LoadHTMLGlob(pattern=%v)", pattern)
 	left := engine.delims.Left
 	right := engine.delims.Right
 	templ := template.Must(template.New("").Delims(left, right).Funcs(engine.FuncMap).ParseGlob(pattern))
@@ -281,6 +300,7 @@ func (engine *Engine) LoadHTMLGlob(pattern string) {
 	}
 
 	engine.SetHTMLTemplate(templ)
+	logritelog.Default().Printf("<<< Exiting LoadHTMLGlob(pattern=%v)", pattern)
 }
 
 // LoadHTMLFiles loads a slice of HTML files
@@ -310,58 +330,78 @@ func (engine *Engine) LoadHTMLFS(fs http.FileSystem, patterns ...string) {
 
 // SetHTMLTemplate associate a template with HTML renderer.
 func (engine *Engine) SetHTMLTemplate(templ *template.Template) {
+	logritelog.Default().Printf(">>> Entering SetHTMLTemplate(templ=%v)", templ)
 	if len(engine.trees) > 0 {
 		debugPrintWARNINGSetHTMLTemplate()
 	}
 
 	engine.HTMLRender = render.HTMLProduction{Template: templ.Funcs(engine.FuncMap)}
+	logritelog.Default().Printf("<<< Exiting SetHTMLTemplate(templ=%v)", templ)
 }
 
 // SetFuncMap sets the FuncMap used for template.FuncMap.
 func (engine *Engine) SetFuncMap(funcMap template.FuncMap) {
+	logritelog.Default().Printf(">>> Entering SetFuncMap(funcMap=%v)", funcMap)
+	logritelog.Default().Printf("SetFuncMap(funcMap=%v): engine.FuncMap → %v", funcMap, engine.FuncMap)
+logritelog.Default().Printf("<<< Exiting SetFuncMap(funcMap=%v)", funcMap)
 	engine.FuncMap = funcMap
 }
 
 // NoRoute adds handlers for NoRoute. It returns a 404 code by default.
 func (engine *Engine) NoRoute(handlers ...HandlerFunc) {
+	logritelog.Default().Printf(">>> Entering NoRoute(handlers=%v)", handlers)
 	engine.noRoute = handlers
 	engine.rebuild404Handlers()
+	logritelog.Default().Printf("NoRoute(handlers=%v): engine.noRoute → %v", handlers, engine.noRoute)
+logritelog.Default().Printf("<<< Exiting NoRoute(handlers=%v)", handlers)
 }
 
 // NoMethod sets the handlers called when Engine.HandleMethodNotAllowed = true.
 func (engine *Engine) NoMethod(handlers ...HandlerFunc) {
+	logritelog.Default().Printf(">>> Entering NoMethod(handlers=%v)", handlers)
 	engine.noMethod = handlers
 	engine.rebuild405Handlers()
+	logritelog.Default().Printf("NoMethod(handlers=%v): engine.noMethod → %v", handlers, engine.noMethod)
+logritelog.Default().Printf("<<< Exiting NoMethod(handlers=%v)", handlers)
 }
 
 // Use attaches a global middleware to the router. i.e. the middleware attached through Use() will be
 // included in the handlers chain for every single request. Even 404, 405, static files...
 // For example, this is the right place for a logger or error management middleware.
 func (engine *Engine) Use(middleware ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering Use(middleware=%v)", middleware)
 	engine.RouterGroup.Use(middleware...)
 	engine.rebuild404Handlers()
 	engine.rebuild405Handlers()
+	logritelog.Default().Printf("<<< Exiting Use(middleware=%v)", middleware)
 	return engine
 }
 
 // With returns an Engine with the configuration set in the OptionFunc.
 func (engine *Engine) With(opts ...OptionFunc) *Engine {
+	logritelog.Default().Printf(">>> Entering With(opts=%v)", opts)
 	for _, opt := range opts {
 		opt(engine)
 	}
 
+	logritelog.Default().Printf("<<< Exiting With(opts=%v)", opts)
 	return engine
 }
 
 func (engine *Engine) rebuild404Handlers() {
+	logritelog.Default().Printf(">>> Entering rebuild404Handlers()")
 	engine.allNoRoute = engine.combineHandlers(engine.noRoute)
+	logritelog.Default().Printf("<<< Exiting rebuild404Handlers()")
 }
 
 func (engine *Engine) rebuild405Handlers() {
+	logritelog.Default().Printf(">>> Entering rebuild405Handlers()")
 	engine.allNoMethod = engine.combineHandlers(engine.noMethod)
+	logritelog.Default().Printf("<<< Exiting rebuild405Handlers()")
 }
 
 func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
+	logritelog.Default().Printf(">>> Entering addRoute(method=%v,path=%v,handlers=%v)", method, path, handlers)
 	assert1(path[0] == '/', "path must begin with '/'")
 	assert1(method != "", "HTTP method can not be empty")
 	assert1(len(handlers) > 0, "there must be at least one handler")
@@ -372,29 +412,37 @@ func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
 	if root == nil {
 		root = new(node)
 		root.fullPath = "/"
+		logritelog.Default().Printf("addRoute(method=%v,path=%v,handlers=%v): root.fullPath → %v", method, path, handlers, root.fullPath)
 		engine.trees = append(engine.trees, methodTree{method: method, root: root})
 	}
 	root.addRoute(path, handlers)
 
 	if paramsCount := countParams(path); paramsCount > engine.maxParams {
 		engine.maxParams = paramsCount
+		logritelog.Default().Printf("addRoute(method=%v,path=%v,handlers=%v): engine.maxParams → %v", method, path, handlers, engine.maxParams)
 	}
 
 	if sectionsCount := countSections(path); sectionsCount > engine.maxSections {
 		engine.maxSections = sectionsCount
+		logritelog.Default().Printf("addRoute(method=%v,path=%v,handlers=%v): engine.maxSections → %v", method, path, handlers, engine.maxSections)
 	}
+	logritelog.Default().Printf("<<< Exiting addRoute(method=%v,path=%v,handlers=%v)", method, path, handlers)
 }
 
 // Routes returns a slice of registered routes, including some useful information, such as:
 // the http method, path, and the handler name.
 func (engine *Engine) Routes() (routes RoutesInfo) {
+	logritelog.Default().Printf(">>> Entering Routes()")
 	for _, tree := range engine.trees {
 		routes = iterate("", tree.method, routes, tree.root)
 	}
+		logritelog.Default().Printf("Routes(): routes → %v", routes)
+	logritelog.Default().Printf("<<< Exiting Routes()")
 	return routes
 }
 
 func iterate(path, method string, routes RoutesInfo, root *node) RoutesInfo {
+	logritelog.Default().Printf(">>> Entering iterate(path=%v,method=%v,routes=%v,root=%v)", path, method, routes, root)
 	path += root.path
 	if len(root.handlers) > 0 {
 		handlerFunc := root.handlers.Last()
@@ -408,10 +456,12 @@ func iterate(path, method string, routes RoutesInfo, root *node) RoutesInfo {
 	for _, child := range root.children {
 		routes = iterate(path, method, routes, child)
 	}
+	logritelog.Default().Printf("<<< Exiting iterate(path=%v,method=%v,routes=%v,root=%v)", path, method, routes, root)
 	return routes
 }
 
 func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
+	logritelog.Default().Printf(">>> Entering prepareTrustedCIDRs()")
 	if engine.trustedProxies == nil {
 		return nil, nil
 	}
@@ -421,6 +471,8 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 		if !strings.Contains(trustedProxy, "/") {
 			ip := parseIP(trustedProxy)
 			if ip == nil {
+				logritelog.Default().Printf(">>> Entering parseIP(ip=%v)", ip)
+				logritelog.Default().Printf("<<< Exiting parseIP(ip=%v)", ip)
 				return cidr, &net.ParseError{Type: "IP address", Text: trustedProxy}
 			}
 
@@ -437,6 +489,7 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 		}
 		cidr = append(cidr, cidrNet)
 	}
+	logritelog.Default().Printf("<<< Exiting prepareTrustedCIDRs()")
 	return cidr, nil
 }
 
@@ -449,24 +502,32 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 // Engine.SetTrustedProxies(nil), then Context.ClientIP() will
 // return the remote address directly.
 func (engine *Engine) SetTrustedProxies(trustedProxies []string) error {
+	logritelog.Default().Printf(">>> Entering SetTrustedProxies(trustedProxies=%v)", trustedProxies)
+	logritelog.Default().Printf("SetTrustedProxies(trustedProxies=%v): engine.trustedProxies → %v", trustedProxies, engine.trustedProxies)
+	logritelog.Default().Printf("<<< Exiting SetTrustedProxies(trustedProxies=%v)", trustedProxies)
 	engine.trustedProxies = trustedProxies
 	return engine.parseTrustedProxies()
 }
 
 // isUnsafeTrustedProxies checks if Engine.trustedCIDRs contains all IPs, it's not safe if it has (returns true)
 func (engine *Engine) isUnsafeTrustedProxies() bool {
+	logritelog.Default().Printf(">>> Entering isUnsafeTrustedProxies()")
 	return engine.isTrustedProxy(net.ParseIP("0.0.0.0")) || engine.isTrustedProxy(net.ParseIP("::"))
 }
 
 // parseTrustedProxies parse Engine.trustedProxies to Engine.trustedCIDRs
 func (engine *Engine) parseTrustedProxies() error {
+	logritelog.Default().Printf(">>> Entering parseTrustedProxies()")
 	trustedCIDRs, err := engine.prepareTrustedCIDRs()
 	engine.trustedCIDRs = trustedCIDRs
+	logritelog.Default().Printf("parseTrustedProxies(): engine.trustedCIDRs → %v", engine.trustedCIDRs)
+	logritelog.Default().Printf("<<< Exiting parseTrustedProxies()")
 	return err
 }
 
 // isTrustedProxy will check whether the IP address is included in the trusted list according to Engine.trustedCIDRs
 func (engine *Engine) isTrustedProxy(ip net.IP) bool {
+	logritelog.Default().Printf(">>> Entering isTrustedProxy(ip=%v)", ip)
 	if engine.trustedCIDRs == nil {
 		return false
 	}
@@ -475,11 +536,13 @@ func (engine *Engine) isTrustedProxy(ip net.IP) bool {
 			return true
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting isTrustedProxy(ip=%v)", ip)
 	return false
 }
 
 // validateHeader will parse X-Forwarded-For header and return the trusted client IP address
 func (engine *Engine) validateHeader(header string) (clientIP string, valid bool) {
+	logritelog.Default().Printf(">>> Entering validateHeader(header=%v)", header)
 	if header == "" {
 		return "", false
 	}
@@ -497,11 +560,13 @@ func (engine *Engine) validateHeader(header string) (clientIP string, valid bool
 			return ipStr, true
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting validateHeader(header=%v)", header)
 	return "", false
 }
 
 // updateRouteTree do update to the route tree recursively
 func updateRouteTree(n *node) {
+	logritelog.Default().Printf(">>> Entering updateRouteTree(n=%v)", n)
 	n.path = strings.ReplaceAll(n.path, escapedColon, colon)
 	n.fullPath = strings.ReplaceAll(n.fullPath, escapedColon, colon)
 	n.indices = strings.ReplaceAll(n.indices, backslash, colon)
@@ -511,13 +576,16 @@ func updateRouteTree(n *node) {
 	for _, child := range n.children {
 		updateRouteTree(child)
 	}
+	logritelog.Default().Printf("<<< Exiting updateRouteTree(n=%v)", n)
 }
 
 // updateRouteTrees do update to the route trees
 func (engine *Engine) updateRouteTrees() {
+	logritelog.Default().Printf(">>> Entering updateRouteTrees()")
 	for _, tree := range engine.trees {
 		updateRouteTree(tree.root)
 	}
+	logritelog.Default().Printf("<<< Exiting updateRouteTrees()")
 }
 
 // parseIP parse a string representation of an IP and returns a net.IP with the
@@ -559,6 +627,7 @@ func (engine *Engine) Run(addr ...string) (err error) {
 // It is a shortcut for http.ListenAndServeTLS(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf(">>> Entering RunTLS(addr=%v,certFile=%v,keyFile=%v)", addr, certFile, keyFile)
 	debugPrint("Listening and serving HTTPS on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -579,6 +648,7 @@ func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
 // through the specified unix socket (i.e. a file).
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunUnix(file string) (err error) {
+	logritelog.Default().Printf(">>> Entering RunUnix(file=%v)", file)
 	debugPrint("Listening and serving HTTP on unix:/%s", file)
 	defer func() { debugPrintError(err) }()
 
@@ -605,6 +675,7 @@ func (engine *Engine) RunUnix(file string) (err error) {
 // through the specified file descriptor.
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunFd(fd int) (err error) {
+	logritelog.Default().Printf(">>> Entering RunFd(fd=%v)", fd)
 	debugPrint("Listening and serving HTTP on fd@%d", fd)
 	defer func() { debugPrintError(err) }()
 
@@ -628,6 +699,7 @@ func (engine *Engine) RunFd(fd int) (err error) {
 // It is a shortcut for http3.ListenAndServeQUIC(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf(">>> Entering RunQUIC(addr=%v,certFile=%v,keyFile=%v)", addr, certFile, keyFile)
 	debugPrint("Listening and serving QUIC on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -643,6 +715,7 @@ func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
 // RunListener attaches the router to a http.Server and starts listening and serving HTTP requests
 // through the specified net.Listener
 func (engine *Engine) RunListener(listener net.Listener) (err error) {
+	logritelog.Default().Printf(">>> Entering RunListener(listener=%v)", listener)
 	debugPrint("Listening and serving HTTP on listener what's bind with address@%s", listener.Addr())
 	defer func() { debugPrintError(err) }()
 
@@ -660,6 +733,7 @@ func (engine *Engine) RunListener(listener net.Listener) (err error) {
 
 // ServeHTTP conforms to the http.Handler interface.
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	logritelog.Default().Printf(">>> Entering ServeHTTP(w=%v,req=%v)", w, req)
 	engine.routeTreesUpdated.Do(func() {
 		engine.updateRouteTrees()
 	})
@@ -667,27 +741,34 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c := engine.pool.Get().(*Context)
 	c.writermem.reset(w)
 	c.Request = req
+	logritelog.Default().Printf("ServeHTTP(w=%v,req=%v): c.Request → %v", w, req, c.Request)
 	c.reset()
 
 	engine.handleHTTPRequest(c)
 
 	engine.pool.Put(c)
+	logritelog.Default().Printf("<<< Exiting ServeHTTP(w=%v,req=%v)", w, req)
 }
 
 // HandleContext re-enters a context that has been rewritten.
 // This can be done by setting c.Request.URL.Path to your new target.
 // Disclaimer: You can loop yourself to deal with this, use wisely.
 func (engine *Engine) HandleContext(c *Context) {
+	logritelog.Default().Printf(">>> Entering HandleContext(c=%v)", c)
 	oldIndexValue := c.index
 	oldHandlers := c.handlers
 	c.reset()
 	engine.handleHTTPRequest(c)
 
 	c.index = oldIndexValue
+	logritelog.Default().Printf("HandleContext(c=%v): c.index → %v", c, c.index)
+	logritelog.Default().Printf("HandleContext(c=%v): c.handlers → %v", c, c.handlers)
+logritelog.Default().Printf("<<< Exiting HandleContext(c=%v)", c)
 	c.handlers = oldHandlers
 }
 
 func (engine *Engine) handleHTTPRequest(c *Context) {
+	logritelog.Default().Printf(">>> Entering handleHTTPRequest(c=%v)", c)
 	httpMethod := c.Request.Method
 	rPath := c.Request.URL.Path
 	unescape := false
@@ -715,9 +796,12 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 		value := root.getValue(rPath, c.params, c.skippedNodes, unescape)
 		if value.params != nil {
 			c.Params = *value.params
+			logritelog.Default().Printf("handleHTTPRequest(c=%v): c.Params → %v", c, c.Params)
 		}
 		if value.handlers != nil {
 			c.handlers = value.handlers
+			logritelog.Default().Printf("handleHTTPRequest(c=%v): c.handlers → %v", c, c.handlers)
+			logritelog.Default().Printf("handleHTTPRequest(c=%v): c.fullPath → %v", c, c.fullPath)
 			c.fullPath = value.fullPath
 			c.Next()
 			c.writermem.WriteHeaderNow()
@@ -746,6 +830,7 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 			if value := tree.root.getValue(rPath, nil, c.skippedNodes, unescape); value.handlers != nil {
 				allowed = append(allowed, tree.method)
 			}
+				logritelog.Default().Printf("handleHTTPRequest(c=%v): allowed → %v", c, allowed)
 		}
 		if len(allowed) > 0 {
 			c.handlers = engine.allNoMethod
@@ -757,11 +842,13 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 
 	c.handlers = engine.allNoRoute
 	serveError(c, http.StatusNotFound, default404Body)
+	logritelog.Default().Printf("<<< Exiting handleHTTPRequest(c=%v)", c)
 }
 
 var mimePlain = []string{MIMEPlain}
 
 func serveError(c *Context, code int, defaultMessage []byte) {
+	logritelog.Default().Printf(">>> Entering serveError(c=%v,code=%v,defaultMessage=%v)", c, code, defaultMessage)
 	c.writermem.status = code
 	c.Next()
 	if c.writermem.Written() {
@@ -776,15 +863,18 @@ func serveError(c *Context, code int, defaultMessage []byte) {
 		return
 	}
 	c.writermem.WriteHeaderNow()
+	logritelog.Default().Printf("<<< Exiting serveError(c=%v,code=%v,defaultMessage=%v)", c, code, defaultMessage)
 }
 
 func redirectTrailingSlash(c *Context) {
+	logritelog.Default().Printf(">>> Entering redirectTrailingSlash(c=%v)", c)
 	req := c.Request
 	p := req.URL.Path
 	if prefix := path.Clean(c.Request.Header.Get("X-Forwarded-Prefix")); prefix != "." {
 		prefix = sanitizePathChars(prefix)
 		prefix = removeRepeatedChar(prefix, '/')
 
+		logritelog.Default().Printf("redirectTrailingSlash(c=%v): prefix → %v", c, prefix)
 		p = prefix + "/" + req.URL.Path
 	}
 	req.URL.Path = p + "/"
@@ -792,11 +882,13 @@ func redirectTrailingSlash(c *Context) {
 		req.URL.Path = p[:length-1]
 	}
 	redirectRequest(c)
+	logritelog.Default().Printf("<<< Exiting redirectTrailingSlash(c=%v)", c)
 }
 
 // sanitizePathChars removes unsafe characters from path strings,
 // keeping only ASCII letters, ASCII numbers, forward slashes, and hyphens.
 func sanitizePathChars(s string) string {
+	logritelog.Default().Printf(">>> Entering sanitizePathChars(s=%v)", s)
 	return strings.Map(func(r rune) rune {
 		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '/' || r == '-' {
 			return r
@@ -806,6 +898,7 @@ func sanitizePathChars(s string) string {
 }
 
 func redirectFixedPath(c *Context, root *node, trailingSlash bool) bool {
+	logritelog.Default().Printf(">>> Entering redirectFixedPath(c=%v,root=%v,trailingSlash=%v)", c, root, trailingSlash)
 	req := c.Request
 	rPath := req.URL.Path
 
@@ -814,10 +907,12 @@ func redirectFixedPath(c *Context, root *node, trailingSlash bool) bool {
 		redirectRequest(c)
 		return true
 	}
+	logritelog.Default().Printf("<<< Exiting redirectFixedPath(c=%v,root=%v,trailingSlash=%v)", c, root, trailingSlash)
 	return false
 }
 
 func redirectRequest(c *Context) {
+	logritelog.Default().Printf(">>> Entering redirectRequest(c=%v)", c)
 	req := c.Request
 	rPath := req.URL.Path
 	rURL := req.URL.String()
@@ -825,8 +920,10 @@ func redirectRequest(c *Context) {
 	code := http.StatusMovedPermanently // Permanent redirect, request with GET method
 	if req.Method != http.MethodGet {
 		code = http.StatusTemporaryRedirect
+		logritelog.Default().Printf("redirectRequest(c=%v): code → %v", c, code)
 	}
 	debugPrint("redirecting request %d: %s --> %s", code, rPath, rURL)
 	http.Redirect(c.Writer, req, rURL, code)
 	c.writermem.WriteHeaderNow()
+	logritelog.Default().Printf("<<< Exiting redirectRequest(c=%v)", c)
 }

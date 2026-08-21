@@ -6,10 +6,12 @@ See https://gin-gonic.com/ for more information about gin.
 Example:
 
 	package main
+	import logritelog "log"
 
 	import "github.com/gin-gonic/gin"
 
 	func main() {
+		logritelog.Default().Printf(">>> Entering main()")
 		r := gin.Default()
 		r.GET("/ping", func(c *gin.Context) {
 			c.JSON(200, gin.H{
@@ -17,6 +19,7 @@ Example:
 			})
 		})
 		r.Run() // listen and serve on 0.0.0.0:8080
+		logritelog.Default().Printf("<<< Exiting main()")
 	}
 */
 package gin // import "github.com/gin-gonic/gin"

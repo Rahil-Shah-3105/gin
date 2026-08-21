@@ -1,4 +1,5 @@
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -10,6 +11,7 @@ import (
 
 // TestContextFileSimple tests the Context.File() method with a simple case
 func TestContextFileSimple(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestContextFileSimple(t=%v)", t)
 	// Test serving an existing file
 	testFile := "testdata/test_file.txt"
 	w := httptest.NewRecorder()
@@ -21,10 +23,12 @@ func TestContextFileSimple(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "This is a test file")
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("<<< Exiting TestContextFileSimple(t=%v)", t)
 }
 
 // TestContextFileNotFound tests serving a non-existent file
 func TestContextFileNotFound(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestContextFileNotFound(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request = httptest.NewRequest(http.MethodGet, "/test", nil)
@@ -32,4 +36,5 @@ func TestContextFileNotFound(t *testing.T) {
 	c.File("non_existent_file.txt")
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
+	logritelog.Default().Printf("<<< Exiting TestContextFileNotFound(t=%v)", t)
 }

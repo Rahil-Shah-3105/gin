@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -17,15 +18,19 @@ type Data struct {
 
 // Render (Data) writes data with custom ContentType.
 func (r Data) Render(w http.ResponseWriter) (err error) {
+	logritelog.Default().Printf(">>> Entering Render(w=%v)", w)
 	r.WriteContentType(w)
 	if len(r.Data) > 0 {
 		w.Header().Set("Content-Length", strconv.Itoa(len(r.Data)))
 	}
 	_, err = w.Write(r.Data)
+	logritelog.Default().Printf("<<< Exiting Render(w=%v)", w)
 	return
 }
 
 // WriteContentType (Data) writes custom ContentType.
 func (r Data) WriteContentType(w http.ResponseWriter) {
+	logritelog.Default().Printf(">>> Entering WriteContentType(w=%v)", w)
 	writeContentType(w, []string{r.ContentType})
+	logritelog.Default().Printf("<<< Exiting WriteContentType(w=%v)", w)
 }

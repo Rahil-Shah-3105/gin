@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -27,17 +28,22 @@ var msgpackContentType = []string{"application/msgpack; charset=utf-8"}
 
 // WriteContentType (MsgPack) writes MsgPack ContentType.
 func (r MsgPack) WriteContentType(w http.ResponseWriter) {
+	logritelog.Default().Printf(">>> Entering WriteContentType(w=%v)", w)
 	writeContentType(w, msgpackContentType)
+	logritelog.Default().Printf("<<< Exiting WriteContentType(w=%v)", w)
 }
 
 // Render (MsgPack) encodes the given interface object and writes data with custom ContentType.
 func (r MsgPack) Render(w http.ResponseWriter) error {
+	logritelog.Default().Printf(">>> Entering Render(w=%v)", w)
 	return WriteMsgPack(w, r.Data)
 }
 
 // WriteMsgPack writes MsgPack ContentType and encodes the given interface object.
 func WriteMsgPack(w http.ResponseWriter, obj any) error {
+	logritelog.Default().Printf(">>> Entering WriteMsgPack(w=%v,obj=%v)", w, obj)
 	writeContentType(w, msgpackContentType)
 	var mh codec.MsgpackHandle
+	logritelog.Default().Printf("<<< Exiting WriteMsgPack(w=%v,obj=%v)", w, obj)
 	return codec.NewEncoder(w, &mh).Encode(obj)
 }

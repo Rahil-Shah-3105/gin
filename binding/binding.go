@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -93,6 +94,7 @@ var (
 // Default returns the appropriate Binding instance based on the HTTP method
 // and the content type.
 func Default(method, contentType string) Binding {
+	logritelog.Default().Printf(">>> Entering Default(method=%v,contentType=%v)", method, contentType)
 	if method == http.MethodGet {
 		return Form
 	}
@@ -115,12 +117,15 @@ func Default(method, contentType string) Binding {
 	case MIMEBSON:
 		return BSON
 	default: // case MIMEPOSTForm:
+		logritelog.Default().Printf("<<< Exiting Default(method=%v,contentType=%v)", method, contentType)
 		return Form
 	}
 }
 
 func validate(obj any) error {
+	logritelog.Default().Printf(">>> Entering validate(obj=%v)", obj)
 	if Validator == nil {
+	logritelog.Default().Printf("<<< Exiting validate(obj=%v)", obj)
 		return nil
 	}
 	return Validator.ValidateStruct(obj)
