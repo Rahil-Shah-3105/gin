@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -15,20 +16,25 @@ import (
 type yamlBinding struct{}
 
 func (yamlBinding) Name() string {
+	logritelog.Default().Printf(">>> Entering Name()")
 	return "yaml"
 }
 
 func (yamlBinding) Bind(req *http.Request, obj any) error {
+	logritelog.Default().Printf(">>> Entering Bind(req=%v,obj=%v)", req, obj)
 	return decodeYAML(req.Body, obj)
 }
 
 func (yamlBinding) BindBody(body []byte, obj any) error {
+	logritelog.Default().Printf(">>> Entering BindBody(body=%v,obj=%v)", body, obj)
 	return decodeYAML(bytes.NewReader(body), obj)
 }
 
 func decodeYAML(r io.Reader, obj any) error {
+	logritelog.Default().Printf(">>> Entering decodeYAML(r=%v,obj=%v)", r, obj)
 	decoder := yaml.NewDecoder(r)
 	if err := decoder.Decode(obj); err != nil {
+	logritelog.Default().Printf("<<< Exiting decodeYAML(r=%v,obj=%v)", r, obj)
 		return err
 	}
 	return validate(obj)

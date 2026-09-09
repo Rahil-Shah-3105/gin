@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"crypto/subtle"
@@ -30,6 +31,7 @@ type authPair struct {
 type authPairs []authPair
 
 func (a authPairs) searchCredential(authValue string) (string, bool) {
+	logritelog.Default().Printf(">>> Entering searchCredential(authValue=%v)", authValue)
 	if authValue == "" {
 		return "", false
 	}
@@ -38,6 +40,7 @@ func (a authPairs) searchCredential(authValue string) (string, bool) {
 			return pair.user, true
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting searchCredential(authValue=%v)", authValue)
 	return "", false
 }
 
@@ -46,6 +49,7 @@ func (a authPairs) searchCredential(authValue string) (string, bool) {
 // If the realm is empty, "Authorization Required" will be used by default.
 // (see http://tools.ietf.org/html/rfc2617#section-1.2)
 func BasicAuthForRealm(accounts Accounts, realm string) HandlerFunc {
+	logritelog.Default().Printf(">>> Entering BasicAuthForRealm(accounts=%v,realm=%v)", accounts, realm)
 	if realm == "" {
 		realm = "Authorization Required"
 	}
@@ -65,15 +69,18 @@ func BasicAuthForRealm(accounts Accounts, realm string) HandlerFunc {
 		// c.MustGet(gin.AuthUserKey).
 		c.Set(AuthUserKey, user)
 	}
+	logritelog.Default().Printf("<<< Exiting BasicAuthForRealm(accounts=%v,realm=%v)", accounts, realm)
 }
 
 // BasicAuth returns a Basic HTTP Authorization middleware. It takes as argument a map[string]string where
 // the key is the user name and the value is the password.
 func BasicAuth(accounts Accounts) HandlerFunc {
+	logritelog.Default().Printf(">>> Entering BasicAuth(accounts=%v)", accounts)
 	return BasicAuthForRealm(accounts, "")
 }
 
 func processAccounts(accounts Accounts) authPairs {
+	logritelog.Default().Printf(">>> Entering processAccounts(accounts=%v)", accounts)
 	length := len(accounts)
 	assert1(length > 0, "Empty list of authorized credentials")
 	pairs := make(authPairs, 0, length)
@@ -85,17 +92,22 @@ func processAccounts(accounts Accounts) authPairs {
 			user:  user,
 		})
 	}
+		logritelog.Default().Printf("processAccounts(accounts=%v): pairs → %v", accounts, pairs)
+	logritelog.Default().Printf("<<< Exiting processAccounts(accounts=%v)", accounts)
 	return pairs
 }
 
 func authorizationHeader(user, password string) string {
+	logritelog.Default().Printf(">>> Entering authorizationHeader(user=%v,password=<redacted>)", user)
 	base := user + ":" + password
+	logritelog.Default().Printf("<<< Exiting authorizationHeader(user=%v,password=<redacted>)", user)
 	return "Basic " + base64.StdEncoding.EncodeToString(bytesconv.StringToBytes(base))
 }
 
 // BasicAuthForProxy returns a Basic HTTP Proxy-Authorization middleware.
 // If the realm is empty, "Proxy Authorization Required" will be used by default.
 func BasicAuthForProxy(accounts Accounts, realm string) HandlerFunc {
+	logritelog.Default().Printf(">>> Entering BasicAuthForProxy(accounts=%v,realm=%v)", accounts, realm)
 	if realm == "" {
 		realm = "Proxy Authorization Required"
 	}
@@ -113,4 +125,5 @@ func BasicAuthForProxy(accounts Accounts, realm string) HandlerFunc {
 		// c.MustGet(gin.AuthProxyUserKey).
 		c.Set(AuthProxyUserKey, proxyUser)
 	}
+	logritelog.Default().Printf("<<< Exiting BasicAuthForProxy(accounts=%v,realm=%v)", accounts, realm)
 }

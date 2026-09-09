@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"io"
@@ -14,17 +15,21 @@ import (
 type bsonBinding struct{}
 
 func (bsonBinding) Name() string {
+	logritelog.Default().Printf(">>> Entering Name()")
 	return "bson"
 }
 
 func (b bsonBinding) Bind(req *http.Request, obj any) error {
+	logritelog.Default().Printf(">>> Entering Bind(req=%v,obj=%v)", req, obj)
 	buf, err := io.ReadAll(req.Body)
 	if err == nil {
 		err = b.BindBody(buf, obj)
 	}
+	logritelog.Default().Printf("<<< Exiting Bind(req=%v,obj=%v)", req, obj)
 	return err
 }
 
 func (bsonBinding) BindBody(body []byte, obj any) error {
+	logritelog.Default().Printf(">>> Entering BindBody(body=%v,obj=%v)", body, obj)
 	return bson.Unmarshal(body, obj)
 }

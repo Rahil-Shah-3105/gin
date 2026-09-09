@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -25,7 +26,9 @@ var (
 
 // TrySet tries to set a value by the multipart request with the binding a form file
 func (r *multipartRequest) TrySet(value reflect.Value, field reflect.StructField, key string, opt setOptions) (bool, error) {
+	logritelog.Default().Printf(">>> Entering TrySet(value=%v,field=%v,key=%v,opt=%v)", value, field, key, opt)
 	if files := r.MultipartForm.File[key]; len(files) != 0 {
+	logritelog.Default().Printf("<<< Exiting TrySet(value=%v,field=%v,key=%v,opt=%v)", value, field, key, opt)
 		return setByMultipartFormFile(value, field, files)
 	}
 
@@ -33,6 +36,7 @@ func (r *multipartRequest) TrySet(value reflect.Value, field reflect.StructField
 }
 
 func setByMultipartFormFile(value reflect.Value, field reflect.StructField, files []*multipart.FileHeader) (isSet bool, err error) {
+	logritelog.Default().Printf(">>> Entering setByMultipartFormFile(value=%v,field=%v,files=%v)", value, field, files)
 	switch value.Kind() {
 	case reflect.Ptr:
 		switch value.Interface().(type) {
@@ -50,11 +54,14 @@ func setByMultipartFormFile(value reflect.Value, field reflect.StructField, file
 		slice := reflect.MakeSlice(value.Type(), len(files), len(files))
 		isSet, err = setArrayOfMultipartFormFiles(slice, field, files)
 		if err != nil || !isSet {
+			logritelog.Default().Printf(">>> Entering setArrayOfMultipartFormFiles(value=%v,field=%v,files=%v)", value, field, files)
+			logritelog.Default().Printf("<<< Exiting setArrayOfMultipartFormFiles(value=%v,field=%v,files=%v)", value, field, files)
 			return isSet, err
 		}
 		value.Set(slice)
 		return true, nil
 	case reflect.Array:
+	logritelog.Default().Printf("<<< Exiting setByMultipartFormFile(value=%v,field=%v,files=%v)", value, field, files)
 		return setArrayOfMultipartFormFiles(value, field, files)
 	}
 	return false, ErrMultiFileHeader
