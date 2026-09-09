@@ -5,6 +5,7 @@
 // source: test.proto
 
 package protoexample
+import logritelog "log"
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -37,12 +38,15 @@ var (
 )
 
 func (x FOO) Enum() *FOO {
+	logritelog.Default().Printf(">>> Entering Enum()")
 	p := new(FOO)
 	*p = x
+	logritelog.Default().Printf("<<< Exiting Enum()")
 	return p
 }
 
 func (x FOO) String() string {
+	logritelog.Default().Printf(">>> Entering String()")
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
@@ -51,17 +55,22 @@ func (FOO) Descriptor() protoreflect.EnumDescriptor {
 }
 
 func (FOO) Type() protoreflect.EnumType {
+	logritelog.Default().Printf(">>> Entering Type()")
 	return &file_test_proto_enumTypes[0]
 }
 
 func (x FOO) Number() protoreflect.EnumNumber {
+	logritelog.Default().Printf(">>> Entering Number()")
 	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
 func (x *FOO) UnmarshalJSON(b []byte) error {
+	logritelog.Default().Printf(">>> Entering UnmarshalJSON(b=%v)", b)
 	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in UnmarshalJSON(b=%v): %v", b, err)
+	logritelog.Default().Printf("<<< Exiting UnmarshalJSON(b=%v)", b)
 		return err
 	}
 	*x = FOO(num)
@@ -70,6 +79,7 @@ func (x *FOO) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use FOO.Descriptor instead.
 func (FOO) EnumDescriptor() ([]byte, []int) {
+	logritelog.Default().Printf(">>> Entering EnumDescriptor()")
 	return file_test_proto_rawDescGZIP(), []int{0}
 }
 
@@ -96,6 +106,8 @@ func (x *Test) Reset() {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
+	logritelog.Default().Printf(">>> Entering Reset()")
+	logritelog.Default().Printf("<<< Exiting Reset()")
 }
 
 func (x *Test) String() string {
@@ -111,6 +123,7 @@ func (x *Test) ProtoReflect() protoreflect.Message {
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+	logritelog.Default().Printf("<<< Exiting ProtoReflect()")
 		return ms
 	}
 	return mi.MessageOf(x)
@@ -122,28 +135,36 @@ func (*Test) Descriptor() ([]byte, []int) {
 }
 
 func (x *Test) GetLabel() string {
+	logritelog.Default().Printf(">>> Entering GetLabel()")
 	if x != nil && x.Label != nil {
+	logritelog.Default().Printf("<<< Exiting GetLabel()")
 		return *x.Label
 	}
 	return ""
 }
 
 func (x *Test) GetType() int32 {
+	logritelog.Default().Printf(">>> Entering GetType()")
 	if x != nil && x.Type != nil {
+	logritelog.Default().Printf("<<< Exiting GetType()")
 		return *x.Type
 	}
 	return Default_Test_Type
 }
 
 func (x *Test) GetReps() []int64 {
+	logritelog.Default().Printf(">>> Entering GetReps()")
 	if x != nil {
+	logritelog.Default().Printf("<<< Exiting GetReps()")
 		return x.Reps
 	}
 	return nil
 }
 
 func (x *Test) GetOptionalgroup() *Test_OptionalGroup {
+	logritelog.Default().Printf(">>> Entering GetOptionalgroup()")
 	if x != nil {
+	logritelog.Default().Printf("<<< Exiting GetOptionalgroup()")
 		return x.Optionalgroup
 	}
 	return nil
@@ -190,7 +211,9 @@ func (*Test_OptionalGroup) Descriptor() ([]byte, []int) {
 }
 
 func (x *Test_OptionalGroup) GetRequiredField() string {
+	logritelog.Default().Printf(">>> Entering GetRequiredField()")
 	if x != nil && x.RequiredField != nil {
+	logritelog.Default().Printf("<<< Exiting GetRequiredField()")
 		return *x.RequiredField
 	}
 	return ""
@@ -223,9 +246,12 @@ var (
 )
 
 func file_test_proto_rawDescGZIP() []byte {
+	logritelog.Default().Printf(">>> Entering file_test_proto_rawDescGZIP()")
 	file_test_proto_rawDescOnce.Do(func() {
 		file_test_proto_rawDescData = protoimpl.X.CompressGZIP(file_test_proto_rawDescData)
 	})
+		logritelog.Default().Printf("file_test_proto_rawDescGZIP(): file_test_proto_rawDescData → %v", file_test_proto_rawDescData)
+	logritelog.Default().Printf("<<< Exiting file_test_proto_rawDescGZIP()")
 	return file_test_proto_rawDescData
 }
 
@@ -247,6 +273,7 @@ var file_test_proto_depIdxs = []int32{
 
 func init() { file_test_proto_init() }
 func file_test_proto_init() {
+	logritelog.Default().Printf(">>> Entering file_test_proto_init()")
 	if File_test_proto != nil {
 		return
 	}
@@ -292,7 +319,12 @@ func file_test_proto_init() {
 		MessageInfos:      file_test_proto_msgTypes,
 	}.Build()
 	File_test_proto = out.File
+	logritelog.Default().Printf("file_test_proto_init(): File_test_proto → %v", File_test_proto)
 	file_test_proto_rawDesc = nil
+	logritelog.Default().Printf("file_test_proto_init(): file_test_proto_rawDesc → %v", file_test_proto_rawDesc)
 	file_test_proto_goTypes = nil
+	logritelog.Default().Printf("file_test_proto_init(): file_test_proto_goTypes → %v", file_test_proto_goTypes)
 	file_test_proto_depIdxs = nil
+	logritelog.Default().Printf("file_test_proto_init(): file_test_proto_depIdxs → %v", file_test_proto_depIdxs)
+logritelog.Default().Printf("<<< Exiting file_test_proto_init()")
 }

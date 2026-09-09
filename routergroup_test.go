@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -14,10 +15,13 @@ import (
 var MaxHandlers = 32
 
 func init() {
+	logritelog.Default().Printf(">>> Entering init()")
 	SetMode(TestMode)
+	logritelog.Default().Printf("<<< Exiting init()")
 }
 
 func TestRouterGroupBasic(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupBasic(t=%v)", t)
 	router := New()
 	group := router.Group("/hola", func(c *Context) {})
 	group.Use(func(c *Context) {})
@@ -32,9 +36,11 @@ func TestRouterGroupBasic(t *testing.T) {
 	assert.Len(t, group2.Handlers, 4)
 	assert.Equal(t, "/hola/manu", group2.BasePath())
 	assert.Equal(t, router, group2.engine)
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupBasic(t=%v)", t)
 }
 
 func TestRouterGroupBasicHandle(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupBasicHandle(t=%v)", t)
 	performRequestInGroup(t, http.MethodGet)
 	performRequestInGroup(t, http.MethodPost)
 	performRequestInGroup(t, http.MethodPut)
@@ -42,9 +48,11 @@ func TestRouterGroupBasicHandle(t *testing.T) {
 	performRequestInGroup(t, http.MethodDelete)
 	performRequestInGroup(t, http.MethodHead)
 	performRequestInGroup(t, http.MethodOptions)
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupBasicHandle(t=%v)", t)
 }
 
 func performRequestInGroup(t *testing.T, method string) {
+	logritelog.Default().Printf(">>> Entering performRequestInGroup(t=%v,method=%v)", t, method)
 	router := New()
 	v1 := router.Group("v1", func(c *Context) {})
 	assert.Equal(t, "/v1", v1.BasePath())
@@ -89,9 +97,11 @@ func performRequestInGroup(t *testing.T, method string) {
 	w = PerformRequest(router, method, "/v1/test")
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "the method was "+method+" and index 1", w.Body.String())
+	logritelog.Default().Printf("<<< Exiting performRequestInGroup(t=%v,method=%v)", t, method)
 }
 
 func TestRouterGroupInvalidStatic(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupInvalidStatic(t=%v)", t)
 	router := New()
 	assert.Panics(t, func() {
 		router.Static("/path/:param", "/")
@@ -100,9 +110,11 @@ func TestRouterGroupInvalidStatic(t *testing.T) {
 	assert.Panics(t, func() {
 		router.Static("/path/*param", "/")
 	})
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupInvalidStatic(t=%v)", t)
 }
 
 func TestRouterGroupInvalidStaticFile(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupInvalidStaticFile(t=%v)", t)
 	router := New()
 	assert.Panics(t, func() {
 		router.StaticFile("/path/:param", "favicon.ico")
@@ -111,9 +123,11 @@ func TestRouterGroupInvalidStaticFile(t *testing.T) {
 	assert.Panics(t, func() {
 		router.StaticFile("/path/*param", "favicon.ico")
 	})
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupInvalidStaticFile(t=%v)", t)
 }
 
 func TestRouterGroupInvalidStaticFileFS(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupInvalidStaticFileFS(t=%v)", t)
 	router := New()
 	assert.Panics(t, func() {
 		router.StaticFileFS("/path/:param", "favicon.ico", Dir(".", false))
@@ -122,9 +136,11 @@ func TestRouterGroupInvalidStaticFileFS(t *testing.T) {
 	assert.Panics(t, func() {
 		router.StaticFileFS("/path/*param", "favicon.ico", Dir(".", false))
 	})
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupInvalidStaticFileFS(t=%v)", t)
 }
 
 func TestRouterGroupTooManyHandlers(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupTooManyHandlers(t=%v)", t)
 	const (
 		panicValue = "too many handlers"
 		maximumCnt = abortIndex
@@ -133,6 +149,8 @@ func TestRouterGroupTooManyHandlers(t *testing.T) {
 	handlers1 := make([]HandlerFunc, maximumCnt-1)
 	router.Use(handlers1...)
 
+	logritelog.Default().Printf("TestRouterGroupTooManyHandlers(t=%v): panicValue → %v", t, panicValue)
+	logritelog.Default().Printf("TestRouterGroupTooManyHandlers(t=%v): maximumCnt → %v", t, maximumCnt)
 	handlers2 := make([]HandlerFunc, maximumCnt+1)
 	assert.PanicsWithValue(t, panicValue, func() {
 		router.Use(handlers2...)
@@ -140,9 +158,11 @@ func TestRouterGroupTooManyHandlers(t *testing.T) {
 	assert.PanicsWithValue(t, panicValue, func() {
 		router.GET("/", handlers2...)
 	})
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupTooManyHandlers(t=%v)", t)
 }
 
 func TestRouterGroupBadMethod(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupBadMethod(t=%v)", t)
 	router := New()
 	assert.Panics(t, func() {
 		router.Handle(http.MethodGet, "/")
@@ -165,17 +185,21 @@ func TestRouterGroupBadMethod(t *testing.T) {
 	assert.Panics(t, func() {
 		router.Handle("PATCh", "/")
 	})
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupBadMethod(t=%v)", t)
 }
 
 func TestRouterGroupPipeline(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupPipeline(t=%v)", t)
 	router := New()
 	testRoutesInterface(t, router)
 
 	v1 := router.Group("/v1")
 	testRoutesInterface(t, v1)
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupPipeline(t=%v)", t)
 }
 
 func testRoutesInterface(t *testing.T, r IRoutes) {
+	logritelog.Default().Printf(">>> Entering testRoutesInterface(t=%v,r=%v)", t, r)
 	handler := func(c *Context) {}
 	assert.Equal(t, r, r.Use(handler))
 
@@ -194,9 +218,11 @@ func testRoutesInterface(t *testing.T, r IRoutes) {
 	assert.Equal(t, r, r.StaticFileFS("/static2", ".", Dir(".", false)))
 	assert.Equal(t, r, r.Static("/static", "."))
 	assert.Equal(t, r, r.StaticFS("/static2", Dir(".", false)))
+	logritelog.Default().Printf("<<< Exiting testRoutesInterface(t=%v,r=%v)", t, r)
 }
 
 func TestRouterGroupCombineHandlersTooManyHandlers(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupCombineHandlersTooManyHandlers(t=%v)", t)
 	group := &RouterGroup{
 		Handlers: make(HandlersChain, MaxHandlers), // Assume group already has MaxHandlers middleware
 	}
@@ -206,9 +232,11 @@ func TestRouterGroupCombineHandlersTooManyHandlers(t *testing.T) {
 	assert.Panics(t, func() {
 		group.combineHandlers(tooManyHandlers)
 	}, "should panic due to too many handlers")
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupCombineHandlersTooManyHandlers(t=%v)", t)
 }
 
 func TestRouterGroupCombineHandlersEmptySliceNotNil(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestRouterGroupCombineHandlersEmptySliceNotNil(t=%v)", t)
 	group := &RouterGroup{
 		Handlers: HandlersChain{},
 	}
@@ -216,4 +244,5 @@ func TestRouterGroupCombineHandlersEmptySliceNotNil(t *testing.T) {
 	result := group.combineHandlers(HandlersChain{})
 	assert.NotNil(t, result, "result should not be nil even with empty handlers")
 	assert.Empty(t, result, "empty handlers should return empty chain")
+	logritelog.Default().Printf("<<< Exiting TestRouterGroupCombineHandlersEmptySliceNotNil(t=%v)", t)
 }

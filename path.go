@@ -4,6 +4,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE.
 
 package gin
+import logritelog "log"
 
 const stackBufSize = 128
 
@@ -21,6 +22,7 @@ const stackBufSize = 128
 //
 // If the result of this process is an empty string, "/" is returned.
 func cleanPath(p string) string {
+	logritelog.Default().Printf(">>> Entering cleanPath(p=%v)", p)
 	// Turn empty string into "/"
 	if p == "" {
 		return "/"
@@ -46,6 +48,7 @@ func cleanPath(p string) string {
 		if n+1 > stackBufSize {
 			buf = make([]byte, n+1)
 		} else {
+			logritelog.Default().Printf("cleanPath(p=%v): buf → %v", p, buf)
 			buf = buf[:n+1]
 		}
 		buf[0] = '/'
@@ -66,6 +69,7 @@ func cleanPath(p string) string {
 
 		case p[r] == '.' && r+1 == n:
 			trailing = true
+			logritelog.Default().Printf("cleanPath(p=%v): trailing → %v", p, trailing)
 			r++
 
 		case p[r] == '.' && p[r+1] == '/':
@@ -118,6 +122,7 @@ func cleanPath(p string) string {
 	// return the respective substring of the original string.
 	// Otherwise return a new string from the buffer.
 	if len(buf) == 0 {
+	logritelog.Default().Printf("<<< Exiting cleanPath(p=%v)", p)
 		return p[:w]
 	}
 	return string(buf[:w])
@@ -126,6 +131,7 @@ func cleanPath(p string) string {
 // Internal helper to lazily create a buffer if necessary.
 // Calls to this function get inlined.
 func bufApp(buf *[]byte, s string, w int, c byte) {
+	logritelog.Default().Printf(">>> Entering bufApp(buf=%v,s=%v,w=%v,c=%v)", buf, s, w, c)
 	b := *buf
 	if len(b) == 0 {
 		// No modification of the original string so far.
@@ -148,16 +154,19 @@ func bufApp(buf *[]byte, s string, w int, c byte) {
 		copy(b, s[:w])
 	}
 	b[w] = c
+	logritelog.Default().Printf("<<< Exiting bufApp(buf=%v,s=%v,w=%v,c=%v)", buf, s, w, c)
 }
 
 // removeRepeatedChar removes multiple consecutive 'char's from a string.
 // if s == "/a//b///c////" && char == '/', it returns "/a/b/c/"
 func removeRepeatedChar(s string, char byte) string {
+	logritelog.Default().Printf(">>> Entering removeRepeatedChar(s=%v,char=%v)", s, char)
 	// Check if there are any consecutive chars
 	hasRepeatedChar := false
 	for i := 1; i < len(s); i++ {
 		if s[i] == char && s[i-1] == char {
 			hasRepeatedChar = true
+			logritelog.Default().Printf("removeRepeatedChar(s=%v,char=%v): hasRepeatedChar → %v", s, char, hasRepeatedChar)
 			break
 		}
 	}
@@ -197,6 +206,7 @@ func removeRepeatedChar(s string, char byte) string {
 	// return the respective substring of the original string.
 	// Otherwise, return a new string from the buffer.
 	if len(buf) == 0 {
+	logritelog.Default().Printf("<<< Exiting removeRepeatedChar(s=%v,char=%v)", s, char)
 		return s[:w]
 	}
 	return string(buf[:w])

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -63,7 +64,9 @@ var _ IRouter = (*RouterGroup)(nil)
 
 // Use adds middleware to the group, see example code in GitHub.
 func (group *RouterGroup) Use(middleware ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering Use(middleware=%v)", middleware)
 	group.Handlers = append(group.Handlers, middleware...)
+	logritelog.Default().Printf("<<< Exiting Use(middleware=%v)", middleware)
 	return group.returnObj()
 }
 
@@ -80,13 +83,16 @@ func (group *RouterGroup) Group(relativePath string, handlers ...HandlerFunc) *R
 // BasePath returns the base path of router group.
 // For example, if v := router.Group("/rest/n/v1/api"), v.BasePath() is "/rest/n/v1/api".
 func (group *RouterGroup) BasePath() string {
+	logritelog.Default().Printf(">>> Entering BasePath()")
 	return group.basePath
 }
 
 func (group *RouterGroup) handle(httpMethod, relativePath string, handlers HandlersChain) IRoutes {
+	logritelog.Default().Printf(">>> Entering handle(httpMethod=%v,relativePath=%v,handlers=%v)", httpMethod, relativePath, handlers)
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	handlers = group.combineHandlers(handlers)
 	group.engine.addRoute(httpMethod, absolutePath, handlers)
+	logritelog.Default().Printf("<<< Exiting handle(httpMethod=%v,relativePath=%v,handlers=%v)", httpMethod, relativePath, handlers)
 	return group.returnObj()
 }
 
@@ -101,69 +107,83 @@ func (group *RouterGroup) handle(httpMethod, relativePath string, handlers Handl
 // frequently used, non-standardized or custom methods (e.g. for internal
 // communication with a proxy).
 func (group *RouterGroup) Handle(httpMethod, relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering Handle(httpMethod=%v,relativePath=%v,handlers=%v)", httpMethod, relativePath, handlers)
 	if matched := regEnLetter.MatchString(httpMethod); !matched {
 		panic("http method " + httpMethod + " is not valid")
 	}
+	logritelog.Default().Printf("<<< Exiting Handle(httpMethod=%v,relativePath=%v,handlers=%v)", httpMethod, relativePath, handlers)
 	return group.handle(httpMethod, relativePath, handlers)
 }
 
 // POST is a shortcut for router.Handle("POST", path, handlers).
 func (group *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering POST(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodPost, relativePath, handlers)
 }
 
 // GET is a shortcut for router.Handle("GET", path, handlers).
 func (group *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering GET(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodGet, relativePath, handlers)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handlers).
 func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering DELETE(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodDelete, relativePath, handlers)
 }
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handlers).
 func (group *RouterGroup) PATCH(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering PATCH(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodPatch, relativePath, handlers)
 }
 
 // PUT is a shortcut for router.Handle("PUT", path, handlers).
 func (group *RouterGroup) PUT(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering PUT(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodPut, relativePath, handlers)
 }
 
 // OPTIONS is a shortcut for router.Handle("OPTIONS", path, handlers).
 func (group *RouterGroup) OPTIONS(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering OPTIONS(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodOptions, relativePath, handlers)
 }
 
 // HEAD is a shortcut for router.Handle("HEAD", path, handlers).
 func (group *RouterGroup) HEAD(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering HEAD(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodHead, relativePath, handlers)
 }
 
 // Any registers a route that matches all the HTTP methods.
 // GET, POST, PUT, PATCH, HEAD, OPTIONS, DELETE, CONNECT, TRACE.
 func (group *RouterGroup) Any(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering Any(relativePath=%v,handlers=%v)", relativePath, handlers)
 	for _, method := range anyMethods {
 		group.handle(method, relativePath, handlers)
 	}
 
+	logritelog.Default().Printf("<<< Exiting Any(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.returnObj()
 }
 
 // Match registers a route that matches the specified methods that you declared.
 func (group *RouterGroup) Match(methods []string, relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering Match(methods=%v,relativePath=%v,handlers=%v)", methods, relativePath, handlers)
 	for _, method := range methods {
 		group.handle(method, relativePath, handlers)
 	}
 
+	logritelog.Default().Printf("<<< Exiting Match(methods=%v,relativePath=%v,handlers=%v)", methods, relativePath, handlers)
 	return group.returnObj()
 }
 
 // StaticFile registers a single route in order to serve a single file of the local filesystem.
 // router.StaticFile("favicon.ico", "./resources/favicon.ico")
 func (group *RouterGroup) StaticFile(relativePath, filepath string) IRoutes {
+	logritelog.Default().Printf(">>> Entering StaticFile(relativePath=%v,filepath=%v)", relativePath, filepath)
 	return group.staticFileHandler(relativePath, func(c *Context) {
 		c.File(filepath)
 	})
@@ -173,17 +193,20 @@ func (group *RouterGroup) StaticFile(relativePath, filepath string) IRoutes {
 // router.StaticFileFS("favicon.ico", "./resources/favicon.ico", Dir{".", false})
 // Gin by default uses: gin.Dir()
 func (group *RouterGroup) StaticFileFS(relativePath, filepath string, fs http.FileSystem) IRoutes {
+	logritelog.Default().Printf(">>> Entering StaticFileFS(relativePath=%v,filepath=%v,fs=%v)", relativePath, filepath, fs)
 	return group.staticFileHandler(relativePath, func(c *Context) {
 		c.FileFromFS(filepath, fs)
 	})
 }
 
 func (group *RouterGroup) staticFileHandler(relativePath string, handler HandlerFunc) IRoutes {
+	logritelog.Default().Printf(">>> Entering staticFileHandler(relativePath=%v,handler=%v)", relativePath, handler)
 	if strings.Contains(relativePath, ":") || strings.Contains(relativePath, "*") {
 		panic("URL parameters can not be used when serving a static file")
 	}
 	group.GET(relativePath, handler)
 	group.HEAD(relativePath, handler)
+	logritelog.Default().Printf("<<< Exiting staticFileHandler(relativePath=%v,handler=%v)", relativePath, handler)
 	return group.returnObj()
 }
 
@@ -195,12 +218,14 @@ func (group *RouterGroup) staticFileHandler(relativePath string, handler Handler
 //
 //	router.Static("/static", "/var/www")
 func (group *RouterGroup) Static(relativePath, root string) IRoutes {
+	logritelog.Default().Printf(">>> Entering Static(relativePath=%v,root=%v)", relativePath, root)
 	return group.StaticFS(relativePath, Dir(root, false))
 }
 
 // StaticFS works just like `Static()` but a custom `http.FileSystem` can be used instead.
 // Gin by default uses: gin.Dir()
 func (group *RouterGroup) StaticFS(relativePath string, fs http.FileSystem) IRoutes {
+	logritelog.Default().Printf(">>> Entering StaticFS(relativePath=%v,fs=%v)", relativePath, fs)
 	if strings.Contains(relativePath, ":") || strings.Contains(relativePath, "*") {
 		panic("URL parameters can not be used when serving a static folder")
 	}
@@ -210,10 +235,12 @@ func (group *RouterGroup) StaticFS(relativePath string, fs http.FileSystem) IRou
 	// Register GET and HEAD handlers
 	group.GET(urlPattern, handler)
 	group.HEAD(urlPattern, handler)
+	logritelog.Default().Printf("<<< Exiting StaticFS(relativePath=%v,fs=%v)", relativePath, fs)
 	return group.returnObj()
 }
 
 func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileSystem) HandlerFunc {
+	logritelog.Default().Printf(">>> Entering createStaticHandler(relativePath=%v,fs=%v)", relativePath, fs)
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
 
@@ -226,33 +253,42 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 		// Check if file exists and/or if we have permission to access it
 		f, err := fs.Open(file)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in createStaticHandler(relativePath=%v,fs=%v): %v", relativePath, fs, err)
 			c.Writer.WriteHeader(http.StatusNotFound)
 			c.handlers = group.engine.noRoute
+			logritelog.Default().Printf("createStaticHandler(relativePath=%v,fs=%v): c.handlers → %v", relativePath, fs, c.handlers)
 			// Reset index
 			c.index = -1
+			logritelog.Default().Printf("createStaticHandler(relativePath=%v,fs=%v): c.index → %v", relativePath, fs, c.index)
 			return
 		}
 		f.Close()
 
 		fileServer.ServeHTTP(c.Writer, c.Request)
 	}
+	logritelog.Default().Printf("<<< Exiting createStaticHandler(relativePath=%v,fs=%v)", relativePath, fs)
 }
 
 func (group *RouterGroup) combineHandlers(handlers HandlersChain) HandlersChain {
+	logritelog.Default().Printf(">>> Entering combineHandlers(handlers=%v)", handlers)
 	finalSize := len(group.Handlers) + len(handlers)
 	assert1(finalSize < int(abortIndex), "too many handlers")
 	mergedHandlers := make(HandlersChain, finalSize)
 	copy(mergedHandlers, group.Handlers)
 	copy(mergedHandlers[len(group.Handlers):], handlers)
+	logritelog.Default().Printf("<<< Exiting combineHandlers(handlers=%v)", handlers)
 	return mergedHandlers
 }
 
 func (group *RouterGroup) calculateAbsolutePath(relativePath string) string {
+	logritelog.Default().Printf(">>> Entering calculateAbsolutePath(relativePath=%v)", relativePath)
 	return joinPaths(group.basePath, relativePath)
 }
 
 func (group *RouterGroup) returnObj() IRoutes {
+	logritelog.Default().Printf(">>> Entering returnObj()")
 	if group.root {
+	logritelog.Default().Printf("<<< Exiting returnObj()")
 		return group.engine
 	}
 	return group

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -21,15 +22,18 @@ import (
 )
 
 func TestIsDebugging(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestIsDebugging(t=%v)", t)
 	SetMode(DebugMode)
 	assert.True(t, IsDebugging())
 	SetMode(ReleaseMode)
 	assert.False(t, IsDebugging())
 	SetMode(TestMode)
 	assert.False(t, IsDebugging())
+	logritelog.Default().Printf("<<< Exiting TestIsDebugging(t=%v)", t)
 }
 
 func TestDebugPrint(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrint(t=%v)", t)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		SetMode(ReleaseMode)
@@ -41,21 +45,26 @@ func TestDebugPrint(t *testing.T) {
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] these are 2 error messages\n", re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrint(t=%v)", t)
 }
 
 func TestDebugPrintFunc(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintFunc(t=%v)", t)
 	DebugPrintFunc = func(format string, values ...any) {
 		fmt.Fprintf(DefaultWriter, "[GIN-debug] "+format, values...)
 	}
+		logritelog.Default().Printf("TestDebugPrintFunc(t=%v): DebugPrintFunc → %v", t, DebugPrintFunc)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		debugPrint("debug print func test: %d", 123)
 		SetMode(TestMode)
 	})
 	assert.Regexp(t, `^\[GIN-debug\] debug print func test: 123`, re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintFunc(t=%v)", t)
 }
 
 func TestDebugPrintError(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintError(t=%v)", t)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		debugPrintError(nil)
@@ -63,21 +72,26 @@ func TestDebugPrintError(t *testing.T) {
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] [ERROR] this is an error\n", re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintError(t=%v)", t)
 }
 
 func TestDebugPrintRoutes(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintRoutes(t=%v)", t)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		debugPrintRoute(http.MethodGet, "/path/to/route/:param", HandlersChain{func(c *Context) {}, handlerNameTest})
 		SetMode(TestMode)
 	})
 	assert.Regexp(t, `^\[GIN-debug\] GET    /path/to/route/:param     --> (.*/vendor/)?github.com/gin-gonic/gin.handlerNameTest \(2 handlers\)\n$`, re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintRoutes(t=%v)", t)
 }
 
 func TestDebugPrintRouteFunc(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintRouteFunc(t=%v)", t)
 	DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
 		fmt.Fprintf(DefaultWriter, "[GIN-debug] %-6s %-40s --> %s (%d handlers)\n", httpMethod, absolutePath, handlerName, nuHandlers)
 	}
+		logritelog.Default().Printf("TestDebugPrintRouteFunc(t=%v): DebugPrintRouteFunc → %v", t, DebugPrintRouteFunc)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		debugPrintRoute(http.MethodGet, "/path/to/route/:param1/:param2", HandlersChain{func(c *Context) {}, handlerNameTest})
@@ -87,6 +101,7 @@ func TestDebugPrintRouteFunc(t *testing.T) {
 }
 
 func TestDebugPrintLoadTemplate(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintLoadTemplate(t=%v)", t)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		templ := template.Must(template.New("").Delims("{[{", "}]}").ParseGlob("./testdata/template/hello.tmpl"))
@@ -94,27 +109,33 @@ func TestDebugPrintLoadTemplate(t *testing.T) {
 		SetMode(TestMode)
 	})
 	assert.Regexp(t, `^\[GIN-debug\] Loaded HTML Templates \(2\): \n(\t- \n|\t- hello\.tmpl\n){2}\n`, re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintLoadTemplate(t=%v)", t)
 }
 
 func TestDebugPrintWARNINGSetHTMLTemplate(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintWARNINGSetHTMLTemplate(t=%v)", t)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		debugPrintWARNINGSetHTMLTemplate()
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] [WARNING] Since SetHTMLTemplate() is NOT thread-safe. It should only be called\nat initialization. ie. before any route is registered or the router is listening in a socket:\n\n\trouter := gin.Default()\n\trouter.SetHTMLTemplate(template) // << good place\n\n", re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintWARNINGSetHTMLTemplate(t=%v)", t)
 }
 
 func TestDebugPrintWARNINGDefault(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintWARNINGDefault(t=%v)", t)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		debugPrintWARNINGDefault()
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.\n\n", re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintWARNINGDefault(t=%v)", t)
 }
 
 func TestDebugPrintWARNINGDefaultWithUnsupportedVersion(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintWARNINGDefaultWithUnsupportedVersion(t=%v)", t)
 	runtimeVersion = "go1.23.12"
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
@@ -122,23 +143,30 @@ func TestDebugPrintWARNINGDefaultWithUnsupportedVersion(t *testing.T) {
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] [WARNING] Now Gin requires Go 1.25+.\n\n[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.\n\n", re)
+	logritelog.Default().Printf("TestDebugPrintWARNINGDefaultWithUnsupportedVersion(t=%v): runtimeVersion → %v", t, runtimeVersion)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintWARNINGDefaultWithUnsupportedVersion(t=%v)", t)
 }
 
 func TestDebugPrintWARNINGNew(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestDebugPrintWARNINGNew(t=%v)", t)
 	re := captureOutput(t, func() {
 		SetMode(DebugMode)
 		debugPrintWARNINGNew()
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] [WARNING] Running in \"debug\" mode. Switch to \"release\" mode in production.\n - using env:\texport GIN_MODE=release\n - using code:\tgin.SetMode(gin.ReleaseMode)\n\n", re)
+	logritelog.Default().Printf("<<< Exiting TestDebugPrintWARNINGNew(t=%v)", t)
 }
 
 func captureOutput(t *testing.T, f func()) string {
+	logritelog.Default().Printf(">>> Entering captureOutput(t=%v,f=%v)", t, f)
 	reader, writer, err := os.Pipe()
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in captureOutput(t=%v,f=%v): %v", t, f, err)
 		panic(err)
 	}
 	defaultWriter := DefaultWriter
+	logritelog.Default().Printf("<<< Exiting captureOutput(t=%v,f=%v)", t, f)
 	defaultErrorWriter := DefaultErrorWriter
 	defer func() {
 		DefaultWriter = defaultWriter
@@ -165,6 +193,7 @@ func captureOutput(t *testing.T, f func()) string {
 }
 
 func TestGetMinVer(t *testing.T) {
+	logritelog.Default().Printf(">>> Entering TestGetMinVer(t=%v)", t)
 	var m uint64
 	var e error
 	_, e = getMinVer("go1")
@@ -177,4 +206,5 @@ func TestGetMinVer(t *testing.T) {
 	assert.Equal(t, uint64(1), m)
 	_, e = getMinVer("go1.1.1.1")
 	require.Error(t, e)
+	logritelog.Default().Printf("<<< Exiting TestGetMinVer(t=%v)", t)
 }

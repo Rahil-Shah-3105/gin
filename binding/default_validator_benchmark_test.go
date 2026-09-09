@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -11,6 +12,7 @@ import (
 )
 
 func BenchmarkSliceValidationError(b *testing.B) {
+	logritelog.Default().Printf(">>> Entering BenchmarkSliceValidationError(b=%v)", b)
 	const size int = 100
 	e := make(SliceValidationError, size)
 	for j := 0; j < size; j++ {
@@ -24,4 +26,5 @@ func BenchmarkSliceValidationError(b *testing.B) {
 			b.Errorf("error")
 		}
 	}
+	logritelog.Default().Printf("<<< Exiting BenchmarkSliceValidationError(b=%v)", b)
 }
