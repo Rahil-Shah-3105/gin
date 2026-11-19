@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -369,6 +370,9 @@ func readWriteKeys(c *Context) {
 		c.Set("1", rand.Int())
 		c.Set("2", c.Value("1"))
 	}
+	logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): NIS2-AUDIT [Art. 21(2)(c)]: Business continuity — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): NIS2-AUDIT [Art. 20]: Governance — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): NIS2-AUDIT: Security events — Record access recorded for the audit trail", c)
 }
 
 func githubConfigRouter(router *Engine) {

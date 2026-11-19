@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -42,6 +43,7 @@ func TestRouterGroupBasicHandle(t *testing.T) {
 	performRequestInGroup(t, http.MethodDelete)
 	performRequestInGroup(t, http.MethodHead)
 	performRequestInGroup(t, http.MethodOptions)
+	logritelog.Default().Printf("[INFO] TestRouterGroupBasicHandle(t=%v): NIS2-AUDIT [Art. 21(2)(d)]: Supply chain — Change management operation performed", t)
 }
 
 func performRequestInGroup(t *testing.T, method string) {
@@ -89,6 +91,7 @@ func performRequestInGroup(t *testing.T, method string) {
 	w = PerformRequest(router, method, "/v1/test")
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "the method was "+method+" and index 1", w.Body.String())
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): NIS2-AUDIT [Art. 21(2)(d)]: Supply chain — Change management operation performed", t, method)
 }
 
 func TestRouterGroupInvalidStatic(t *testing.T) {
@@ -165,6 +168,7 @@ func TestRouterGroupBadMethod(t *testing.T) {
 	assert.Panics(t, func() {
 		router.Handle("PATCh", "/")
 	})
+	logritelog.Default().Printf("[INFO] TestRouterGroupBadMethod(t=%v): NIS2-AUDIT [Art. 21(2)(d)]: Supply chain — Change management operation performed", t)
 }
 
 func TestRouterGroupPipeline(t *testing.T) {
@@ -194,6 +198,7 @@ func testRoutesInterface(t *testing.T, r IRoutes) {
 	assert.Equal(t, r, r.StaticFileFS("/static2", ".", Dir(".", false)))
 	assert.Equal(t, r, r.Static("/static", "."))
 	assert.Equal(t, r, r.StaticFS("/static2", Dir(".", false)))
+	logritelog.Default().Printf("[INFO] testRoutesInterface(t=%v, r=%v): NIS2-AUDIT [Art. 21(2)(d)]: Supply chain — Change management operation performed", t, r)
 }
 
 func TestRouterGroupCombineHandlersTooManyHandlers(t *testing.T) {

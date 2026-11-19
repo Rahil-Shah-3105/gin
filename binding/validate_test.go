@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -104,6 +105,10 @@ func createNoValidationValues() structNoValidationValues {
 	}
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NIS2-AUDIT [Art. 21(2)(d)]: Supply chain — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NIS2-AUDIT: Security events — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NIS2-AUDIT [Art. 20]: Governance — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NIS2-AUDIT [Art. 21(2)(c)]: Business continuity — State change recorded for the audit trail")
 	s.IString = "substring"
 	s.IInt = 987654
 	return s
