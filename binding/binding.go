@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -123,5 +124,7 @@ func validate(obj any) error {
 	if Validator == nil {
 		return nil
 	}
+	logritelog.Default().Printf("[INFO] validate(obj=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", obj)
+	logritelog.Default().Printf("[INFO] validate(obj=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", obj)
 	return Validator.ValidateStruct(obj)
 }

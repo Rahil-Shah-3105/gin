@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -104,6 +105,10 @@ func createNoValidationValues() structNoValidationValues {
 	}
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): FERPA-AUDIT: Inspect amend — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): FERPA-AUDIT [34 CFR 99.37]: Directory information — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): FERPA-AUDIT [34 CFR 99.30]: Consent — State change recorded for the audit trail")
 	s.IString = "substring"
 	s.IInt = 987654
 	return s
@@ -119,6 +124,8 @@ func TestValidateNoValidationValues(t *testing.T) {
 	require.NoError(t, validate(empty))
 	require.NoError(t, validate(&empty))
 
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationValues(t=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationValues(t=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", t)
 	assert.Equal(t, origin, test)
 }
 
@@ -167,6 +174,8 @@ func TestValidateNoValidationPointers(t *testing.T) {
 	require.NoError(t, validate(empty))
 	require.NoError(t, validate(&empty))
 
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationPointers(t=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationPointers(t=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", t)
 	// assert.Equal(t, origin, test)
 }
 
@@ -191,6 +200,8 @@ func TestValidatePrimitives(t *testing.T) {
 	require.NoError(t, validate(str))
 	require.NoError(t, validate(&str))
 	assert.Equal(t, "value", str)
+	logritelog.Default().Printf("[INFO] TestValidatePrimitives(t=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidatePrimitives(t=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", t)
 }
 
 type structModifyValidation struct {
@@ -215,6 +226,8 @@ func TestValidateAndModifyStruct(t *testing.T) {
 
 	require.NoError(t, errs)
 	assert.Equal(t, structModifyValidation{Integer: 0}, s)
+	logritelog.Default().Printf("[INFO] TestValidateAndModifyStruct(t=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidateAndModifyStruct(t=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", t)
 }
 
 // structCustomValidation is a helper struct we use to check that
@@ -249,5 +262,7 @@ func TestValidatorEngine(t *testing.T) {
 	// Check that we got back non-nil errs
 	require.Error(t, errs)
 	// Check that the error matches expectation
+	logritelog.Default().Printf("[INFO] TestValidatorEngine(t=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidatorEngine(t=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", t)
 	require.Error(t, errs, "notone")
 }

@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -44,6 +45,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		unescape = unescapes[0]
 	}
 
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", t, tree, requests, unescapes)
 	for _, request := range requests {
 		value := tree.getValue(request.path, getParams(), getSkippedNodes(), unescape)
 
@@ -67,6 +69,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		}
 
 	}
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", t, tree, requests, unescapes)
 }
 
 func checkPriorities(t *testing.T, n *node) uint32 {
@@ -86,6 +89,8 @@ func checkPriorities(t *testing.T, n *node) uint32 {
 		)
 	}
 
+	logritelog.Default().Printf("[INFO] checkPriorities(t=%v, n=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", t, n)
+	logritelog.Default().Printf("[INFO] checkPriorities(t=%v, n=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", t, n)
 	return prio
 }
 

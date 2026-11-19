@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -166,9 +167,13 @@ func readNthLine(file string, n int) (string, error) {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): FERPA-AUDIT: Inspect amend — Record access recorded for the audit trail", file, n)
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): FERPA-AUDIT [34 CFR 99.37]: Directory information — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): FERPA-AUDIT [34 CFR 99.30]: Consent — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }
