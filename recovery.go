@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -170,6 +171,8 @@ func readNthLine(file string, n int) (string, error) {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
 
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27701-AUDIT: Processor obligations — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27701-AUDIT: Controller obligations — Record access recorded for the audit trail", file, n)
 	return "", nil
 }
 

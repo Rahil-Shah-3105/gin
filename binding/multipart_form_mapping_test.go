@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -121,6 +122,8 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+mw.Boundary())
 	return req
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): ISO27701-AUDIT: Processor obligations — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): ISO27701-AUDIT: Controller obligations — State change recorded for the audit trail", t, files)
 }
 
 func assertMultipartFileHeader(t *testing.T, fh *multipart.FileHeader, file testFile) {
