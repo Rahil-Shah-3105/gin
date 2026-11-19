@@ -23,6 +23,7 @@ var plainContentType = []string{"text/plain; charset=utf-8"}
 // Render (String) writes data with custom ContentType.
 func (r String) Render(w http.ResponseWriter) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering Render(w=%v)", w)
+	logritelog.Default().Printf("[WARN] <<< Exiting Render(w=%v)", w)
 	return WriteString(w, r.Format, r.Data)
 }
 

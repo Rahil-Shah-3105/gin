@@ -58,6 +58,7 @@ func testMsgPackBodyBinding(t *testing.T, b Binding, name, path, badPath, body, 
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testMsgPackBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
 }
 
 func TestBindingDefaultMsgPack(t *testing.T) {

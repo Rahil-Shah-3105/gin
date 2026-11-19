@@ -158,6 +158,7 @@ type mockWriter struct {
 
 func newMockWriter() *mockWriter {
 	logritelog.Default().Printf("[ERROR] >>> Entering newMockWriter()")
+	logritelog.Default().Printf("[WARN] <<< Exiting newMockWriter()")
 	return &mockWriter{
 		http.Header{},
 	}
@@ -165,16 +166,19 @@ func newMockWriter() *mockWriter {
 
 func (m *mockWriter) Header() (h http.Header) {
 	logritelog.Default().Printf("[ERROR] >>> Entering Header()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Header()")
 	return m.headers
 }
 
 func (m *mockWriter) Write(p []byte) (n int, err error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering Write(p=%v)", p)
+	logritelog.Default().Printf("[WARN] <<< Exiting Write(p=%v)", p)
 	return len(p), nil
 }
 
 func (m *mockWriter) WriteString(s string) (n int, err error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering WriteString(s=%v)", s)
+	logritelog.Default().Printf("[WARN] <<< Exiting WriteString(s=%v)", s)
 	return len(s), nil
 }
 

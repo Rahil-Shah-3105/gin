@@ -54,6 +54,7 @@ var htmlContentType = []string{"text/html; charset=utf-8"}
 // Instance (HTMLProduction) returns an HTML instance which it realizes Render interface.
 func (r HTMLProduction) Instance(name string, data any) Render {
 	logritelog.Default().Printf("[ERROR] >>> Entering Instance(name=%v,data=%v)", name, data)
+	logritelog.Default().Printf("[WARN] <<< Exiting Instance(name=%v,data=%v)", name, data)
 	return HTML{
 		Template: r.Template,
 		Name:     name,

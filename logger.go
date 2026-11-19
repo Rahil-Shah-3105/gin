@@ -163,12 +163,14 @@ func (p *LogFormatterParams) MethodColor() string {
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering ResetColor()")
+	logritelog.Default().Printf("[WARN] <<< Exiting ResetColor()")
 	return reset
 }
 
 // IsOutputColor indicates whether can colors be outputted to the log.
 func (p *LogFormatterParams) IsOutputColor() bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering IsOutputColor()")
+	logritelog.Default().Printf("[WARN] <<< Exiting IsOutputColor()")
 	return consoleColorMode == forceColor || (consoleColorMode == autoColor && p.isTerm)
 }
 
@@ -222,6 +224,7 @@ logritelog.Default().Printf("[WARN] <<< Exiting ForceConsoleColor()")
 func ErrorLogger() HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering ErrorLogger()")
 	logritelog.Default().Printf("[ERROR] >>> Entering Logger()")
+	logritelog.Default().Printf("[WARN] <<< Exiting ErrorLogger()")
 	return ErrorLoggerT(ErrorTypeAny)
 }
 
@@ -246,6 +249,7 @@ func Logger() HandlerFunc {
 // LoggerWithFormatter instance a Logger middleware with the specified log format function.
 func LoggerWithFormatter(f LogFormatter) HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering LoggerWithFormatter(f=%v)", f)
+	logritelog.Default().Printf("[WARN] <<< Exiting LoggerWithFormatter(f=%v)", f)
 	return LoggerWithConfig(LoggerConfig{
 		Formatter: f,
 	})
@@ -255,6 +259,7 @@ func LoggerWithFormatter(f LogFormatter) HandlerFunc {
 // Example: os.Stdout, a file opened in write mode, a socket...
 func LoggerWithWriter(out io.Writer, notlogged ...string) HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering LoggerWithWriter(out=%v,notlogged=%v)", out, notlogged)
+	logritelog.Default().Printf("[WARN] <<< Exiting LoggerWithWriter(out=%v,notlogged=%v)", out, notlogged)
 	return LoggerWithConfig(LoggerConfig{
 		Output:    out,
 		SkipPaths: notlogged,

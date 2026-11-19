@@ -16,6 +16,7 @@ type bsonBinding struct{}
 
 func (bsonBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "bson"
 }
 
@@ -31,5 +32,6 @@ func (b bsonBinding) Bind(req *http.Request, obj any) error {
 
 func (bsonBinding) BindBody(body []byte, obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindBody(body=%v,obj=%v)", body, obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindBody(body=%v,obj=%v)", body, obj)
 	return bson.Unmarshal(body, obj)
 }

@@ -209,6 +209,7 @@ func TestBindingJSONSlice(t *testing.T) {
 	logritelog.Default().Printf("[ERROR] >>> Entering TestBindingJSONSlice(t=%v)", t)
 	logritelog.Default().Printf("[DEBUG] TestBindingJSONSlice(t=%v): EnableDecoderDisallowUnknownFields → %v", t, EnableDecoderDisallowUnknownFields)
 	defer func() {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestBindingJSONSlice(t=%v)", t)
 		EnableDecoderDisallowUnknownFields = false
 	}()
 
@@ -448,6 +449,7 @@ func TestBindingFormStringSliceMap(t *testing.T) {
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] TestBindingFormStringSliceMap(t=%v): req → %v", t, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting TestBindingFormStringSliceMap(t=%v)", t)
+	logritelog.Default().Printf("[DEBUG] TestBindingFormStringSliceMap(t=%v): err → %v", t, err)
 }
 
 func TestBindingQuery(t *testing.T) {
@@ -505,6 +507,7 @@ func TestBindingQueryStringMap(t *testing.T) {
 
 	obj = make(map[string]string)
 	req = requestWithBody(http.MethodGet, "/?foo=bar&foo=2&hello=world", "") // should pick last
+	logritelog.Default().Printf("[DEBUG] TestBindingQueryStringMap(t=%v): req → %v", t, req)
 	logritelog.Default().Printf("[DEBUG] TestBindingQueryStringMap(t=%v): obj → %v", t, obj)
 	err = b.Bind(req, &obj)
 	require.NoError(t, err)
@@ -1041,6 +1044,7 @@ func testFormBinding(t *testing.T, method, path, badPath, body, badBody string) 
 	err = JSON.Bind(req, &obj)
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBinding(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
+	logritelog.Default().Printf("[DEBUG] testFormBinding(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingDefaultValue(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1065,6 +1069,7 @@ func testFormBindingDefaultValue(t *testing.T, method, path, badPath, body, badB
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingDefaultValue(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingDefaultValue(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingDefaultValue(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func TestFormBindingFail(t *testing.T) {
@@ -1091,6 +1096,8 @@ func TestFormBindingMultipartFail(t *testing.T) {
 	err = Form.Bind(req, &obj)
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] TestFormBindingMultipartFail(t=%v): err → %v", t, err)
+	logritelog.Default().Printf("[ERROR] TestFormBindingMultipartFail(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestFormBindingMultipartFail(t=%v)", t)
 }
 
 func TestFormPostBindingFail(t *testing.T) {
@@ -1148,6 +1155,7 @@ func testFormBindingForTime(t *testing.T, method, path, badPath, body, badBody s
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingForTime(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingForTime(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingForTime(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingForTimeNotUnixFormat(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1170,6 +1178,7 @@ func testFormBindingForTimeNotUnixFormat(t *testing.T, method, path, badPath, bo
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeNotUnixFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingForTimeNotUnixFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeNotUnixFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingForTimeNotFormat(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1192,6 +1201,7 @@ func testFormBindingForTimeNotFormat(t *testing.T, method, path, badPath, body, 
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeNotFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingForTimeNotFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeNotFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingForTimeFailFormat(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1214,6 +1224,7 @@ func testFormBindingForTimeFailFormat(t *testing.T, method, path, badPath, body,
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeFailFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingForTimeFailFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeFailFormat(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingForTimeFailLocation(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1236,6 +1247,7 @@ func testFormBindingForTimeFailLocation(t *testing.T, method, path, badPath, bod
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeFailLocation(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingForTimeFailLocation(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingForTimeFailLocation(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingIgnoreField(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1276,6 +1288,7 @@ func testFormBindingInvalidName(t *testing.T, method, path, badPath, body, badBo
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingInvalidName(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingInvalidName(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingInvalidName(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingInvalidName2(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1298,6 +1311,7 @@ func testFormBindingInvalidName2(t *testing.T, method, path, badPath, body, badB
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testFormBindingInvalidName2(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, method, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testFormBindingInvalidName2(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, method, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testFormBindingInvalidName2(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, method, path, badPath, body, badBody, err)
 }
 
 func testFormBindingForType(t *testing.T, method, path, badPath, body, badBody string, typ string) {
@@ -1325,6 +1339,7 @@ func testFormBindingForType(t *testing.T, method, path, badPath, body, badBody s
 		logritelog.Default().Printf("[DEBUG] testFormBindingForType(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v,typ=%v): req → %v", t, method, path, badPath, body, badBody, typ, req)
 		obj := FooStructForStructType{}
 		err := b.Bind(req, &obj)
+		logritelog.Default().Printf("[DEBUG] testFormBindingForType(t=%v,method=%v,path=%v,badPath=%v,body=%v,badBody=%v,typ=%v): err → %v", t, method, path, badPath, body, badBody, typ, err)
 		require.NoError(t, err)
 		assert.Equal(t,
 			struct {
@@ -1438,6 +1453,7 @@ func testBodyBinding(t *testing.T, b Binding, name, path, badPath, body, badBody
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
 }
 
 func testBodyBindingSlice(t *testing.T, b Binding, name, path, badPath, body, badBody string) {
@@ -1455,6 +1471,7 @@ func testBodyBindingSlice(t *testing.T, b Binding, name, path, badPath, body, ba
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testBodyBindingSlice(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testBodyBindingSlice(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testBodyBindingSlice(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
 }
 
 func testBodyBindingStringMap(t *testing.T, b Binding, path, badPath, body, badBody string) {
@@ -1510,6 +1527,7 @@ func testBodyBindingUseNumber(t *testing.T, b Binding, name, path, badPath, body
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testBodyBindingUseNumber(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testBodyBindingUseNumber(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testBodyBindingUseNumber(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
 }
 
 func testBodyBindingUseNumber2(t *testing.T, b Binding, name, path, badPath, body, badBody string) {
@@ -1533,6 +1551,7 @@ func testBodyBindingUseNumber2(t *testing.T, b Binding, name, path, badPath, bod
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testBodyBindingUseNumber2(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testBodyBindingUseNumber2(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testBodyBindingUseNumber2(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
 }
 
 func testBodyBindingDisallowUnknownFields(t *testing.T, b Binding, path, badPath, body, badBody string) {
@@ -1540,6 +1559,7 @@ func testBodyBindingDisallowUnknownFields(t *testing.T, b Binding, path, badPath
 	logritelog.Default().Printf("[ERROR] >>> Entering testBodyBindingDisallowUnknownFields(t=%v,b=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, path, badPath, body, badBody)
 	logritelog.Default().Printf("[DEBUG] testBodyBindingDisallowUnknownFields(t=%v,b=%v,path=%v,badPath=%v,body=%v,badBody=%v): EnableDecoderDisallowUnknownFields → %v", t, b, path, badPath, body, badBody, EnableDecoderDisallowUnknownFields)
 	defer func() {
+	logritelog.Default().Printf("[WARN] <<< Exiting testBodyBindingDisallowUnknownFields(t=%v,b=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, path, badPath, body, badBody)
 		EnableDecoderDisallowUnknownFields = false
 	}()
 
@@ -1573,6 +1593,7 @@ func testBodyBindingFail(t *testing.T, b Binding, name, path, badPath, body, bad
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testBodyBindingFail(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testBodyBindingFail(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testBodyBindingFail(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
 }
 
 func testProtoBodyBinding(t *testing.T, b Binding, name, path, badPath, body, badBody string) {
@@ -1594,6 +1615,7 @@ func testProtoBodyBinding(t *testing.T, b Binding, name, path, badPath, body, ba
 	require.Error(t, err)
 	logritelog.Default().Printf("[DEBUG] testProtoBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): req → %v", t, b, name, path, badPath, body, badBody, req)
 	logritelog.Default().Printf("[WARN] <<< Exiting testProtoBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v)", t, b, name, path, badPath, body, badBody)
+	logritelog.Default().Printf("[DEBUG] testProtoBodyBinding(t=%v,b=%v,name=%v,path=%v,badPath=%v,body=%v,badBody=%v): err → %v", t, b, name, path, badPath, body, badBody, err)
 }
 
 type hook struct{}
@@ -1611,6 +1633,7 @@ func (f *failRead) Read(b []byte) (n int, err error) {
 
 func (f *failRead) Close() error {
 	logritelog.Default().Printf("[ERROR] >>> Entering Close()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Close()")
 	return nil
 }
 

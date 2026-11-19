@@ -21,11 +21,13 @@ var (
 
 func rawBytesToStr(b []byte) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering rawBytesToStr(b=%v)", b)
+	logritelog.Default().Printf("[WARN] <<< Exiting rawBytesToStr(b=%v)", b)
 	return string(b)
 }
 
 func rawStrToBytes(s string) []byte {
 	logritelog.Default().Printf("[ERROR] >>> Entering rawStrToBytes(s=%v)", s)
+	logritelog.Default().Printf("[WARN] <<< Exiting rawStrToBytes(s=%v)", s)
 	return []byte(s)
 }
 

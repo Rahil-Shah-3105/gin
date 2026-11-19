@@ -17,6 +17,7 @@ type mockFileSystem struct {
 
 func (m *mockFileSystem) Open(name string) (http.File, error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering Open(name=%v)", name)
+	logritelog.Default().Printf("[WARN] <<< Exiting Open(name=%v)", name)
 	return m.open(name)
 }
 

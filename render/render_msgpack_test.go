@@ -75,6 +75,7 @@ type failWriter struct {
 
 func (w *failWriter) Write(data []byte) (int, error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering Write(data=%v)", data)
+	logritelog.Default().Printf("[WARN] <<< Exiting Write(data=%v)", data)
 	return 0, errors.New("write error")
 }
 

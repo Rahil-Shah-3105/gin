@@ -13,6 +13,7 @@ import (
 // For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
 func StringToBytes(s string) []byte {
 	logritelog.Default().Printf("[ERROR] >>> Entering StringToBytes(s=%v)", s)
+	logritelog.Default().Printf("[WARN] <<< Exiting StringToBytes(s=%v)", s)
 	return unsafe.Slice(unsafe.StringData(s), len(s))
 }
 
@@ -20,5 +21,6 @@ func StringToBytes(s string) []byte {
 // For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
 func BytesToString(b []byte) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering BytesToString(b=%v)", b)
+	logritelog.Default().Printf("[WARN] <<< Exiting BytesToString(b=%v)", b)
 	return unsafe.String(unsafe.SliceData(b), len(b))
 }

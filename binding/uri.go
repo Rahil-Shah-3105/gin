@@ -9,6 +9,7 @@ type uriBinding struct{}
 
 func (uriBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "uri"
 }
 

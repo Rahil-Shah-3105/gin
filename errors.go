@@ -85,24 +85,28 @@ func (msg *Error) JSON() any {
 // MarshalJSON implements the json.Marshaller interface.
 func (msg *Error) MarshalJSON() ([]byte, error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering MarshalJSON()")
+	logritelog.Default().Printf("[WARN] <<< Exiting MarshalJSON()")
 	return json.API.Marshal(msg.JSON())
 }
 
 // Error implements the error interface.
 func (msg Error) Error() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Error()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Error()")
 	return msg.Err.Error()
 }
 
 // IsType judges one error.
 func (msg *Error) IsType(flags ErrorType) bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering IsType(flags=%v)", flags)
+	logritelog.Default().Printf("[WARN] <<< Exiting IsType(flags=%v)", flags)
 	return (msg.Type & flags) > 0
 }
 
 // Unwrap returns the wrapped error, to allow interoperability with errors.Is(), errors.As() and errors.Unwrap()
 func (msg Error) Unwrap() error {
 	logritelog.Default().Printf("[ERROR] >>> Entering Unwrap()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Unwrap()")
 	return msg.Err
 }
 

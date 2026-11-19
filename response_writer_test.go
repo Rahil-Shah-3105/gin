@@ -363,6 +363,7 @@ type mockPusherResponseWriter struct {
 
 func (m *mockPusherResponseWriter) Push(target string, opts *http.PushOptions) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering Push(target=%v,opts=%v)", target, opts)
+	logritelog.Default().Printf("[WARN] <<< Exiting Push(target=%v,opts=%v)", target, opts)
 	return nil
 }
 

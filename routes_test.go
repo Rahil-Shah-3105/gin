@@ -314,6 +314,7 @@ func TestRouteParamsByName(t *testing.T) {
 		name = c.Params.ByName("name")
 		lastName = c.Params.ByName("last_name")
 		var ok bool
+		logritelog.Default().Printf("[DEBUG] TestRouteParamsByName(t=%v): lastName → <redacted>", t)
 		logritelog.Default().Printf("[DEBUG] TestRouteParamsByName(t=%v): name → %v", t, name)
 		wild, ok = c.Params.Get("wild")
 
@@ -351,6 +352,7 @@ func TestRouteParamsByNameWithExtraSlash(t *testing.T) {
 		name = c.Params.ByName("name")
 		lastName = c.Params.ByName("last_name")
 		var ok bool
+		logritelog.Default().Printf("[DEBUG] TestRouteParamsByNameWithExtraSlash(t=%v): lastName → <redacted>", t)
 		logritelog.Default().Printf("[DEBUG] TestRouteParamsByNameWithExtraSlash(t=%v): name → %v", t, name)
 		wild, ok = c.Params.Get("wild")
 
@@ -393,6 +395,7 @@ func TestRouteParamsNotEmpty(t *testing.T) {
 		name = c.Params.ByName("name")
 		lastName = c.Params.ByName("last_name")
 		var ok bool
+		logritelog.Default().Printf("[DEBUG] TestRouteParamsNotEmpty(t=%v): lastName → <redacted>", t)
 		logritelog.Default().Printf("[DEBUG] TestRouteParamsNotEmpty(t=%v): name → %v", t, name)
 		wild, ok = c.Params.Get("wild")
 

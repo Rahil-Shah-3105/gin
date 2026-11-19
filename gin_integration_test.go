@@ -166,6 +166,7 @@ func TestRunTLS(t *testing.T) {
 	logritelog.Default().Printf("[ERROR] >>> Entering TestRunTLS(t=%v)", t)
 	router := New()
 	go func() {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRunTLS(t=%v)", t)
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 
 		assert.NoError(t, router.RunTLS(":8443", "./testdata/certificate/cert.pem", "./testdata/certificate/key.pem"))
@@ -250,6 +251,7 @@ func TestRunWithPort(t *testing.T) {
 	logritelog.Default().Printf("[ERROR] >>> Entering TestRunWithPort(t=%v)", t)
 	router := New()
 	go func() {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRunWithPort(t=%v)", t)
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 		assert.NoError(t, router.Run(":5150"))
 	}()
@@ -304,6 +306,7 @@ func TestRunQUIC(t *testing.T) {
 	logritelog.Default().Printf("[ERROR] >>> Entering TestRunQUIC(t=%v)", t)
 	router := New()
 	go func() {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRunQUIC(t=%v)", t)
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
 
 		assert.NoError(t, router.RunQUIC(":8443", "./testdata/certificate/cert.pem", "./testdata/certificate/key.pem"))
@@ -615,6 +618,7 @@ func TestTreeRunDynamicRouting(t *testing.T) {
 
 func isWindows() bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering isWindows()")
+	logritelog.Default().Printf("[WARN] <<< Exiting isWindows()")
 	return runtime.GOOS == "windows"
 }
 

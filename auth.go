@@ -76,6 +76,7 @@ func BasicAuthForRealm(accounts Accounts, realm string) HandlerFunc {
 // the key is the user name and the value is the password.
 func BasicAuth(accounts Accounts) HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering BasicAuth(accounts=%v)", accounts)
+	logritelog.Default().Printf("[WARN] <<< Exiting BasicAuth(accounts=%v)", accounts)
 	return BasicAuthForRealm(accounts, "")
 }
 

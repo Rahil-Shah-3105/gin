@@ -77,6 +77,7 @@ func TestLoadHTMLGlobDebugMode(t *testing.T) {
 		DebugMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLGlobDebugMode(t=%v)", t)
 			router.LoadHTMLGlob("./testdata/template/*")
 		},
 	)
@@ -140,6 +141,7 @@ func TestLoadHTMLGlobTestMode(t *testing.T) {
 		TestMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLGlobTestMode(t=%v)", t)
 			router.LoadHTMLGlob("./testdata/template/*")
 		},
 	)
@@ -161,6 +163,7 @@ func TestLoadHTMLGlobReleaseMode(t *testing.T) {
 		ReleaseMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLGlobReleaseMode(t=%v)", t)
 			router.LoadHTMLGlob("./testdata/template/*")
 		},
 	)
@@ -182,6 +185,7 @@ func TestLoadHTMLGlobUsingTLS(t *testing.T) {
 		DebugMode,
 		true,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLGlobUsingTLS(t=%v)", t)
 			router.LoadHTMLGlob("./testdata/template/*")
 		},
 	)
@@ -210,6 +214,7 @@ func TestLoadHTMLGlobFromFuncMap(t *testing.T) {
 		DebugMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLGlobFromFuncMap(t=%v)", t)
 			router.LoadHTMLGlob("./testdata/template/*")
 		},
 	)
@@ -246,6 +251,7 @@ func TestLoadHTMLFilesTestMode(t *testing.T) {
 		TestMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFilesTestMode(t=%v)", t)
 			router.LoadHTMLFiles("./testdata/template/hello.tmpl", "./testdata/template/raw.tmpl")
 		},
 	)
@@ -267,6 +273,7 @@ func TestLoadHTMLFilesDebugMode(t *testing.T) {
 		DebugMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFilesDebugMode(t=%v)", t)
 			router.LoadHTMLFiles("./testdata/template/hello.tmpl", "./testdata/template/raw.tmpl")
 		},
 	)
@@ -288,6 +295,7 @@ func TestLoadHTMLFilesReleaseMode(t *testing.T) {
 		ReleaseMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFilesReleaseMode(t=%v)", t)
 			router.LoadHTMLFiles("./testdata/template/hello.tmpl", "./testdata/template/raw.tmpl")
 		},
 	)
@@ -309,6 +317,7 @@ func TestLoadHTMLFilesUsingTLS(t *testing.T) {
 		TestMode,
 		true,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFilesUsingTLS(t=%v)", t)
 			router.LoadHTMLFiles("./testdata/template/hello.tmpl", "./testdata/template/raw.tmpl")
 		},
 	)
@@ -337,6 +346,7 @@ func TestLoadHTMLFilesFuncMap(t *testing.T) {
 		TestMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFilesFuncMap(t=%v)", t)
 			router.LoadHTMLFiles("./testdata/template/hello.tmpl", "./testdata/template/raw.tmpl")
 		},
 	)
@@ -360,6 +370,7 @@ func TestLoadHTMLFSTestMode(t *testing.T) {
 		TestMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFSTestMode(t=%v)", t)
 			router.LoadHTMLFS(tmplFS, "hello.tmpl", "raw.tmpl")
 		},
 	)
@@ -381,6 +392,7 @@ func TestLoadHTMLFSDebugMode(t *testing.T) {
 		DebugMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFSDebugMode(t=%v)", t)
 			router.LoadHTMLFS(tmplFS, "hello.tmpl", "raw.tmpl")
 		},
 	)
@@ -402,6 +414,7 @@ func TestLoadHTMLFSReleaseMode(t *testing.T) {
 		ReleaseMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFSReleaseMode(t=%v)", t)
 			router.LoadHTMLFS(tmplFS, "hello.tmpl", "raw.tmpl")
 		},
 	)
@@ -423,6 +436,7 @@ func TestLoadHTMLFSUsingTLS(t *testing.T) {
 		TestMode,
 		true,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFSUsingTLS(t=%v)", t)
 			router.LoadHTMLFS(tmplFS, "hello.tmpl", "raw.tmpl")
 		},
 	)
@@ -451,6 +465,7 @@ func TestLoadHTMLFSFuncMap(t *testing.T) {
 		TestMode,
 		false,
 		func(router *Engine) {
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoadHTMLFSFuncMap(t=%v)", t)
 			router.LoadHTMLFS(tmplFS, "hello.tmpl", "raw.tmpl")
 		},
 	)

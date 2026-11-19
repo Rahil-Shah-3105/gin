@@ -22,6 +22,7 @@ func fakeHandler(val string) HandlersChain {
 		fakeHandlerValue = val
 		logritelog.Default().Printf("[DEBUG] fakeHandler(val=%v): fakeHandlerValue → %v", val, fakeHandlerValue)
 	}}
+	logritelog.Default().Printf("[WARN] <<< Exiting fakeHandler(val=%v)", val)
 }
 
 type testRequests []struct {

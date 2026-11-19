@@ -111,5 +111,6 @@ logritelog.Default().Printf("[WARN] <<< Exiting EnableJsonDecoderDisallowUnknown
 // Mode returns current gin mode.
 func Mode() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Mode()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Mode()")
 	return modeName.Load().(string)
 }

@@ -22,6 +22,7 @@ var runtimeVersion = runtime.Version()
 // Use SetMode(gin.ReleaseMode) to disable debug mode.
 func IsDebugging() bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering IsDebugging()")
+	logritelog.Default().Printf("[WARN] <<< Exiting IsDebugging()")
 	return atomic.LoadInt32(&ginMode) == debugCode
 }
 

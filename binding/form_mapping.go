@@ -32,16 +32,19 @@ var (
 
 func mapURI(ptr any, m map[string][]string) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering mapURI(ptr=%v,m=%v)", ptr, m)
+	logritelog.Default().Printf("[WARN] <<< Exiting mapURI(ptr=%v,m=%v)", ptr, m)
 	return mapFormByTag(ptr, m, "uri")
 }
 
 func mapForm(ptr any, form map[string][]string) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering mapForm(ptr=%v,form=%v)", ptr, form)
+	logritelog.Default().Printf("[WARN] <<< Exiting mapForm(ptr=%v,form=%v)", ptr, form)
 	return mapFormByTag(ptr, form, "form")
 }
 
 func MapFormWithTag(ptr any, form map[string][]string, tag string) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering MapFormWithTag(ptr=%v,form=%v,tag=%v)", ptr, form, tag)
+	logritelog.Default().Printf("[WARN] <<< Exiting MapFormWithTag(ptr=%v,form=%v,tag=%v)", ptr, form, tag)
 	return mapFormByTag(ptr, form, tag)
 }
 
@@ -56,6 +59,7 @@ func mapFormByTag(ptr any, form map[string][]string, tag string) error {
 		ptrVal = ptrVal.Elem()
 		pointed = ptrVal.Interface()
 	}
+		logritelog.Default().Printf("[DEBUG] mapFormByTag(ptr=%v,form=%v,tag=%v): pointed → %v", ptr, form, tag, pointed)
 		logritelog.Default().Printf("[DEBUG] mapFormByTag(ptr=%v,form=%v,tag=%v): ptrVal → %v", ptr, form, tag, ptrVal)
 	if ptrVal.Kind() == reflect.Map &&
 		ptrVal.Type().Key().Kind() == reflect.String {
@@ -81,6 +85,7 @@ var _ setter = formSource(nil)
 // TrySet tries to set a value by request's form source (like map[string][]string)
 func (form formSource) TrySet(value reflect.Value, field reflect.StructField, tagValue string, opt setOptions) (isSet bool, err error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering TrySet(value=%v,field=%v,tagValue=%v,opt=%v)", value, field, tagValue, opt)
+	logritelog.Default().Printf("[WARN] <<< Exiting TrySet(value=%v,field=%v,tagValue=%v,opt=%v)", value, field, tagValue, opt)
 	return setByForm(value, field, form, tagValue, opt)
 }
 
