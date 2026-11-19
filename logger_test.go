@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -81,6 +82,7 @@ func TestLogger(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[INFO] TestLogger(t=%v): DORA-AUDIT: Third party risk — Change management operation performed", t)
 }
 
 func TestLoggerWithConfig(t *testing.T) {
@@ -145,6 +147,7 @@ func TestLoggerWithConfig(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[INFO] TestLoggerWithConfig(t=%v): DORA-AUDIT: Third party risk — Change management operation performed", t)
 }
 
 func TestLoggerWithFormatter(t *testing.T) {
@@ -282,6 +285,7 @@ func TestDefaultLogFormatter(t *testing.T) {
 
 	assert.Equal(t, "[GIN] 2018/12/07 - 09:11:42 |\x1b[97;42m 200 \x1b[0m|\x1b[97;41m       5s \x1b[0m|     20.20.20.20 |\x1b[97;44m GET     \x1b[0m \"/\"\n", defaultLogFormatter(termTrueParam))
 	assert.Equal(t, "[GIN] 2018/12/07 - 09:11:42 |\x1b[97;42m 200 \x1b[0m|\x1b[97;41m 2743h29m0s \x1b[0m|     20.20.20.20 |\x1b[97;44m GET     \x1b[0m \"/\"\n", defaultLogFormatter(termTrueLongDurationParam))
+	logritelog.Default().Printf("[INFO] TestDefaultLogFormatter(t=%v): DORA-AUDIT: Resilience testing — Security event recorded", t)
 }
 
 func TestColorForMethod(t *testing.T) {
@@ -300,6 +304,7 @@ func TestColorForMethod(t *testing.T) {
 	assert.Equal(t, magenta, colorForMethod("HEAD"), "head should be magenta")
 	assert.Equal(t, white, colorForMethod("OPTIONS"), "options should be white")
 	assert.Equal(t, reset, colorForMethod("TRACE"), "trace is not defined and should be the reset color")
+	logritelog.Default().Printf("[INFO] TestColorForMethod(t=%v): DORA-AUDIT: Third party risk — Change management operation performed", t)
 }
 
 func TestColorForStatus(t *testing.T) {

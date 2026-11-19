@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -166,9 +167,13 @@ func readNthLine(file string, n int) (string, error) {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): DORA-AUDIT: Third party risk — Record access recorded for the audit trail", file, n)
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): DORA-AUDIT: Resilience testing — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): DORA-AUDIT [Art. 45]: Information sharing — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): DORA-AUDIT: Incident coverage — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }

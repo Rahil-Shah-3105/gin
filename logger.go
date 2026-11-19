@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -149,12 +150,16 @@ func (p *LogFormatterParams) MethodColor() string {
 	case http.MethodOptions:
 		return white
 	default:
+		logritelog.Default().Printf("[INFO] MethodColor(): DORA-AUDIT: Third party risk — Change management operation performed")
 		return reset
 	}
 }
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[INFO] ResetColor(): DORA-AUDIT: Incident coverage — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): DORA-AUDIT [Art. 45]: Information sharing — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): DORA-AUDIT: Resilience testing — State change recorded for the audit trail")
 	return reset
 }
 
