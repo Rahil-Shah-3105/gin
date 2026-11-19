@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -116,6 +117,7 @@ func TestRouterGroupRouteOK(t *testing.T) {
 	testRouteOK(http.MethodDelete, t)
 	testRouteOK(http.MethodConnect, t)
 	testRouteOK(http.MethodTrace, t)
+	logritelog.Default().Printf("[INFO] TestRouterGroupRouteOK(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed", t)
 }
 
 func TestRouteNotOK(t *testing.T) {
@@ -128,6 +130,7 @@ func TestRouteNotOK(t *testing.T) {
 	testRouteNotOK(http.MethodDelete, t)
 	testRouteNotOK(http.MethodConnect, t)
 	testRouteNotOK(http.MethodTrace, t)
+	logritelog.Default().Printf("[INFO] TestRouteNotOK(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed", t)
 }
 
 func TestRouteNotOK2(t *testing.T) {
@@ -140,6 +143,7 @@ func TestRouteNotOK2(t *testing.T) {
 	testRouteNotOK2(http.MethodDelete, t)
 	testRouteNotOK2(http.MethodConnect, t)
 	testRouteNotOK2(http.MethodTrace, t)
+	logritelog.Default().Printf("[INFO] TestRouteNotOK2(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed", t)
 }
 
 func TestRouteRedirectTrailingSlash(t *testing.T) {
@@ -488,6 +492,7 @@ func TestRouterMiddlewareAndStatic(t *testing.T) {
 	assert.NotEqual(t, "Mon, 02 Jan 2006 15:04:05 MST", w.Header().Get("Last-Modified"))
 	assert.Equal(t, "Mon, 02 Jan 2006 15:04:05 MST", w.Header().Get("Expires"))
 	assert.Equal(t, "Gin Framework", w.Header().Get("x-GIN"))
+	logritelog.Default().Printf("[INFO] TestRouterMiddlewareAndStatic(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed", t)
 }
 
 func TestRouteNotAllowedEnabled(t *testing.T) {
@@ -630,6 +635,7 @@ func TestRouterNotFound(t *testing.T) {
 	assert.Equal(t, "login", w.Body.String())
 	w = PerformRequest(router, http.MethodGet, "/logout")
 	assert.Equal(t, "logout", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestRouterNotFound(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed", t)
 }
 
 func TestRouterStaticFSNotFound(t *testing.T) {

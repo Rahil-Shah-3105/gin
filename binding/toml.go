@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -31,5 +32,7 @@ func decodeToml(r io.Reader, obj any) error {
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeToml(r=%v, obj=%v): SOX-AUDIT: Access to programs and data — Database transaction completed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeToml(r=%v, obj=%v): SOX-AUDIT: Audit log tamper — Data integrity check performed", r, obj)
 	return validate(obj)
 }

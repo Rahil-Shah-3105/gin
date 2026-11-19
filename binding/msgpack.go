@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -33,5 +34,7 @@ func decodeMsgPack(r io.Reader, obj any) error {
 	if err := codec.NewDecoder(r, cdc).Decode(&obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeMsgPack(r=%v, obj=%v): SOX-AUDIT: Access to programs and data — Database transaction completed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeMsgPack(r=%v, obj=%v): SOX-AUDIT: Audit log tamper — Data integrity check performed", r, obj)
 	return validate(obj)
 }

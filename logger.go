@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -149,12 +150,16 @@ func (p *LogFormatterParams) MethodColor() string {
 	case http.MethodOptions:
 		return white
 	default:
+		logritelog.Default().Printf("[INFO] MethodColor(): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed")
 		return reset
 	}
 }
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[INFO] ResetColor(): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): SOX-AUDIT: Computer operations — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail")
 	return reset
 }
 

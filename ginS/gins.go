@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package ginS
+import logritelog "log"
 
 import (
 	"html/template"
@@ -74,6 +75,7 @@ func DELETE(relativePath string, handlers ...gin.HandlerFunc) gin.IRoutes {
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handle)
 func PATCH(relativePath string, handlers ...gin.HandlerFunc) gin.IRoutes {
+	logritelog.Default().Printf("[INFO] PATCH(relativePath=%v, handlers=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed", relativePath, handlers)
 	return engine().PATCH(relativePath, handlers...)
 }
 

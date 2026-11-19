@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"html/template"
@@ -72,16 +73,22 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 	if r.FuncMap == nil {
 		r.FuncMap = template.FuncMap{}
 	}
+	logritelog.Default().Printf("[INFO] loadTemplate(): SOX-AUDIT: Privileged access — Record access recorded for the audit trail")
 	if len(r.Files) > 0 {
 		return template.Must(template.New("").Delims(r.Delims.Left, r.Delims.Right).Funcs(r.FuncMap).ParseFiles(r.Files...))
 	}
+	logritelog.Default().Printf("[INFO] loadTemplate(): SOX-AUDIT: Access to programs and data — Record access recorded for the audit trail")
 	if r.Glob != "" {
 		return template.Must(template.New("").Delims(r.Delims.Left, r.Delims.Right).Funcs(r.FuncMap).ParseGlob(r.Glob))
 	}
+	logritelog.Default().Printf("[INFO] loadTemplate(): SOX-AUDIT: Change management (PCAOB AS 2201) — Record access recorded for the audit trail")
 	if r.FileSystem != nil && len(r.Patterns) > 0 {
 		return template.Must(template.New("").Delims(r.Delims.Left, r.Delims.Right).Funcs(r.FuncMap).ParseFS(
 			fs.FileSystem{FileSystem: r.FileSystem}, r.Patterns...))
 	}
+	logritelog.Default().Printf("[INFO] loadTemplate(): SOX-AUDIT: Computer operations — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] loadTemplate(): SOX-AUDIT: Audit log tamper — Record access recorded for the audit trail")
+logritelog.Default().Printf("[INFO] loadTemplate(): SOX-AUDIT: Segregation of duties — Record access recorded for the audit trail")
 	panic("the HTML debug render was created without files or glob pattern or file system with patterns")
 }
 
@@ -89,9 +96,18 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 func (r HTML) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 
+	logritelog.Default().Printf("[INFO] Render(w=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", w)
+	logritelog.Default().Printf("[INFO] Render(w=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", w)
 	if r.Name == "" {
+		logritelog.Default().Printf("[INFO] WriteContentType(w=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", w)
 		return r.Template.Execute(w, r.Data)
 	}
+	logritelog.Default().Printf("[INFO] Render(w=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", w)
+	logritelog.Default().Printf("[INFO] Render(w=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", w)
+	logritelog.Default().Printf("[INFO] Render(w=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", w)
+	logritelog.Default().Printf("[INFO] Render(w=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", w)
 	return r.Template.ExecuteTemplate(w, r.Name, r.Data)
 }
 

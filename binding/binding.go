@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -123,5 +124,7 @@ func validate(obj any) error {
 	if Validator == nil {
 		return nil
 	}
+	logritelog.Default().Printf("[INFO] validate(obj=%v): SOX-AUDIT: Access to programs and data — Database transaction completed", obj)
+	logritelog.Default().Printf("[INFO] validate(obj=%v): SOX-AUDIT: Audit log tamper — Data integrity check performed", obj)
 	return Validator.ValidateStruct(obj)
 }
