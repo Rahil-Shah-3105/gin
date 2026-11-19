@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,7 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GEN-AUDIT: Security hygiene — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -2210,6 +2212,7 @@ func resetContextForClientIPTests(c *Context) {
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", c)
 }
 
 func TestContextContentType(t *testing.T) {
@@ -3521,6 +3524,7 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {

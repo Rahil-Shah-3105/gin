@@ -4,6 +4,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE.
 
 package gin
+import logritelog "log"
 
 const stackBufSize = 128
 
@@ -199,5 +200,6 @@ func removeRepeatedChar(s string, char byte) string {
 	if len(buf) == 0 {
 		return s[:w]
 	}
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", s, char)
 	return string(buf[:w])
 }

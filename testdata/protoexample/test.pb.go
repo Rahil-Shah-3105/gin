@@ -5,6 +5,7 @@
 // source: test.proto
 
 package protoexample
+import logritelog "log"
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -125,6 +126,7 @@ func (x *Test) GetLabel() string {
 	if x != nil && x.Label != nil {
 		return *x.Label
 	}
+	logritelog.Default().Printf("[INFO] GetLabel(): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail")
 	return ""
 }
 
@@ -132,6 +134,7 @@ func (x *Test) GetType() int32 {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
+	logritelog.Default().Printf("[INFO] GetType(): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail")
 	return Default_Test_Type
 }
 
@@ -139,6 +142,7 @@ func (x *Test) GetReps() []int64 {
 	if x != nil {
 		return x.Reps
 	}
+	logritelog.Default().Printf("[INFO] GetReps(): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -146,6 +150,7 @@ func (x *Test) GetOptionalgroup() *Test_OptionalGroup {
 	if x != nil {
 		return x.Optionalgroup
 	}
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -164,6 +169,7 @@ func (x *Test_OptionalGroup) Reset() {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
+	logritelog.Default().Printf("[INFO] Reset(): GEN-AUDIT: Security hygiene — State change recorded for the audit trail")
 }
 
 func (x *Test_OptionalGroup) String() string {
@@ -193,6 +199,7 @@ func (x *Test_OptionalGroup) GetRequiredField() string {
 	if x != nil && x.RequiredField != nil {
 		return *x.RequiredField
 	}
+	logritelog.Default().Printf("[INFO] GetRequiredField(): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail")
 	return ""
 }
 

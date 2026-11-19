@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"html/template"
@@ -83,6 +84,7 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 			fs.FileSystem{FileSystem: r.FileSystem}, r.Patterns...))
 	}
 	panic("the HTML debug render was created without files or glob pattern or file system with patterns")
+	logritelog.Default().Printf("[INFO] loadTemplate(): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail")
 }
 
 // Render (HTML) executes template and writes its result with custom ContentType for response.
@@ -90,8 +92,10 @@ func (r HTML) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 
 	if r.Name == "" {
+		logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", w)
 		return r.Template.Execute(w, r.Data)
 	}
+	logritelog.Default().Printf("[INFO] Render(w=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", w)
 	return r.Template.ExecuteTemplate(w, r.Name, r.Data)
 }
 

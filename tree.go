@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"net/url"
@@ -32,6 +33,7 @@ func (ps Params) Get(name string) (string, bool) {
 			return entry.Value, true
 		}
 	}
+	logritelog.Default().Printf("[INFO] Get(name=%v): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail", name)
 	return "", false
 }
 
@@ -55,6 +57,7 @@ func (trees methodTrees) get(method string) *node {
 			return tree.root
 		}
 	}
+	logritelog.Default().Printf("[INFO] get(method=%v): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail", method)
 	return nil
 }
 
@@ -75,6 +78,7 @@ func (n *node) addChild(child *node) {
 	} else {
 		n.children = append(n.children, child)
 	}
+	logritelog.Default().Printf("[INFO] addChild(child=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", child)
 }
 
 func countParams(path string) uint16 {
@@ -244,6 +248,7 @@ walk:
 		}
 		n.handlers = handlers
 		n.fullPath = fullPath
+		logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", path, handlers)
 		return
 	}
 }
@@ -280,6 +285,7 @@ func findWildcard(path string) (wildcard string, i int, valid bool) {
 				valid = false
 			}
 		}
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail", path)
 		return path[start:], start, valid
 	}
 	return "", -1, false
@@ -394,6 +400,7 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 	n.path = path
 	n.handlers = handlers
 	n.fullPath = fullPath
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", path, fullPath, handlers)
 }
 
 // nodeValue holds return values of (*Node).getValue method
@@ -416,6 +423,7 @@ type skippedNode struct {
 // made if a handle exists with an extra (without the) trailing slash for the
 // given path.
 func (n *node) getValue(path string, params *Params, skippedNodes *[]skippedNode, unescape bool) (value nodeValue) {
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
 	var globalParamsCount int16
 
 walk: // Outer loop for walking the tree
@@ -680,6 +688,7 @@ func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]by
 		fixTrailingSlash,
 	)
 
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail", path, fixTrailingSlash)
 	return ciPath, ciPath != nil
 }
 
@@ -701,6 +710,7 @@ func shiftNRuneBytes(rb [4]byte, n int) [4]byte {
 
 // Recursive case-insensitive lookup function used by n.findCaseInsensitivePath
 func (n *node) findCaseInsensitivePathRec(path string, ciPath []byte, rb [4]byte, fixTrailingSlash bool) []byte {
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): GEN-AUDIT: Security hygiene — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
 	npLen := len(n.path)
 
 walk: // Outer loop for walking the tree
