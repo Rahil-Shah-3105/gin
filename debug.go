@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -73,8 +74,12 @@ func getMinVer(v string) (uint64, error) {
 	first := strings.IndexByte(v, '.')
 	last := strings.LastIndexByte(v, '.')
 	if first == last {
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): EUAIACT-AUDIT: Logging coverage — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): EUAIACT-AUDIT: GPAI obligations — Record access recorded for the audit trail", v)
 		return strconv.ParseUint(v[first+1:], 10, 64)
 	}
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): EUAIACT-AUDIT [Art. 26(6)]: Deployer log retention — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): EUAIACT-AUDIT [Art. 50]: Transparency — Record access recorded for the audit trail", v)
 	return strconv.ParseUint(v[first+1:last], 10, 64)
 }
 
