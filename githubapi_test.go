@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -369,6 +370,9 @@ func readWriteKeys(c *Context) {
 		c.Set("1", rand.Int())
 		c.Set("2", c.Value("1"))
 	}
+	logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): USSTATE-AUDIT: Data protection assessments — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — Record access recorded for the audit trail", c)
 }
 
 func githubConfigRouter(router *Engine) {

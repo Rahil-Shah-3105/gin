@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -33,4 +34,7 @@ func (r ProtoBuf) Render(w http.ResponseWriter) error {
 // WriteContentType (ProtoBuf) writes ProtoBuf ContentType.
 func (r ProtoBuf) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, protobufContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", w)
 }

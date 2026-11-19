@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"errors"
@@ -65,6 +66,9 @@ type failWriter struct {
 }
 
 func (w *failWriter) Write(data []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(data=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", data)
 	return 0, errors.New("write error")
 }
 

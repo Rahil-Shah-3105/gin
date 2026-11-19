@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -42,12 +43,18 @@ var _ error = (*Error)(nil)
 // SetType sets the error's type.
 func (msg *Error) SetType(flags ErrorType) *Error {
 	msg.Type = flags
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", flags)
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", flags)
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", flags)
 	return msg
 }
 
 // SetMeta sets the error's meta data.
 func (msg *Error) SetMeta(data any) *Error {
 	msg.Meta = data
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", data)
 	return msg
 }
 

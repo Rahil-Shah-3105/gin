@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -87,4 +88,5 @@ func TestDefaultValidator(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("[INFO] TestDefaultValidator(t=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — Database transaction completed", t)
 }

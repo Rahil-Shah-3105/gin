@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -28,6 +29,9 @@ var msgpackContentType = []string{"application/msgpack; charset=utf-8"}
 // WriteContentType (MsgPack) writes MsgPack ContentType.
 func (r MsgPack) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, msgpackContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", w)
 }
 
 // Render (MsgPack) encodes the given interface object and writes data with custom ContentType.
