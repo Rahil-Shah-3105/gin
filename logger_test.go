@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -81,6 +82,7 @@ func TestLogger(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[INFO] TestLogger(t=%v): ISO42001-AUDIT: Lifecycle — Change management operation performed", t)
 }
 
 func TestLoggerWithConfig(t *testing.T) {
@@ -145,6 +147,7 @@ func TestLoggerWithConfig(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[INFO] TestLoggerWithConfig(t=%v): ISO42001-AUDIT: Lifecycle — Change management operation performed", t)
 }
 
 func TestLoggerWithFormatter(t *testing.T) {
@@ -300,6 +303,7 @@ func TestColorForMethod(t *testing.T) {
 	assert.Equal(t, magenta, colorForMethod("HEAD"), "head should be magenta")
 	assert.Equal(t, white, colorForMethod("OPTIONS"), "options should be white")
 	assert.Equal(t, reset, colorForMethod("TRACE"), "trace is not defined and should be the reset color")
+	logritelog.Default().Printf("[INFO] TestColorForMethod(t=%v): ISO42001-AUDIT: Lifecycle — Change management operation performed", t)
 }
 
 func TestColorForStatus(t *testing.T) {
