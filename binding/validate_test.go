@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -104,6 +105,10 @@ func createNoValidationValues() structNoValidationValues {
 	}
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NERCCIP-AUDIT: Monitoring coverage — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NERCCIP-AUDIT: Incident recovery — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NERCCIP-AUDIT: Electronic perimeter — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NERCCIP-AUDIT: Change management — State change recorded for the audit trail")
 	s.IString = "substring"
 	s.IInt = 987654
 	return s

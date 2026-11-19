@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"crypto/tls"
@@ -141,6 +142,7 @@ func TestLoadHTMLGlobTestMode(t *testing.T) {
 }
 
 func TestLoadHTMLGlobReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLGlobReleaseMode(t=%v): NERCCIP-AUDIT: Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -259,6 +261,7 @@ func TestLoadHTMLFilesDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFilesReleaseMode(t=%v): NERCCIP-AUDIT: Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -368,6 +371,7 @@ func TestLoadHTMLFSDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFSReleaseMode(t=%v): NERCCIP-AUDIT: Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -1155,4 +1159,5 @@ func TestUpdateRouteTreesCalledOnce(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Code)
 		assert.Equal(t, "ok", w.Body.String())
 	}
+	logritelog.Default().Printf("[INFO] TestUpdateRouteTreesCalledOnce(t=%v): NERCCIP-AUDIT: Change management operation performed", t)
 }
