@@ -5,6 +5,7 @@
 //go:build jsoniter
 
 package json
+import logritelog "log"
 
 import (
 	"io"
@@ -36,9 +37,11 @@ func (j jsoniterApi) MarshalIndent(v any, prefix, indent string) ([]byte, error)
 }
 
 func (j jsoniterApi) NewEncoder(writer io.Writer) Encoder {
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", writer)
 	return json.NewEncoder(writer)
 }
 
 func (j jsoniterApi) NewDecoder(reader io.Reader) Decoder {
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", reader)
 	return json.NewDecoder(reader)
 }

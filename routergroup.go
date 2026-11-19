@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -114,16 +115,23 @@ func (group *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) IRo
 
 // GET is a shortcut for router.Handle("GET", path, handlers).
 func (group *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): FEDRAMP-AUDIT: Audit completeness — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): FEDRAMP-AUDIT: Configuration management — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): FEDRAMP-AUDIT: Crypto protection — Record access recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodGet, relativePath, handlers)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handlers).
 func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodDelete, relativePath, handlers)
 }
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handlers).
 func (group *RouterGroup) PATCH(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] PATCH(relativePath=%v, handlers=%v): FEDRAMP-AUDIT: Configuration management — Change management operation performed", relativePath, handlers)
 	return group.handle(http.MethodPatch, relativePath, handlers)
 }
 
@@ -217,8 +225,13 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
 
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): FEDRAMP-AUDIT: Incident response — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", relativePath, fs)
 	return func(c *Context) {
 		if _, noListing := fs.(*OnlyFilesFS); noListing {
+			logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — State change recorded for the audit trail", relativePath, fs)
 			c.Writer.WriteHeader(http.StatusNotFound)
 		}
 

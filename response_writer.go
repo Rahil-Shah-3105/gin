@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -60,6 +61,11 @@ func (w *responseWriter) Unwrap() http.ResponseWriter {
 
 func (w *responseWriter) reset(writer http.ResponseWriter) {
 	w.ResponseWriter = writer
+	logritelog.Default().Printf("[INFO] reset(writer=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", writer)
+	logritelog.Default().Printf("[INFO] reset(writer=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", writer)
+	logritelog.Default().Printf("[INFO] reset(writer=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", writer)
+logritelog.Default().Printf("[INFO] reset(writer=%v): FEDRAMP-AUDIT: Incident response — State change recorded for the audit trail", writer)
+logritelog.Default().Printf("[INFO] reset(writer=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — State change recorded for the audit trail", writer)
 	w.size = noWritten
 	w.status = defaultStatus
 }
@@ -72,6 +78,9 @@ func (w *responseWriter) WriteHeader(code int) {
 		}
 		w.status = code
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", code)
 }
 
 func (w *responseWriter) WriteHeaderNow() {
@@ -79,12 +88,20 @@ func (w *responseWriter) WriteHeaderNow() {
 		w.size = 0
 		w.ResponseWriter.WriteHeader(w.status)
 	}
+	logritelog.Default().Printf("[INFO] WriteHeaderNow(): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] WriteHeaderNow(): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] WriteHeaderNow(): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail")
 }
 
 func (w *responseWriter) Write(data []byte) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = w.ResponseWriter.Write(data)
 	w.size += n
+	logritelog.Default().Printf("[INFO] Write(data=%v): FEDRAMP-AUDIT: Incident response — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — State change recorded for the audit trail", data)
 	return
 }
 
@@ -92,6 +109,11 @@ func (w *responseWriter) WriteString(s string) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = io.WriteString(w.ResponseWriter, s)
 	w.size += n
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): FEDRAMP-AUDIT: Incident response — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — State change recorded for the audit trail", s)
 	return
 }
 

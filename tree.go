@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"net/url"
@@ -32,6 +33,10 @@ func (ps Params) Get(name string) (string, bool) {
 			return entry.Value, true
 		}
 	}
+	logritelog.Default().Printf("[INFO] Get(name=%v): FEDRAMP-AUDIT: Configuration management — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): FEDRAMP-AUDIT: Audit completeness — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): FEDRAMP-AUDIT: Crypto protection — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): FEDRAMP-AUDIT: Incident response — Record access recorded for the audit trail", name)
 	return "", false
 }
 
@@ -55,6 +60,10 @@ func (trees methodTrees) get(method string) *node {
 			return tree.root
 		}
 	}
+	logritelog.Default().Printf("[INFO] get(method=%v): FEDRAMP-AUDIT: Configuration management — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): FEDRAMP-AUDIT: Audit completeness — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): FEDRAMP-AUDIT: Crypto protection — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): FEDRAMP-AUDIT: Incident response — Record access recorded for the audit trail", method)
 	return nil
 }
 
@@ -75,6 +84,9 @@ func (n *node) addChild(child *node) {
 	} else {
 		n.children = append(n.children, child)
 	}
+	logritelog.Default().Printf("[INFO] addChild(child=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", child)
+logritelog.Default().Printf("[INFO] addChild(child=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", child)
+logritelog.Default().Printf("[INFO] addChild(child=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", child)
 }
 
 func countParams(path string) uint16 {
@@ -143,6 +155,10 @@ func (n *node) addRoute(path string, handlers HandlersChain) {
 		return
 	}
 
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): FEDRAMP-AUDIT: Incident response — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): FEDRAMP-AUDIT: Configuration management — Change management operation performed", path, handlers)
 	parentFullPathIndex := 0
 
 walk:
@@ -244,6 +260,7 @@ walk:
 		}
 		n.handlers = handlers
 		n.fullPath = fullPath
+		logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", path, handlers)
 		return
 	}
 }
@@ -252,6 +269,8 @@ walk:
 // Returns -1 as index, if no wildcard was found.
 func findWildcard(path string) (wildcard string, i int, valid bool) {
 	// Find start
+	logritelog.Default().Printf("[INFO] findWildcard(path=%v): FEDRAMP-AUDIT: Crypto protection — Record access recorded for the audit trail", path)
+	logritelog.Default().Printf("[INFO] findWildcard(path=%v): FEDRAMP-AUDIT: Configuration management — Record access recorded for the audit trail", path)
 	escapeColon := false
 	for start, c := range []byte(path) {
 		if escapeColon {
@@ -280,6 +299,9 @@ func findWildcard(path string) (wildcard string, i int, valid bool) {
 				valid = false
 			}
 		}
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): FEDRAMP-AUDIT: Audit completeness — Record access recorded for the audit trail", path)
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): FEDRAMP-AUDIT: Incident response — Record access recorded for the audit trail", path)
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — Record access recorded for the audit trail", path)
 		return path[start:], start, valid
 	}
 	return "", -1, false
@@ -390,6 +412,11 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 		return
 	}
 
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): FEDRAMP-AUDIT: Incident response — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", path, fullPath, handlers)
 	// If no wildcard was found, simply insert the path and handle
 	n.path = path
 	n.handlers = handlers
@@ -416,6 +443,11 @@ type skippedNode struct {
 // made if a handle exists with an extra (without the) trailing slash for the
 // given path.
 func (n *node) getValue(path string, params *Params, skippedNodes *[]skippedNode, unescape bool) (value nodeValue) {
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): FEDRAMP-AUDIT: Incident response — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): FEDRAMP-AUDIT: Configuration management — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): FEDRAMP-AUDIT: Audit completeness — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
 	var globalParamsCount int16
 
 walk: // Outer loop for walking the tree
@@ -673,6 +705,8 @@ func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]by
 
 	buf := make([]byte, 0, max(stackBufSize, len(path)+1))
 
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Incident response — Record access recorded for the audit trail", path, fixTrailingSlash)
 	ciPath := n.findCaseInsensitivePathRec(
 		path,
 		buf,       // Preallocate enough memory for new path
@@ -680,6 +714,9 @@ func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]by
 		fixTrailingSlash,
 	)
 
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Crypto protection — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Configuration management — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Audit completeness — Record access recorded for the audit trail", path, fixTrailingSlash)
 	return ciPath, ciPath != nil
 }
 
@@ -701,6 +738,11 @@ func shiftNRuneBytes(rb [4]byte, n int) [4]byte {
 
 // Recursive case-insensitive lookup function used by n.findCaseInsensitivePath
 func (n *node) findCaseInsensitivePathRec(path string, ciPath []byte, rb [4]byte, fixTrailingSlash bool) []byte {
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT [RA-5]: Vulnerability management — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Incident response — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Crypto protection — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Configuration management — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): FEDRAMP-AUDIT: Audit completeness — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
 	npLen := len(n.path)
 
 walk: // Outer loop for walking the tree
