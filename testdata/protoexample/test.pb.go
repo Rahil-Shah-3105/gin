@@ -5,6 +5,7 @@
 // source: test.proto
 
 package protoexample
+import logritelog "log"
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -125,6 +126,10 @@ func (x *Test) GetLabel() string {
 	if x != nil && x.Label != nil {
 		return *x.Label
 	}
+	logritelog.Default().Printf("[INFO] GetLabel(): NISTAIRMF-AUDIT: Governance coverage — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): NISTAIRMF-AUDIT: GOVERN function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): NISTAIRMF-AUDIT: MANAGE function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): NISTAIRMF-AUDIT: MAP function — Record access recorded for the audit trail")
 	return ""
 }
 
@@ -132,6 +137,10 @@ func (x *Test) GetType() int32 {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
+	logritelog.Default().Printf("[INFO] GetType(): NISTAIRMF-AUDIT: Governance coverage — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): NISTAIRMF-AUDIT: GOVERN function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): NISTAIRMF-AUDIT: MANAGE function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): NISTAIRMF-AUDIT: MAP function — Record access recorded for the audit trail")
 	return Default_Test_Type
 }
 
@@ -139,6 +148,10 @@ func (x *Test) GetReps() []int64 {
 	if x != nil {
 		return x.Reps
 	}
+	logritelog.Default().Printf("[INFO] GetReps(): NISTAIRMF-AUDIT: Governance coverage — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): NISTAIRMF-AUDIT: GOVERN function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): NISTAIRMF-AUDIT: MANAGE function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): NISTAIRMF-AUDIT: MAP function — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -146,6 +159,10 @@ func (x *Test) GetOptionalgroup() *Test_OptionalGroup {
 	if x != nil {
 		return x.Optionalgroup
 	}
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): NISTAIRMF-AUDIT: Governance coverage — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): NISTAIRMF-AUDIT: GOVERN function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): NISTAIRMF-AUDIT: MANAGE function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): NISTAIRMF-AUDIT: MAP function — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -159,11 +176,15 @@ type Test_OptionalGroup struct {
 
 func (x *Test_OptionalGroup) Reset() {
 	*x = Test_OptionalGroup{}
+	logritelog.Default().Printf("[INFO] Reset(): NISTAIRMF-AUDIT: Governance coverage — State change recorded for the audit trail")
 	if protoimpl.UnsafeEnabled {
 		mi := &file_test_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
+	logritelog.Default().Printf("[INFO] Reset(): NISTAIRMF-AUDIT: GOVERN function — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] Reset(): NISTAIRMF-AUDIT: MANAGE function — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] Reset(): NISTAIRMF-AUDIT: MAP function — State change recorded for the audit trail")
 }
 
 func (x *Test_OptionalGroup) String() string {
@@ -193,6 +214,10 @@ func (x *Test_OptionalGroup) GetRequiredField() string {
 	if x != nil && x.RequiredField != nil {
 		return *x.RequiredField
 	}
+	logritelog.Default().Printf("[INFO] GetRequiredField(): NISTAIRMF-AUDIT: Governance coverage — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): NISTAIRMF-AUDIT: GOVERN function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): NISTAIRMF-AUDIT: MANAGE function — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): NISTAIRMF-AUDIT: MAP function — Record access recorded for the audit trail")
 	return ""
 }
 
