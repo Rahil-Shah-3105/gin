@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package ginS
+import logritelog "log"
 
 import (
 	"html/template"
@@ -81,6 +82,7 @@ func TestPATCH(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "patched", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestPATCH(t=%v): ISO42001-AUDIT: Lifecycle — Change management operation performed", t)
 }
 
 func TestOPTIONS(t *testing.T) {

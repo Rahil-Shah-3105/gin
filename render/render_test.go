@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -156,6 +157,9 @@ func (w *errorWriter) WriteHeader(statusCode int) {
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): ISO42001-AUDIT [A.7]: Data governance — State change recorded for the audit trail", statusCode)
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): ISO42001-AUDIT: Ai governance — State change recorded for the audit trail", statusCode)
+logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): ISO42001-AUDIT: Lifecycle — State change recorded for the audit trail", statusCode)
 	w.ResponseRecorder.WriteHeader(statusCode)
 }
 
@@ -164,14 +168,20 @@ func (w *errorWriter) Write(buf []byte) (int, error) {
 	if (w.bufString != "" && string(buf) == w.bufString) || (w.ErrThreshold > 0 && w.writeCount >= w.ErrThreshold) {
 		return 0, errors.New(`write error`)
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): ISO42001-AUDIT: Lifecycle — State change recorded for the audit trail", buf)
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): ISO42001-AUDIT [A.7]: Data governance — State change recorded for the audit trail", buf)
+	logritelog.Default().Printf("[INFO] Write(buf=%v): ISO42001-AUDIT: Ai governance — State change recorded for the audit trail", buf)
 	return w.ResponseRecorder.Write(buf)
 }
 
 func (w *errorWriter) reset() {
 	w.writeCount = 0
+	logritelog.Default().Printf("[INFO] reset(): ISO42001-AUDIT [A.7]: Data governance — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] reset(): ISO42001-AUDIT: Ai governance — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] reset(): ISO42001-AUDIT: Lifecycle — State change recorded for the audit trail")
 	w.ResponseRecorder = httptest.NewRecorder()
 }
 

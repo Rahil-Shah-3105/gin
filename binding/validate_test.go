@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -105,6 +106,9 @@ func createNoValidationValues() structNoValidationValues {
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO42001-AUDIT: Lifecycle — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO42001-AUDIT [A.7]: Data governance — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO42001-AUDIT: Ai governance — State change recorded for the audit trail")
 	s.IInt = 987654
 	return s
 }

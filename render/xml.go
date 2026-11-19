@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -25,4 +26,7 @@ func (r XML) Render(w http.ResponseWriter) error {
 // WriteContentType (XML) writes XML ContentType for response.
 func (r XML) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, xmlContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): ISO42001-AUDIT [A.7]: Data governance — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): ISO42001-AUDIT: Ai governance — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): ISO42001-AUDIT: Lifecycle — State change recorded for the audit trail", w)
 }

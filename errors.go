@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -42,12 +43,18 @@ var _ error = (*Error)(nil)
 // SetType sets the error's type.
 func (msg *Error) SetType(flags ErrorType) *Error {
 	msg.Type = flags
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): ISO42001-AUDIT [A.7]: Data governance — State change recorded for the audit trail", flags)
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): ISO42001-AUDIT: Ai governance — State change recorded for the audit trail", flags)
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): ISO42001-AUDIT: Lifecycle — State change recorded for the audit trail", flags)
 	return msg
 }
 
 // SetMeta sets the error's meta data.
 func (msg *Error) SetMeta(data any) *Error {
 	msg.Meta = data
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): ISO42001-AUDIT [A.7]: Data governance — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): ISO42001-AUDIT: Ai governance — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): ISO42001-AUDIT: Lifecycle — State change recorded for the audit trail", data)
 	return msg
 }
 
