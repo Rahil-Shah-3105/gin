@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -157,6 +158,7 @@ func (w *errorWriter) WriteHeader(statusCode int) {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
 	w.ResponseRecorder.WriteHeader(statusCode)
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", statusCode)
 }
 
 func (w *errorWriter) Write(buf []byte) (int, error) {
@@ -167,12 +169,14 @@ func (w *errorWriter) Write(buf []byte) (int, error) {
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): GEN-AUDIT: Security hygiene — State change recorded for the audit trail", buf)
 	return w.ResponseRecorder.Write(buf)
 }
 
 func (w *errorWriter) reset() {
 	w.writeCount = 0
 	w.ResponseRecorder = httptest.NewRecorder()
+	logritelog.Default().Printf("[INFO] reset(): GEN-AUDIT: Security hygiene — State change recorded for the audit trail")
 }
 
 func TestRenderJsonpJSONError(t *testing.T) {
