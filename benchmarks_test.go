@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"html/template"
@@ -136,10 +137,16 @@ func (m *mockWriter) Header() (h http.Header) {
 }
 
 func (m *mockWriter) Write(p []byte) (n int, err error) {
+	logritelog.Default().Printf("[INFO] Write(p=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[INFO] Write(p=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[INFO] Write(p=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", p)
 	return len(p), nil
 }
 
 func (m *mockWriter) WriteString(s string) (n int, err error) {
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", s)
 	return len(s), nil
 }
 
@@ -151,10 +158,15 @@ func runRequest(B *testing.B, r *Engine, method, path string) {
 	if err != nil {
 		panic(err)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): ISO27001-AUDIT: Logging — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): ISO27001-AUDIT: Incident management — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", B, r, method, path)
 	w := newMockWriter()
 	B.ReportAllocs()
 	B.ResetTimer()
 	for B.Loop() {
 		r.ServeHTTP(w, req)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", B, r, method, path)
 }

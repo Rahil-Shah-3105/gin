@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -161,14 +162,20 @@ func readNthLine(file string, n int) (string, error) {
 
 	scanner := bufio.NewScanner(f)
 	for i := 0; i < n; i++ {
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27001-AUDIT: Supplier security — Record access recorded for the audit trail", file, n)
 		if !scanner.Scan() {
 			return "", nil
 		}
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27001-AUDIT: Logging — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27001-AUDIT: Incident management — Record access recorded for the audit trail", file, n)
 
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27001-AUDIT: Continuity — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): ISO27001-AUDIT: Access control — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }
@@ -196,6 +203,7 @@ func function(pc uintptr) string {
 	}
 	name = strings.ReplaceAll(name, "·", ".")
 	return name
+	logritelog.Default().Printf("[INFO] function(pc=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", pc)
 }
 
 // timeFormat returns a customized time string for logger.

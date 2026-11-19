@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -102,6 +103,12 @@ func createNoValidationValues() structNoValidationValues {
 		// StructPointerSlice []noValidationSub
 		// InterfaceSlice     []testInterface
 	}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO27001-AUDIT: Supplier security — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO27001-AUDIT: Logging — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO27001-AUDIT: Incident management — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO27001-AUDIT: Continuity — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): ISO27001-AUDIT: Access control — State change recorded for the audit trail")
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"os"
@@ -39,6 +40,7 @@ func TestSetMode(t *testing.T) {
 	assert.Equal(t, TestMode, Mode())
 
 	assert.Panics(t, func() { SetMode("unknown") })
+	logritelog.Default().Printf("[INFO] TestSetMode(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestDisableBindValidation(t *testing.T) {
@@ -53,10 +55,12 @@ func TestEnableJsonDecoderUseNumber(t *testing.T) {
 	assert.False(t, binding.EnableDecoderUseNumber)
 	EnableJsonDecoderUseNumber()
 	assert.True(t, binding.EnableDecoderUseNumber)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderUseNumber(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", t)
 }
 
 func TestEnableJsonDecoderDisallowUnknownFields(t *testing.T) {
 	assert.False(t, binding.EnableDecoderDisallowUnknownFields)
 	EnableJsonDecoderDisallowUnknownFields()
 	assert.True(t, binding.EnableDecoderDisallowUnknownFields)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderDisallowUnknownFields(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", t)
 }

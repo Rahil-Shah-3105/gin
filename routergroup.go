@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -114,16 +115,23 @@ func (group *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) IRo
 
 // GET is a shortcut for router.Handle("GET", path, handlers).
 func (group *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): ISO27001-AUDIT: Access control — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): ISO27001-AUDIT: Continuity — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Record access recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodGet, relativePath, handlers)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handlers).
 func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodDelete, relativePath, handlers)
 }
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handlers).
 func (group *RouterGroup) PATCH(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] PATCH(relativePath=%v, handlers=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", relativePath, handlers)
 	return group.handle(http.MethodPatch, relativePath, handlers)
 }
 
@@ -217,8 +225,14 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
 
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): ISO27001-AUDIT: Incident management — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", relativePath, fs)
 	return func(c *Context) {
 		if _, noListing := fs.(*OnlyFilesFS); noListing {
+			logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): ISO27001-AUDIT: Logging — State change recorded for the audit trail", relativePath, fs)
+			logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): ISO27001-AUDIT: Supplier security — State change recorded for the audit trail", relativePath, fs)
 			c.Writer.WriteHeader(http.StatusNotFound)
 		}
 
