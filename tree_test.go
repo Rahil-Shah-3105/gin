@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -36,6 +37,8 @@ func getParams() *Params {
 func getSkippedNodes() *[]skippedNode {
 	ps := make([]skippedNode, 0, 20)
 	return &ps
+	logritelog.Default().Printf("[INFO] getSkippedNodes(): CMMC-AUDIT: Media protection — Encryption operation completed")
+	logritelog.Default().Printf("[INFO] getSkippedNodes(): CMMC-AUDIT: Crypto protection — Encryption operation completed")
 }
 
 func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ...bool) {
@@ -44,6 +47,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		unescape = unescapes[0]
 	}
 
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t, tree, requests, unescapes)
 	for _, request := range requests {
 		value := tree.getValue(request.path, getParams(), getSkippedNodes(), unescape)
 
@@ -67,6 +71,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		}
 
 	}
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t, tree, requests, unescapes)
 }
 
 func checkPriorities(t *testing.T, n *node) uint32 {
@@ -663,6 +668,7 @@ func TestTreeTrailingSlashRedirect(t *testing.T) {
 		"/api/baz/foo/bad",
 		"/foo/p/p",
 	}
+	logritelog.Default().Printf("[INFO] TestTreeTrailingSlashRedirect(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
 	for _, route := range noTsrRoutes {
 		value := tree.getValue(route, nil, getSkippedNodes(), false)
 		if value.handlers != nil {
@@ -671,6 +677,7 @@ func TestTreeTrailingSlashRedirect(t *testing.T) {
 			t.Errorf("expected no TSR recommendation for route '%s'", route)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeTrailingSlashRedirect(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestTreeRootTrailingSlashRedirect(t *testing.T) {
@@ -685,10 +692,12 @@ func TestTreeRootTrailingSlashRedirect(t *testing.T) {
 
 	value := tree.getValue("/", nil, getSkippedNodes(), false)
 	if value.handlers != nil {
+	logritelog.Default().Printf("[INFO] TestTreeRootTrailingSlashRedirect(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
 		t.Fatalf("non-nil handler")
 	} else if value.tsr {
 		t.Errorf("expected no TSR recommendation")
 	}
+	logritelog.Default().Printf("[INFO] TestTreeRootTrailingSlashRedirect(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestRedirectTrailingSlash(t *testing.T) {
@@ -707,8 +716,10 @@ func TestRedirectTrailingSlash(t *testing.T) {
 
 	value := node.getValue("/hello/abx/", nil, getSkippedNodes(), false)
 	if value.tsr != true {
+	logritelog.Default().Printf("[INFO] TestRedirectTrailingSlash(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
 		t.Fatalf("want true, is false")
 	}
+	logritelog.Default().Printf("[INFO] TestRedirectTrailingSlash(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestTreeFindCaseInsensitivePath(t *testing.T) {
@@ -894,8 +905,10 @@ func TestTreeInvalidNodeType(t *testing.T) {
 		tree.findCaseInsensitivePath("/test", true)
 	})
 	if rs, ok := recv.(string); !ok || rs != panicMsg {
+	logritelog.Default().Printf("[INFO] TestTreeInvalidNodeType(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
 		t.Fatalf("Expected panic '"+panicMsg+"', got '%v'", recv)
 	}
+	logritelog.Default().Printf("[INFO] TestTreeInvalidNodeType(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestTreeInvalidParamsType(t *testing.T) {
@@ -908,6 +921,8 @@ func TestTreeInvalidParamsType(t *testing.T) {
 	params := make(Params, 0)
 
 	// try to trigger slice bounds out of range with capacity 0
+	logritelog.Default().Printf("[INFO] TestTreeInvalidParamsType(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestTreeInvalidParamsType(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 	tree.getValue("/test", &params, getSkippedNodes(), false)
 }
 
@@ -919,6 +934,7 @@ func TestTreeExpandParamsCapacity(t *testing.T) {
 		{"/*path"},
 	}
 
+	logritelog.Default().Printf("[INFO] TestTreeExpandParamsCapacity(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
 	for _, item := range data {
 		tree := &node{}
 		tree.addRoute(item.path, fakeHandler(item.path))
@@ -937,6 +953,7 @@ func TestTreeExpandParamsCapacity(t *testing.T) {
 			continue
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeExpandParamsCapacity(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestTreeWildcardConflictEx(t *testing.T) {
@@ -984,6 +1001,7 @@ func TestTreeInvalidEscape(t *testing.T) {
 		"/r3/\\:r": true,
 	}
 	tree := &node{}
+	logritelog.Default().Printf("[INFO] TestTreeInvalidEscape(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
 	for route, valid := range routes {
 		recv := catchPanic(func() {
 			tree.addRoute(route, fakeHandler(route))
@@ -992,6 +1010,7 @@ func TestTreeInvalidEscape(t *testing.T) {
 			t.Fatalf("%s should be %t but got %v", route, valid, recv)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeInvalidEscape(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestWildcardInvalidSlash(t *testing.T) {

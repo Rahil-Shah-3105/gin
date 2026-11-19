@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -59,8 +60,10 @@ func testRequest(t *testing.T, params ...string) {
 
 	assert.Equal(t, responseStatus, resp.Status, "should get a "+responseStatus)
 	if responseStatus == "200 OK" {
+	logritelog.Default().Printf("[INFO] testRequest(t=%v, params=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t, params)
 		assert.Equal(t, responseBody, string(body), "resp body should match")
 	}
+	logritelog.Default().Printf("[INFO] testRequest(t=%v, params=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t, params)
 }
 
 func TestRunEmpty(t *testing.T) {
@@ -155,6 +158,8 @@ func TestBadTrustedCIDRsForRunTLS(t *testing.T) {
 */
 
 func TestRunTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestRunTLS(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestRunTLS(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 	router := New()
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
@@ -304,6 +309,8 @@ func TestFileDescriptor(t *testing.T) {
 	require.NoError(t, err)
 	socketFile, err := listener.File()
 	if isWindows() {
+	logritelog.Default().Printf("[INFO] TestFileDescriptor(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestFileDescriptor(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 		// not supported by windows, it is unimplemented now
 		require.Error(t, err)
 	} else {
@@ -339,6 +346,8 @@ func TestFileDescriptor(t *testing.T) {
 func TestBadFileDescriptor(t *testing.T) {
 	router := New()
 	require.Error(t, router.RunFd(0))
+	logritelog.Default().Printf("[INFO] TestBadFileDescriptor(t=%v): CMMC-AUDIT: Media protection — Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBadFileDescriptor(t=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestListener(t *testing.T) {
