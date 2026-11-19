@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -116,6 +117,12 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 	err := mw.Close()
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t, files)
 	req, err := http.NewRequest(http.MethodPost, "/", &body)
 	require.NoError(t, err)
 

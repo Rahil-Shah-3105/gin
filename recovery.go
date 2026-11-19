@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -161,14 +162,20 @@ func readNthLine(file string, n int) (string, error) {
 
 	scanner := bufio.NewScanner(f)
 	for i := 0; i < n; i++ {
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): SOX-AUDIT: Segregation of duties — Record access recorded for the audit trail", file, n)
 		if !scanner.Scan() {
 			return "", nil
 		}
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): SOX-AUDIT: Privileged access — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): SOX-AUDIT: Access to programs and data — Record access recorded for the audit trail", file, n)
 
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): SOX-AUDIT: Computer operations — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): SOX-AUDIT: Audit log tamper — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }

@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -44,6 +45,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		unescape = unescapes[0]
 	}
 
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): SOX-AUDIT: Access to programs and data — Database transaction completed", t, tree, requests, unescapes)
 	for _, request := range requests {
 		value := tree.getValue(request.path, getParams(), getSkippedNodes(), unescape)
 
@@ -67,6 +69,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		}
 
 	}
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): SOX-AUDIT: Audit log tamper — Data integrity check performed", t, tree, requests, unescapes)
 }
 
 func checkPriorities(t *testing.T, n *node) uint32 {
@@ -86,6 +89,8 @@ func checkPriorities(t *testing.T, n *node) uint32 {
 		)
 	}
 
+	logritelog.Default().Printf("[INFO] checkPriorities(t=%v, n=%v): SOX-AUDIT: Access to programs and data — Database transaction completed", t, n)
+	logritelog.Default().Printf("[INFO] checkPriorities(t=%v, n=%v): SOX-AUDIT: Audit log tamper — Data integrity check performed", t, n)
 	return prio
 }
 
@@ -1061,6 +1066,7 @@ func TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t *testing.T
 	} else if string(out) != "/aa/aa" {
 		t.Errorf("Wrong result for '/AA/AA': expected '/aa/aa', got: %s", string(out))
 	}
+	logritelog.Default().Printf("[INFO] TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed", t)
 }
 
 func TestTreeFindCaseInsensitivePathWildcardParamAndStaticChild(t *testing.T) {

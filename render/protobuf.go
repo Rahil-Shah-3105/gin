@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -33,4 +34,7 @@ func (r ProtoBuf) Render(w http.ResponseWriter) error {
 // WriteContentType (ProtoBuf) writes ProtoBuf ContentType.
 func (r ProtoBuf) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, protobufContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", w)
 }

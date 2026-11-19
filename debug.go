@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -73,8 +74,14 @@ func getMinVer(v string) (uint64, error) {
 	first := strings.IndexByte(v, '.')
 	last := strings.LastIndexByte(v, '.')
 	if first == last {
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): SOX-AUDIT: Access to programs and data — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — Record access recorded for the audit trail", v)
 		return strconv.ParseUint(v[first+1:], 10, 64)
 	}
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): SOX-AUDIT: Computer operations — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): SOX-AUDIT: Audit log tamper — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): SOX-AUDIT: Privileged access — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): SOX-AUDIT: Segregation of duties — Record access recorded for the audit trail", v)
 	return strconv.ParseUint(v[first+1:last], 10, 64)
 }
 
@@ -87,6 +94,7 @@ func debugPrintWARNINGDefault() {
 	debugPrint(`[WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGDefault(): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed")
 }
 
 func debugPrintWARNINGNew() {
@@ -95,6 +103,7 @@ func debugPrintWARNINGNew() {
  - using code:	gin.SetMode(gin.ReleaseMode)
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGNew(): SOX-AUDIT: Change management (PCAOB AS 2201) — Change management operation performed")
 }
 
 func debugPrintWARNINGSetHTMLTemplate() {

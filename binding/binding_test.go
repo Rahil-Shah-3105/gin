@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -505,6 +506,12 @@ func createFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
 }
 
 func createDefaultFormPostRequest(t *testing.T) *http.Request {
@@ -512,6 +519,12 @@ func createDefaultFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMap(t *testing.T) *http.Request {
@@ -519,6 +532,12 @@ func createFormPostRequestForMap(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMapFail(t *testing.T) *http.Request {
@@ -526,6 +545,12 @@ func createFormPostRequestForMapFail(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
 }
 
 func createFormFilesMultipartRequest(t *testing.T) *http.Request {
@@ -546,6 +571,12 @@ func createFormFilesMultipartRequest(t *testing.T) *http.Request {
 	_, err = io.Copy(fw, f)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
 	req, err2 := http.NewRequest(http.MethodPost, "/?foo=getfoo&bar=getbar", body)
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
@@ -571,6 +602,12 @@ func createFormFilesMultipartRequestFail(t *testing.T) *http.Request {
 	_, err = io.Copy(fw, f)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
 	req, err2 := http.NewRequest(http.MethodPost, "/?foo=getfoo&bar=getbar", body)
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
@@ -591,6 +628,12 @@ func createFormMultipartRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
 }
 
 func createFormMultipartRequestForMap(t *testing.T) *http.Request {
@@ -605,6 +648,12 @@ func createFormMultipartRequestForMap(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
 }
 
 func createFormMultipartRequestForMapFail(t *testing.T) *http.Request {
@@ -619,6 +668,12 @@ func createFormMultipartRequestForMapFail(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOX-AUDIT: Segregation of duties — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOX-AUDIT: Privileged access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOX-AUDIT: Access to programs and data — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOX-AUDIT: Change management (PCAOB AS 2201) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOX-AUDIT: Computer operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOX-AUDIT: Audit log tamper — State change recorded for the audit trail", t)
 }
 
 func TestBindingFormPost(t *testing.T) {
@@ -1360,6 +1415,8 @@ func testProtoBodyBinding(t *testing.T, b Binding, name, path, badPath, body, ba
 type hook struct{}
 
 func (h hook) Read([]byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Read(): SOX-AUDIT: Audit log tamper — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] Read(): SOX-AUDIT: Computer operations — Record access recorded for the audit trail")
 	return 0, errors.New("error")
 }
 

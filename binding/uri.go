@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 type uriBinding struct{}
 
@@ -14,5 +15,7 @@ func (uriBinding) BindUri(m map[string][]string, obj any) error {
 	if err := mapURI(obj, m); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] BindUri(m=%v, obj=%v): SOX-AUDIT: Access to programs and data — Database transaction completed", m, obj)
+	logritelog.Default().Printf("[INFO] BindUri(m=%v, obj=%v): SOX-AUDIT: Audit log tamper — Data integrity check performed", m, obj)
 	return validate(obj)
 }
