@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,7 @@ type structNoValidationValues struct {
 
 func createNoValidationValues() structNoValidationValues {
 	integer := 1
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail")
 	s := structNoValidationValues{
 		Boolean:            true,
 		Uinteger:           1 << 29,
@@ -102,6 +104,14 @@ func createNoValidationValues() structNoValidationValues {
 		// StructPointerSlice []noValidationSub
 		// InterfaceSlice     []testInterface
 	}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC6.7]: Encryption operation completed")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail")
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"
@@ -120,6 +130,7 @@ func TestValidateNoValidationValues(t *testing.T) {
 	require.NoError(t, validate(&empty))
 
 	assert.Equal(t, origin, test)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationValues(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 }
 
 type structNoValidationPointer struct {
@@ -168,6 +179,7 @@ func TestValidateNoValidationPointers(t *testing.T) {
 	require.NoError(t, validate(&empty))
 
 	// assert.Equal(t, origin, test)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationPointers(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 }
 
 type Object map[string]any
@@ -191,6 +203,7 @@ func TestValidatePrimitives(t *testing.T) {
 	require.NoError(t, validate(str))
 	require.NoError(t, validate(&str))
 	assert.Equal(t, "value", str)
+	logritelog.Default().Printf("[INFO] TestValidatePrimitives(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 }
 
 type structModifyValidation struct {
@@ -215,6 +228,7 @@ func TestValidateAndModifyStruct(t *testing.T) {
 
 	require.NoError(t, errs)
 	assert.Equal(t, structModifyValidation{Integer: 0}, s)
+	logritelog.Default().Printf("[INFO] TestValidateAndModifyStruct(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 }
 
 // structCustomValidation is a helper struct we use to check that
@@ -250,4 +264,5 @@ func TestValidatorEngine(t *testing.T) {
 	require.Error(t, errs)
 	// Check that the error matches expectation
 	require.Error(t, errs, "notone")
+	logritelog.Default().Printf("[INFO] TestValidatorEngine(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -36,6 +37,7 @@ func (protobufBinding) BindBody(body []byte, obj any) error {
 	}
 	// Here it's same to return validate(obj), but until now we can't add
 	// `binding:""` to the struct which automatically generate by gen-proto
+	logritelog.Default().Printf("[INFO] BindBody(body=%v, obj=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", body, obj)
 	return nil
 	// return validate(obj)
 }

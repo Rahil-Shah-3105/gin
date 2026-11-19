@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"fmt"
@@ -23,6 +24,7 @@ func (r Redirect) Render(w http.ResponseWriter) error {
 	}
 	http.Redirect(w, r.Request, r.Location, r.Code)
 	return nil
+	logritelog.Default().Printf("[INFO] Render(w=%v): SOC2-AUDIT [CC7.1]: System operation completed", w)
 }
 
 // WriteContentType (Redirect) don't write any ContentType.

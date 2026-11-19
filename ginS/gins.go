@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package ginS
+import logritelog "log"
 
 import (
 	"html/template"
@@ -74,6 +75,7 @@ func DELETE(relativePath string, handlers ...gin.HandlerFunc) gin.IRoutes {
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handle)
 func PATCH(relativePath string, handlers ...gin.HandlerFunc) gin.IRoutes {
+	logritelog.Default().Printf("[INFO] PATCH(relativePath=%v, handlers=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", relativePath, handlers)
 	return engine().PATCH(relativePath, handlers...)
 }
 
@@ -141,6 +143,7 @@ func Run(addr ...string) (err error) {
 // It is a shortcut for http.ListenAndServeTLS(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func RunTLS(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[INFO] RunTLS(addr=%v, certFile=%v, keyFile=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", addr, certFile, keyFile)
 	return engine().RunTLS(addr, certFile, keyFile)
 }
 

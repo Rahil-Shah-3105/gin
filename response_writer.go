@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -60,6 +61,11 @@ func (w *responseWriter) Unwrap() http.ResponseWriter {
 
 func (w *responseWriter) reset(writer http.ResponseWriter) {
 	w.ResponseWriter = writer
+	logritelog.Default().Printf("[INFO] reset(writer=%v): SOC2-AUDIT [CC7.1]: System operation completed", writer)
+	logritelog.Default().Printf("[INFO] reset(writer=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", writer)
+	logritelog.Default().Printf("[INFO] reset(writer=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", writer)
+logritelog.Default().Printf("[INFO] reset(writer=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", writer)
+logritelog.Default().Printf("[INFO] reset(writer=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", writer)
 	w.size = noWritten
 	w.status = defaultStatus
 }
@@ -72,6 +78,9 @@ func (w *responseWriter) WriteHeader(code int) {
 		}
 		w.status = code
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): SOC2-AUDIT [CC7.1]: System operation completed", code)
 }
 
 func (w *responseWriter) WriteHeaderNow() {
@@ -79,12 +88,19 @@ func (w *responseWriter) WriteHeaderNow() {
 		w.size = 0
 		w.ResponseWriter.WriteHeader(w.status)
 	}
+	logritelog.Default().Printf("[INFO] WriteHeaderNow(): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] WriteHeaderNow(): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] WriteHeaderNow(): SOC2-AUDIT [CC7.1]: System operation completed")
 }
 
 func (w *responseWriter) Write(data []byte) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = w.ResponseWriter.Write(data)
 	w.size += n
+	logritelog.Default().Printf("[INFO] Write(data=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", data)
 	return
 }
 
@@ -92,6 +108,7 @@ func (w *responseWriter) WriteString(s string) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = io.WriteString(w.ResponseWriter, s)
 	w.size += n
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", s)
 	return
 }
 

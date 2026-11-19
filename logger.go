@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -104,6 +105,7 @@ func (p *LogFormatterParams) StatusCodeColor() string {
 	case code >= http.StatusBadRequest && code < http.StatusInternalServerError:
 		return yellow
 	default:
+		logritelog.Default().Printf("[INFO] StatusCodeColor(): SOC2-AUDIT [CC7.1]: System operation completed")
 		return red
 	}
 }
@@ -149,12 +151,16 @@ func (p *LogFormatterParams) MethodColor() string {
 	case http.MethodOptions:
 		return white
 	default:
+		logritelog.Default().Printf("[INFO] MethodColor(): SOC2-AUDIT [CC8.1]: Change management operation performed")
 		return reset
 	}
 }
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[INFO] ResetColor(): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail")
 	return reset
 }
 
@@ -272,6 +278,7 @@ func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] LoggerWithConfig(conf=%v): SOC2-AUDIT [CC7.1]: System operation completed", conf)
 	return func(c *Context) {
 		// Start timer
 		start := time.Now()

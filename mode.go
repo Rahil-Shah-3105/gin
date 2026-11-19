@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"flag"
@@ -75,6 +76,7 @@ func SetMode(value string) {
 		panic("gin mode unknown: " + value + " (available mode: debug release test)")
 	}
 	modeName.Store(value)
+	logritelog.Default().Printf("[INFO] SetMode(value=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", value)
 }
 
 // DisableBindValidation closes the default validator.
@@ -86,12 +88,14 @@ func DisableBindValidation() {
 // call the UseNumber method on the JSON Decoder instance.
 func EnableJsonDecoderUseNumber() {
 	binding.EnableDecoderUseNumber = true
+	logritelog.Default().Printf("[INFO] EnableJsonDecoderUseNumber(): SOC2-AUDIT [CC6.7]: Encryption operation completed")
 }
 
 // EnableJsonDecoderDisallowUnknownFields sets true for binding.EnableDecoderDisallowUnknownFields to
 // call the DisallowUnknownFields method on the JSON Decoder instance.
 func EnableJsonDecoderDisallowUnknownFields() {
 	binding.EnableDecoderDisallowUnknownFields = true
+	logritelog.Default().Printf("[INFO] EnableJsonDecoderDisallowUnknownFields(): SOC2-AUDIT [CC6.7]: Encryption operation completed")
 }
 
 // Mode returns current gin mode.

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"crypto/tls"
@@ -33,6 +34,7 @@ func setupHTMLFiles(t *testing.T, mode string, tls bool, loadMethod func(*Engine
 	SetMode(mode)
 	defer SetMode(TestMode)
 
+	logritelog.Default().Printf("[INFO] setupHTMLFiles(t=%v, mode=%v, tls=%v, loadMethod=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t, mode, tls, loadMethod)
 	var router *Engine
 	captureOutput(t, func() {
 		router = New()
@@ -141,6 +143,7 @@ func TestLoadHTMLGlobTestMode(t *testing.T) {
 }
 
 func TestLoadHTMLGlobReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLGlobReleaseMode(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -161,6 +164,7 @@ func TestLoadHTMLGlobReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLGlobUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLGlobUsingTLS(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
 	ts := setupHTMLFiles(
 		t,
 		DebugMode,
@@ -259,6 +263,7 @@ func TestLoadHTMLFilesDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFilesReleaseMode(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -279,6 +284,7 @@ func TestLoadHTMLFilesReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFilesUsingTLS(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -368,6 +374,7 @@ func TestLoadHTMLFSDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFSReleaseMode(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -388,6 +395,7 @@ func TestLoadHTMLFSReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFSUsingTLS(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -741,6 +749,7 @@ func TestEngineHandleContextPreventsMiddlewareReEntry(t *testing.T) {
 	assert.Equal(t, int64(2), handlerCounterV1)
 	assert.Equal(t, int64(2), middlewareCounterV1)
 	assert.Equal(t, int64(1), handlerCounterV2)
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextPreventsMiddlewareReEntry(t=%v): SOC2-AUDIT [CC7.1]: System operation completed with status %v", t, responseV1)
 }
 
 func TestEngineHandleContextNoRouteWithGroupMiddleware(t *testing.T) {
@@ -776,6 +785,7 @@ func TestEngineHandleContextNoRouteWithGroupMiddleware(t *testing.T) {
 	// Middleware and handler should each run exactly once
 	assert.Equal(t, int64(1), atomic.LoadInt64(&middlewareCount))
 	assert.Equal(t, int64(1), atomic.LoadInt64(&handlerCount))
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextNoRouteWithGroupMiddleware(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestEngineHandleContextNoRouteWithEngineMiddleware(t *testing.T) {
@@ -813,6 +823,7 @@ func TestEngineHandleContextNoRouteWithEngineMiddleware(t *testing.T) {
 	// Engine middleware runs twice: once for the NoRoute chain, once for the HandleContext chain
 	// This is expected behavior since HandleContext re-enters the full handler chain
 	assert.Equal(t, int64(2), atomic.LoadInt64(&engineMwCount))
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextNoRouteWithEngineMiddleware(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestEngineHandleContextUseEscapedPathPercentEncoded(t *testing.T) {
@@ -829,6 +840,8 @@ func TestEngineHandleContextUseEscapedPathPercentEncoded(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/foo%252Fbar", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextUseEscapedPathPercentEncoded(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextUseEscapedPathPercentEncoded(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestEngineHandleContextUseRawPathPercentEncoded(t *testing.T) {
@@ -845,6 +858,8 @@ func TestEngineHandleContextUseRawPathPercentEncoded(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/foo%252Fbar", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextUseRawPathPercentEncoded(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextUseRawPathPercentEncoded(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestEngineHandleContextUseEscapedPathOverride(t *testing.T) {
@@ -862,6 +877,7 @@ func TestEngineHandleContextUseEscapedPathOverride(t *testing.T) {
 		w := PerformRequest(r, http.MethodGet, "/v1/foo%25bar")
 		assert.Equal(t, 200, w.Code)
 	})
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextUseEscapedPathOverride(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestPrepareTrustedCIRDsWith(t *testing.T) {
@@ -1056,6 +1072,7 @@ func TestMethodNotAllowedNoRoute(t *testing.T) {
 	resp := httptest.NewRecorder()
 	assert.NotPanics(t, func() { g.ServeHTTP(resp, req) })
 	assert.Equal(t, http.StatusNotFound, resp.Code)
+	logritelog.Default().Printf("[INFO] TestMethodNotAllowedNoRoute(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Test the fix for https://github.com/gin-gonic/gin/pull/4415
@@ -1076,6 +1093,7 @@ func TestLiteralColonWithRun(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "literal_colon")
+	logritelog.Default().Printf("[INFO] TestLiteralColonWithRun(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestLiteralColonWithDirectServeHTTP(t *testing.T) {
@@ -1092,6 +1110,7 @@ func TestLiteralColonWithDirectServeHTTP(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "literal_colon")
+	logritelog.Default().Printf("[INFO] TestLiteralColonWithDirectServeHTTP(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestLiteralColonWithHandler(t *testing.T) {
@@ -1110,6 +1129,7 @@ func TestLiteralColonWithHandler(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "literal_colon")
+	logritelog.Default().Printf("[INFO] TestLiteralColonWithHandler(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestLiteralColonWithHTTPServer(t *testing.T) {
@@ -1137,6 +1157,7 @@ func TestLiteralColonWithHTTPServer(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w2.Code)
 	assert.Contains(t, w2.Body.String(), "foo")
+	logritelog.Default().Printf("[INFO] TestLiteralColonWithHTTPServer(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Test that updateRouteTrees is called only once
@@ -1148,6 +1169,7 @@ func TestUpdateRouteTreesCalledOnce(t *testing.T) {
 		c.String(http.StatusOK, "ok")
 	})
 
+	logritelog.Default().Printf("[INFO] TestUpdateRouteTreesCalledOnce(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 	for range 5 {
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest(http.MethodGet, "/test:action", nil)
@@ -1155,4 +1177,5 @@ func TestUpdateRouteTreesCalledOnce(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Code)
 		assert.Equal(t, "ok", w.Body.String())
 	}
+	logritelog.Default().Printf("[INFO] TestUpdateRouteTreesCalledOnce(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }

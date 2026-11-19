@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package ginS
+import logritelog "log"
 
 import (
 	"html/template"
@@ -29,6 +30,7 @@ func TestGET(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "test", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestGET(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestPOST(t *testing.T) {
@@ -42,6 +44,7 @@ func TestPOST(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "created", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestPOST(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestPUT(t *testing.T) {
@@ -55,6 +58,7 @@ func TestPUT(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "updated", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestPUT(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestDELETE(t *testing.T) {
@@ -68,6 +72,7 @@ func TestDELETE(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "deleted", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestDELETE(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestPATCH(t *testing.T) {
@@ -81,6 +86,8 @@ func TestPATCH(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "patched", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestPATCH(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestPATCH(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestOPTIONS(t *testing.T) {
@@ -94,6 +101,7 @@ func TestOPTIONS(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "options", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestOPTIONS(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestHEAD(t *testing.T) {
@@ -106,6 +114,7 @@ func TestHEAD(t *testing.T) {
 	engine().ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestHEAD(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestAny(t *testing.T) {
@@ -119,6 +128,7 @@ func TestAny(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "any", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestAny(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestHandle(t *testing.T) {
@@ -132,6 +142,7 @@ func TestHandle(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "handle", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestHandle(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestGroup(t *testing.T) {
@@ -146,6 +157,7 @@ func TestGroup(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "group test", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestGroup(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestUse(t *testing.T) {
@@ -165,6 +177,7 @@ func TestUse(t *testing.T) {
 
 	assert.True(t, middlewareExecuted)
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestUse(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestNoRoute(t *testing.T) {
@@ -178,6 +191,7 @@ func TestNoRoute(t *testing.T) {
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, "custom 404", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestNoRoute(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestNoMethod(t *testing.T) {
@@ -188,6 +202,7 @@ func TestNoMethod(t *testing.T) {
 	// This just verifies that NoMethod is callable
 	// Testing the actual behavior would require a separate engine instance
 	assert.NotNil(t, engine())
+	logritelog.Default().Printf("[INFO] TestNoMethod(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRoutes(t *testing.T) {
@@ -222,6 +237,7 @@ func TestStaticFile(t *testing.T) {
 	engine().ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestStaticFile(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestStatic(t *testing.T) {
@@ -232,6 +248,7 @@ func TestStatic(t *testing.T) {
 	engine().ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestStatic(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestStaticFS(t *testing.T) {
@@ -243,4 +260,5 @@ func TestStaticFS(t *testing.T) {
 	engine().ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestStaticFS(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }

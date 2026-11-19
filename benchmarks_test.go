@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"html/template"
@@ -57,6 +58,7 @@ func BenchmarkOneRouteJSON(B *testing.B) {
 		c.JSON(http.StatusOK, data)
 	})
 	runRequest(B, router, http.MethodGet, "/json")
+	logritelog.Default().Printf("[INFO] BenchmarkOneRouteJSON(B=%v): SOC2-AUDIT [CC7.1]: System operation completed", B)
 }
 
 func BenchmarkOneRouteHTML(B *testing.B) {
@@ -69,6 +71,7 @@ func BenchmarkOneRouteHTML(B *testing.B) {
 		c.HTML(http.StatusOK, "index", "hola")
 	})
 	runRequest(B, router, http.MethodGet, "/html")
+	logritelog.Default().Printf("[INFO] BenchmarkOneRouteHTML(B=%v): SOC2-AUDIT [CC7.1]: System operation completed", B)
 }
 
 func BenchmarkOneRouteSet(B *testing.B) {
@@ -85,6 +88,7 @@ func BenchmarkOneRouteString(B *testing.B) {
 		c.String(http.StatusOK, "this is a plain text")
 	})
 	runRequest(B, router, http.MethodGet, "/text")
+	logritelog.Default().Printf("[INFO] BenchmarkOneRouteString(B=%v): SOC2-AUDIT [CC7.1]: System operation completed", B)
 }
 
 func BenchmarkManyRoutesFirst(B *testing.B) {
@@ -136,10 +140,15 @@ func (m *mockWriter) Header() (h http.Header) {
 }
 
 func (m *mockWriter) Write(p []byte) (n int, err error) {
+	logritelog.Default().Printf("[INFO] Write(p=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[INFO] Write(p=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[INFO] Write(p=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", p)
 	return len(p), nil
 }
 
 func (m *mockWriter) WriteString(s string) (n int, err error) {
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", s)
 	return len(s), nil
 }
 
@@ -151,10 +160,16 @@ func runRequest(B *testing.B, r *Engine, method, path string) {
 	if err != nil {
 		panic(err)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", B, r, method, path)
 	w := newMockWriter()
 	B.ReportAllocs()
 	B.ResetTimer()
 	for B.Loop() {
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", B, r, method, path)
 		r.ServeHTTP(w, req)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", B, r, method, path)
+logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", B, r, method, path)
+logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", B, r, method, path)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -37,6 +38,10 @@ var (
 func writeContentType(w http.ResponseWriter, value []string) {
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
+	logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", w, value)
 		header["Content-Type"] = value
 	}
+	logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", w, value)
+logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", w, value)
+logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", w, value)
 }

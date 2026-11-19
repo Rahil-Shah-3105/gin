@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -40,7 +41,10 @@ type nonFlusherWriter struct {
 }
 
 func (w *nonFlusherWriter) Header() http.Header         { return w.header }
-func (w *nonFlusherWriter) Write(b []byte) (int, error) { return len(b), nil }
+func (w *nonFlusherWriter) Write(b []byte) (int, error) {
+    logritelog.Default().Printf("[INFO] Write(b=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", b)
+    return len(b), nil
+}
 func (w *nonFlusherWriter) WriteHeader(code int)        {}
 
 var (
@@ -74,6 +78,7 @@ func TestResponseWriterReset(t *testing.T) {
 	assert.Equal(t, -1, w.Size())
 	assert.Equal(t, http.StatusOK, w.Status())
 	assert.False(t, w.Written())
+	logritelog.Default().Printf("[INFO] TestResponseWriterReset(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestResponseWriterWriteHeader(t *testing.T) {
@@ -89,6 +94,7 @@ func TestResponseWriterWriteHeader(t *testing.T) {
 
 	w.WriteHeader(-1)
 	assert.Equal(t, http.StatusMultipleChoices, w.Status())
+	logritelog.Default().Printf("[INFO] TestResponseWriterWriteHeader(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestResponseWriterWriteHeadersNow(t *testing.T) {
@@ -107,6 +113,7 @@ func TestResponseWriterWriteHeadersNow(t *testing.T) {
 	writer.size = 10
 	w.WriteHeaderNow()
 	assert.Equal(t, 10, w.Size())
+	logritelog.Default().Printf("[INFO] TestResponseWriterWriteHeadersNow(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestResponseWriterWrite(t *testing.T) {
@@ -128,6 +135,7 @@ func TestResponseWriterWrite(t *testing.T) {
 	assert.Equal(t, 10, w.Size())
 	assert.Equal(t, "hola adios", testWriter.Body.String())
 	require.NoError(t, err)
+	logritelog.Default().Printf("[INFO] TestResponseWriterWrite(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestResponseWriterHijack(t *testing.T) {
@@ -292,6 +300,7 @@ func TestResponseWriterFlush(t *testing.T) {
 	resp, err := http.Get(testServer.URL)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	logritelog.Default().Printf("[INFO] TestResponseWriterFlush(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestResponseWriterStatusCode(t *testing.T) {
@@ -310,6 +319,7 @@ func TestResponseWriterStatusCode(t *testing.T) {
 
 	// status must be 200 although we tried to change it
 	assert.Equal(t, http.StatusOK, w.Status())
+	logritelog.Default().Printf("[INFO] TestResponseWriterStatusCode(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // mockPusherResponseWriter is an http.ResponseWriter that implements http.Pusher.

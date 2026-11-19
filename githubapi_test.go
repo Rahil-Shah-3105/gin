@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -307,6 +308,7 @@ func TestShouldBindUri(t *testing.T) {
 	w := PerformRequest(router, http.MethodGet, path)
 	assert.Equal(t, "ShouldBindUri test OK", w.Body.String())
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestShouldBindUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestBindUri(t *testing.T) {
@@ -329,6 +331,7 @@ func TestBindUri(t *testing.T) {
 	w := PerformRequest(router, http.MethodGet, path)
 	assert.Equal(t, "BindUri test OK", w.Body.String())
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestBindUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestBindUriError(t *testing.T) {
@@ -346,6 +349,7 @@ func TestBindUriError(t *testing.T) {
 	path1, _ := exampleFromPath("/new/rest/:num")
 	w1 := PerformRequest(router, http.MethodGet, path1)
 	assert.Equal(t, http.StatusBadRequest, w1.Code)
+	logritelog.Default().Printf("[INFO] TestBindUriError(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRaceContextCopy(t *testing.T) {
@@ -362,6 +366,7 @@ func TestRaceContextCopy(t *testing.T) {
 	})
 	w := PerformRequest(router, http.MethodGet, "/test/copy/race")
 	assert.Equal(t, "run OK, no panics", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestRaceContextCopy(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func readWriteKeys(c *Context) {
@@ -369,6 +374,9 @@ func readWriteKeys(c *Context) {
 		c.Set("1", rand.Int())
 		c.Set("2", c.Value("1"))
 	}
+	logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): SOC2-AUDIT [CC7.1]: System operations — Record access recorded for the audit trail", c)
 }
 
 func githubConfigRouter(router *Engine) {
@@ -382,6 +390,7 @@ func githubConfigRouter(router *Engine) {
 			c.JSON(http.StatusOK, output)
 		})
 	}
+	logritelog.Default().Printf("[INFO] githubConfigRouter(router=%v): SOC2-AUDIT [CC7.1]: System operation completed", router)
 }
 
 func TestGithubAPI(t *testing.T) {
@@ -400,6 +409,7 @@ func TestGithubAPI(t *testing.T) {
 			assert.Contains(t, w.Body.String(), str)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestGithubAPI(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func exampleFromPath(path string) (string, Params) {

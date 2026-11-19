@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -59,6 +60,7 @@ func testRequest(t *testing.T, params ...string) {
 
 	assert.Equal(t, responseStatus, resp.Status, "should get a "+responseStatus)
 	if responseStatus == "200 OK" {
+	logritelog.Default().Printf("[INFO] testRequest(t=%v, params=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t, params)
 		assert.Equal(t, responseBody, string(body), "resp body should match")
 	}
 }
@@ -155,6 +157,7 @@ func TestBadTrustedCIDRsForRunTLS(t *testing.T) {
 */
 
 func TestRunTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestRunTLS(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
 	router := New()
 	go func() {
 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
@@ -304,6 +307,7 @@ func TestFileDescriptor(t *testing.T) {
 	require.NoError(t, err)
 	socketFile, err := listener.File()
 	if isWindows() {
+	logritelog.Default().Printf("[INFO] TestFileDescriptor(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
 		// not supported by windows, it is unimplemented now
 		require.Error(t, err)
 	} else {
@@ -339,6 +343,7 @@ func TestFileDescriptor(t *testing.T) {
 func TestBadFileDescriptor(t *testing.T) {
 	router := New()
 	require.Error(t, router.RunFd(0))
+	logritelog.Default().Printf("[INFO] TestBadFileDescriptor(t=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", t)
 }
 
 func TestListener(t *testing.T) {
@@ -387,6 +392,7 @@ func TestWithHttptestWithAutoSelectedPort(t *testing.T) {
 	defer ts.Close()
 
 	testRequest(t, ts.URL+"/example")
+	logritelog.Default().Printf("[INFO] TestWithHttptestWithAutoSelectedPort(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestConcurrentHandleContext(t *testing.T) {
@@ -401,6 +407,7 @@ func TestConcurrentHandleContext(t *testing.T) {
 	iterations := 200
 	wg.Add(iterations)
 	for range iterations {
+	logritelog.Default().Printf("[INFO] TestConcurrentHandleContext(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 		go func() {
 			req, err := http.NewRequest(http.MethodGet, "/", nil)
 			assert.NoError(t, err)
@@ -575,6 +582,7 @@ func TestTreeRunDynamicRouting(t *testing.T) {
 	testRequest(t, ts.URL+"/a/dd", "404 Not Found")
 	testRequest(t, ts.URL+"/addr/dd/aa", "404 Not Found")
 	testRequest(t, ts.URL+"/something/secondthing/121", "404 Not Found")
+	logritelog.Default().Printf("[INFO] TestTreeRunDynamicRouting(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func isWindows() bool {
@@ -604,4 +612,5 @@ func TestEscapedColon(t *testing.T) {
 	testRequest(t, ts.URL+"/r/r/r123", "", "/r/r/:r")
 	testRequest(t, ts.URL+"/r/r/:r", "", "/r/r/\\:r")
 	testRequest(t, ts.URL+"/r/r/r:r", "", "/r/r/r\\:r")
+	logritelog.Default().Printf("[INFO] TestEscapedColon(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
