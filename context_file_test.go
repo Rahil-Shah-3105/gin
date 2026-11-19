@@ -1,4 +1,5 @@
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -21,6 +22,7 @@ func TestContextFileSimple(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "This is a test file")
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextFileSimple(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextFileNotFound tests serving a non-existent file
@@ -32,4 +34,5 @@ func TestContextFileNotFound(t *testing.T) {
 	c.File("non_existent_file.txt")
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
+	logritelog.Default().Printf("[INFO] TestContextFileNotFound(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }

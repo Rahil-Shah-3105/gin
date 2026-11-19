@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -35,6 +36,7 @@ func (t *testStruct) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	assert.Equal(t.T, "/path", req.URL.Path)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprint(w, "hello")
+	logritelog.Default().Printf("[INFO] ServeHTTP(w=%v, req=%v): SOC2-AUDIT [CC7.1]: System operation completed", w, req)
 }
 
 func TestWrap(t *testing.T) {
@@ -54,6 +56,7 @@ func TestWrap(t *testing.T) {
 	w = PerformRequest(router, http.MethodGet, "/path2")
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "hola!", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestWrap(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestLastChar(t *testing.T) {

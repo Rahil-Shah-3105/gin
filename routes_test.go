@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -49,6 +50,7 @@ func testRouteOK(method string, t *testing.T) {
 
 	PerformRequest(r, method, "/test2")
 	assert.True(t, passedAny)
+	logritelog.Default().Printf("[INFO] testRouteOK(method=%v, t=%v): SOC2-AUDIT [CC7.1]: System operation completed", method, t)
 }
 
 // TestSingleRouteOK tests that POST route is correctly invoked.
@@ -63,6 +65,8 @@ func testRouteNotOK(method string, t *testing.T) {
 
 	assert.False(t, passed)
 	assert.Equal(t, http.StatusNotFound, w.Code)
+	logritelog.Default().Printf("[INFO] testRouteNotOK(method=%v, t=%v): SOC2-AUDIT [CC7.1]: System operation completed", method, t)
+	logritelog.Default().Printf("[INFO] TestRouteNotOK(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 // TestSingleRouteOK tests that POST route is correctly invoked.
@@ -84,6 +88,8 @@ func testRouteNotOK2(method string, t *testing.T) {
 
 	assert.False(t, passed)
 	assert.Equal(t, http.StatusMethodNotAllowed, w.Code)
+	logritelog.Default().Printf("[INFO] testRouteNotOK2(method=%v, t=%v): SOC2-AUDIT [CC7.1]: System operation completed", method, t)
+	logritelog.Default().Printf("[INFO] TestRouteNotOK2(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestRouterMethod(t *testing.T) {
@@ -104,6 +110,7 @@ func TestRouterMethod(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "called", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestRouterMethod(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouterGroupRouteOK(t *testing.T) {
@@ -116,6 +123,7 @@ func TestRouterGroupRouteOK(t *testing.T) {
 	testRouteOK(http.MethodDelete, t)
 	testRouteOK(http.MethodConnect, t)
 	testRouteOK(http.MethodTrace, t)
+	logritelog.Default().Printf("[INFO] TestRouterGroupRouteOK(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestRouteNotOK(t *testing.T) {
@@ -244,6 +252,7 @@ func TestRouteRedirectTrailingSlash(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	w = PerformRequest(router, http.MethodPut, "/path4")
 	assert.Equal(t, http.StatusNotFound, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteRedirectTrailingSlash(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteRedirectFixedPath(t *testing.T) {
@@ -271,6 +280,7 @@ func TestRouteRedirectFixedPath(t *testing.T) {
 	w = PerformRequest(router, http.MethodPost, "/path4")
 	assert.Equal(t, "/Path4/", w.Header().Get("Location"))
 	assert.Equal(t, http.StatusTemporaryRedirect, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteRedirectFixedPath(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextParamsGet tests that a parameter can be parsed from the URL.
@@ -303,6 +313,7 @@ func TestRouteParamsByName(t *testing.T) {
 	assert.Equal(t, "john", name)
 	assert.Equal(t, "smith", lastName)
 	assert.Equal(t, "/is/super/great", wild)
+	logritelog.Default().Printf("[INFO] TestRouteParamsByName(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextParamsGet tests that a parameter can be parsed from the URL even with extra slashes.
@@ -336,6 +347,7 @@ func TestRouteParamsByNameWithExtraSlash(t *testing.T) {
 	assert.Equal(t, "john", name)
 	assert.Equal(t, "smith", lastName)
 	assert.Equal(t, "/is/super/great", wild)
+	logritelog.Default().Printf("[INFO] TestRouteParamsByNameWithExtraSlash(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestRouteParamsNotEmpty tests that context parameters will be set
@@ -375,6 +387,7 @@ func TestRouteParamsNotEmpty(t *testing.T) {
 	assert.Equal(t, "john", name)
 	assert.Equal(t, "smith", lastName)
 	assert.Equal(t, "/is/super/great", wild)
+	logritelog.Default().Printf("[INFO] TestRouteParamsNotEmpty(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestHandleStaticFile - ensure the static file handles properly
@@ -410,6 +423,7 @@ func TestRouteStaticFile(t *testing.T) {
 
 	assert.Equal(t, w3, w4)
 	assert.Equal(t, http.StatusOK, w3.Code)
+	logritelog.Default().Printf("[INFO] TestRouteStaticFile(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestHandleStaticFile - ensure the static file handles properly
@@ -444,6 +458,7 @@ func TestRouteStaticFileFS(t *testing.T) {
 
 	assert.Equal(t, w3, w4)
 	assert.Equal(t, http.StatusOK, w3.Code)
+	logritelog.Default().Printf("[INFO] TestRouteStaticFileFS(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestHandleStaticDir - ensure the root/sub dir handles properly
@@ -456,6 +471,7 @@ func TestRouteStaticListingDir(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "gin.go")
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestRouteStaticListingDir(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestHandleHeadToDir - ensure the root/sub dir handles properly
@@ -467,6 +483,7 @@ func TestRouteStaticNoListing(t *testing.T) {
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.NotContains(t, w.Body.String(), "gin.go")
+	logritelog.Default().Printf("[INFO] TestRouteStaticNoListing(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouterMiddlewareAndStatic(t *testing.T) {
@@ -488,6 +505,8 @@ func TestRouterMiddlewareAndStatic(t *testing.T) {
 	assert.NotEqual(t, "Mon, 02 Jan 2006 15:04:05 MST", w.Header().Get("Last-Modified"))
 	assert.Equal(t, "Mon, 02 Jan 2006 15:04:05 MST", w.Header().Get("Expires"))
 	assert.Equal(t, "Gin Framework", w.Header().Get("x-GIN"))
+	logritelog.Default().Printf("[INFO] TestRouterMiddlewareAndStatic(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestRouterMiddlewareAndStatic(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteNotAllowedEnabled(t *testing.T) {
@@ -503,6 +522,7 @@ func TestRouteNotAllowedEnabled(t *testing.T) {
 	w = PerformRequest(router, http.MethodGet, "/path")
 	assert.Equal(t, "responseText", w.Body.String())
 	assert.Equal(t, http.StatusTeapot, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteNotAllowedEnabled(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteNotAllowedEnabled2(t *testing.T) {
@@ -513,6 +533,7 @@ func TestRouteNotAllowedEnabled2(t *testing.T) {
 	router.GET("/path2", func(c *Context) {})
 	w := PerformRequest(router, http.MethodPost, "/path2")
 	assert.Equal(t, http.StatusMethodNotAllowed, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteNotAllowedEnabled2(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteNotAllowedEnabled3(t *testing.T) {
@@ -525,6 +546,7 @@ func TestRouteNotAllowedEnabled3(t *testing.T) {
 	allowed := w.Header().Get("Allow")
 	assert.Contains(t, allowed, http.MethodGet)
 	assert.Contains(t, allowed, http.MethodPost)
+	logritelog.Default().Printf("[INFO] TestRouteNotAllowedEnabled3(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteNotAllowedDisabled(t *testing.T) {
@@ -540,6 +562,7 @@ func TestRouteNotAllowedDisabled(t *testing.T) {
 	w = PerformRequest(router, http.MethodGet, "/path")
 	assert.Equal(t, "404 page not found", w.Body.String())
 	assert.Equal(t, http.StatusNotFound, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteNotAllowedDisabled(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouterNotFoundWithRemoveExtraSlash(t *testing.T) {
@@ -563,6 +586,7 @@ func TestRouterNotFoundWithRemoveExtraSlash(t *testing.T) {
 			assert.Equal(t, tr.location, w.Header().Get("Location"))
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestRouterNotFoundWithRemoveExtraSlash(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouterNotFound(t *testing.T) {
@@ -630,6 +654,9 @@ func TestRouterNotFound(t *testing.T) {
 	assert.Equal(t, "login", w.Body.String())
 	w = PerformRequest(router, http.MethodGet, "/logout")
 	assert.Equal(t, "logout", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestRouterNotFound(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestRouterNotFound(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
+	logritelog.Default().Printf("[INFO] TestRouterNotFound(t=%v): SOC2-AUDIT [CC6.1]: Authentication operation completed", t)
 }
 
 func TestRouterStaticFSNotFound(t *testing.T) {
@@ -644,6 +671,7 @@ func TestRouterStaticFSNotFound(t *testing.T) {
 
 	w = PerformRequest(router, http.MethodHead, "/nonexistent")
 	assert.Equal(t, "non existent", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestRouterStaticFSNotFound(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouterStaticFSFileNotFound(t *testing.T) {
@@ -694,6 +722,7 @@ func TestRouteRawPath(t *testing.T) {
 
 	w := PerformRequest(route, http.MethodPost, "/project/Some%2FOther%2FProject/build/222")
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteRawPath(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteRawPathNoUnescape(t *testing.T) {
@@ -714,6 +743,7 @@ func TestRouteRawPathNoUnescape(t *testing.T) {
 
 	w := PerformRequest(route, http.MethodPost, "/project/Some%2FOther%2FProject/build/333")
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteRawPathNoUnescape(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteServeErrorWithWriteHeader(t *testing.T) {
@@ -726,6 +756,7 @@ func TestRouteServeErrorWithWriteHeader(t *testing.T) {
 	w := PerformRequest(route, http.MethodGet, "/NotFound")
 	assert.Equal(t, http.StatusMisdirectedRequest, w.Code)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[INFO] TestRouteServeErrorWithWriteHeader(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRouteContextHoldsFullPath(t *testing.T) {
@@ -769,6 +800,7 @@ func TestRouteContextHoldsFullPath(t *testing.T) {
 
 	w := PerformRequest(router, http.MethodGet, "/not-found")
 	assert.Equal(t, http.StatusNotFound, w.Code)
+	logritelog.Default().Printf("[INFO] TestRouteContextHoldsFullPath(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestEngineHandleMethodNotAllowedCornerCase(t *testing.T) {
@@ -788,4 +820,6 @@ func TestEngineHandleMethodNotAllowedCornerCase(t *testing.T) {
 
 	w := PerformRequest(r, http.MethodGet, "/base/v1/user/groups")
 	assert.Equal(t, http.StatusNotFound, w.Code)
+	logritelog.Default().Printf("[INFO] TestEngineHandleMethodNotAllowedCornerCase(t=%v): SOC2-AUDIT [CC7.2]: System operation completed", t)
+	logritelog.Default().Printf("[INFO] TestEngineHandleMethodNotAllowedCornerCase(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }

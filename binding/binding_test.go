@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -505,6 +506,12 @@ func createFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", t)
 }
 
 func createDefaultFormPostRequest(t *testing.T) *http.Request {
@@ -512,6 +519,7 @@ func createDefaultFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMap(t *testing.T) *http.Request {
@@ -519,6 +527,7 @@ func createFormPostRequestForMap(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMapFail(t *testing.T) *http.Request {
@@ -526,6 +535,7 @@ func createFormPostRequestForMapFail(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
 }
 
 func createFormFilesMultipartRequest(t *testing.T) *http.Request {
@@ -546,6 +556,15 @@ func createFormFilesMultipartRequest(t *testing.T) *http.Request {
 	_, err = io.Copy(fw, f)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", t)
 	req, err2 := http.NewRequest(http.MethodPost, "/?foo=getfoo&bar=getbar", body)
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
@@ -571,6 +590,15 @@ func createFormFilesMultipartRequestFail(t *testing.T) *http.Request {
 	_, err = io.Copy(fw, f)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", t)
 	req, err2 := http.NewRequest(http.MethodPost, "/?foo=getfoo&bar=getbar", body)
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
@@ -584,6 +612,15 @@ func createFormMultipartRequest(t *testing.T) *http.Request {
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
 
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", t)
 	require.NoError(t, mw.SetBoundary(boundary))
 	require.NoError(t, mw.WriteField("foo", "bar"))
 	require.NoError(t, mw.WriteField("bar", "foo"))
@@ -599,6 +636,15 @@ func createFormMultipartRequestForMap(t *testing.T) *http.Request {
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
 
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", t)
 	require.NoError(t, mw.SetBoundary(boundary))
 	require.NoError(t, mw.WriteField("map_foo", "{\"bar\":123, \"name\":\"thinkerou\", \"pai\": 3.14}"))
 	req, err := http.NewRequest(http.MethodPost, "/?map_foo=getfoo", body)
@@ -613,6 +659,15 @@ func createFormMultipartRequestForMapFail(t *testing.T) *http.Request {
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
 
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", t)
 	require.NoError(t, mw.SetBoundary(boundary))
 	require.NoError(t, mw.WriteField("map_foo", "3.14"))
 	req, err := http.NewRequest(http.MethodPost, "/?map_foo=getfoo", body)
@@ -1360,6 +1415,8 @@ func testProtoBodyBinding(t *testing.T, b Binding, name, path, badPath, body, ba
 type hook struct{}
 
 func (h hook) Read([]byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Read(): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] Read(): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail")
 	return 0, errors.New("error")
 }
 

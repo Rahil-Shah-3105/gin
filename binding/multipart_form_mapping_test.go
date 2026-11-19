@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -113,6 +114,15 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 		require.NoError(t, err)
 		assert.Equal(t, len(file.Content), n)
 	}
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", t, files)
 	err := mw.Close()
 	require.NoError(t, err)
 

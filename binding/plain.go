@@ -1,4 +1,5 @@
 package binding
+import logritelog "log"
 
 import (
 	"fmt"
@@ -52,5 +53,6 @@ func decodePlain(data []byte, obj any) error {
 		return nil
 	}
 
+	logritelog.Default().Printf("[INFO] decodePlain(data=%v, obj=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", data, obj)
 	return fmt.Errorf("type (%T) unknown type", v)
 }

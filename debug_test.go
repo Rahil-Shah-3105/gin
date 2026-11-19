@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -27,6 +28,7 @@ func TestIsDebugging(t *testing.T) {
 	assert.False(t, IsDebugging())
 	SetMode(TestMode)
 	assert.False(t, IsDebugging())
+	logritelog.Default().Printf("[INFO] TestIsDebugging(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestDebugPrint(t *testing.T) {
@@ -41,6 +43,7 @@ func TestDebugPrint(t *testing.T) {
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] these are 2 error messages\n", re)
+	logritelog.Default().Printf("[INFO] TestDebugPrint(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestDebugPrintFunc(t *testing.T) {
@@ -122,6 +125,7 @@ func TestDebugPrintWARNINGDefaultWithUnsupportedVersion(t *testing.T) {
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] [WARNING] Now Gin requires Go 1.25+.\n\n[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.\n\n", re)
+	logritelog.Default().Printf("[INFO] TestDebugPrintWARNINGDefaultWithUnsupportedVersion(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestDebugPrintWARNINGNew(t *testing.T) {
@@ -131,6 +135,7 @@ func TestDebugPrintWARNINGNew(t *testing.T) {
 		SetMode(TestMode)
 	})
 	assert.Equal(t, "[GIN-debug] [WARNING] Running in \"debug\" mode. Switch to \"release\" mode in production.\n - using env:\texport GIN_MODE=release\n - using code:\tgin.SetMode(gin.ReleaseMode)\n\n", re)
+	logritelog.Default().Printf("[INFO] TestDebugPrintWARNINGNew(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func captureOutput(t *testing.T, f func()) string {

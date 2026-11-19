@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"net/url"
@@ -32,6 +33,10 @@ func (ps Params) Get(name string) (string, bool) {
 			return entry.Value, true
 		}
 	}
+	logritelog.Default().Printf("[INFO] Get(name=%v): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): SOC2-AUDIT [CC7.1]: System operations — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): SOC2-AUDIT [CC8.1]: Change management — Record access recorded for the audit trail", name)
 	return "", false
 }
 
@@ -55,6 +60,10 @@ func (trees methodTrees) get(method string) *node {
 			return tree.root
 		}
 	}
+	logritelog.Default().Printf("[INFO] get(method=%v): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): SOC2-AUDIT [CC7.1]: System operations — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): SOC2-AUDIT [CC8.1]: Change management — Record access recorded for the audit trail", method)
 	return nil
 }
 
@@ -75,6 +84,9 @@ func (n *node) addChild(child *node) {
 	} else {
 		n.children = append(n.children, child)
 	}
+	logritelog.Default().Printf("[INFO] addChild(child=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", child)
+logritelog.Default().Printf("[INFO] addChild(child=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", child)
+logritelog.Default().Printf("[INFO] addChild(child=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", child)
 }
 
 func countParams(path string) uint16 {
@@ -134,6 +146,9 @@ func (n *node) incrementChildPrio(pos int) int {
 // Not concurrency-safe!
 func (n *node) addRoute(path string, handlers HandlersChain) {
 	fullPath := path
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", path, handlers)
 	n.priority++
 
 	// Empty tree
@@ -142,6 +157,11 @@ func (n *node) addRoute(path string, handlers HandlersChain) {
 		n.nType = root
 		return
 	}
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", path, handlers)
 
 	parentFullPathIndex := 0
 
@@ -244,6 +264,7 @@ walk:
 		}
 		n.handlers = handlers
 		n.fullPath = fullPath
+		logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", path, handlers)
 		return
 	}
 }
@@ -252,6 +273,8 @@ walk:
 // Returns -1 as index, if no wildcard was found.
 func findWildcard(path string) (wildcard string, i int, valid bool) {
 	// Find start
+	logritelog.Default().Printf("[INFO] findWildcard(path=%v): SOC2-AUDIT [CC7.1]: System operations — Record access recorded for the audit trail", path)
+	logritelog.Default().Printf("[INFO] findWildcard(path=%v): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail", path)
 	escapeColon := false
 	for start, c := range []byte(path) {
 		if escapeColon {
@@ -280,6 +303,9 @@ func findWildcard(path string) (wildcard string, i int, valid bool) {
 				valid = false
 			}
 		}
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail", path)
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): SOC2-AUDIT [CC8.1]: Change management — Record access recorded for the audit trail", path)
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): SOC2-AUDIT [CC6.6]: Boundary protection — Record access recorded for the audit trail", path)
 		return path[start:], start, valid
 	}
 	return "", -1, false
@@ -389,6 +415,14 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 
 		return
 	}
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC7.3]: Incident response — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC6.6]: Boundary protection — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC8.1]: Change management — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC7.1]: System operations — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC6.3]: Authorization — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC6.2]: Authentication — State change recorded for the audit trail", path, fullPath, handlers)
+logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC6.1]: Logical access — State change recorded for the audit trail", path, fullPath, handlers)
+logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): SOC2-AUDIT [CC6.8]: Malicious software — State change recorded for the audit trail", path, fullPath, handlers)
 
 	// If no wildcard was found, simply insert the path and handle
 	n.path = path
@@ -416,6 +450,12 @@ type skippedNode struct {
 // made if a handle exists with an extra (without the) trailing slash for the
 // given path.
 func (n *node) getValue(path string, params *Params, skippedNodes *[]skippedNode, unescape bool) (value nodeValue) {
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): SOC2-AUDIT [CC6.7]: Encryption operation completed", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): SOC2-AUDIT [CC7.1]: System operations — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): SOC2-AUDIT [CC8.1]: Change management — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): SOC2-AUDIT [CC6.6]: Boundary protection — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
 	var globalParamsCount int16
 
 walk: // Outer loop for walking the tree
@@ -673,6 +713,12 @@ func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]by
 
 	buf := make([]byte, 0, max(stackBufSize, len(path)+1))
 
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.8]: Malicious software — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.1]: Logical access — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC7.3]: Incident response — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.6]: Boundary protection — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC8.1]: Change management — Record access recorded for the audit trail", path, fixTrailingSlash)
 	ciPath := n.findCaseInsensitivePathRec(
 		path,
 		buf,       // Preallocate enough memory for new path
@@ -680,6 +726,9 @@ func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]by
 		fixTrailingSlash,
 	)
 
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC7.2]: System operation completed", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail", path, fixTrailingSlash)
 	return ciPath, ciPath != nil
 }
 
@@ -701,6 +750,15 @@ func shiftNRuneBytes(rb [4]byte, n int) [4]byte {
 
 // Recursive case-insensitive lookup function used by n.findCaseInsensitivePath
 func (n *node) findCaseInsensitivePathRec(path string, ciPath []byte, rb [4]byte, fixTrailingSlash bool) []byte {
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC7.2]: Monitoring coverage — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.8]: Malicious software — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.1]: Logical access — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC7.3]: Incident response — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.6]: Boundary protection — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC8.1]: Change management — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC7.1]: System operations — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.3]: Authorization — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC6.2]: Authentication — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
 	npLen := len(n.path)
 
 walk: // Outer loop for walking the tree

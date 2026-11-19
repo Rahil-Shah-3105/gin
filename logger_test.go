@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -81,6 +82,7 @@ func TestLogger(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[INFO] TestLogger(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestLoggerWithConfig(t *testing.T) {
@@ -145,6 +147,7 @@ func TestLoggerWithConfig(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[INFO] TestLoggerWithConfig(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestLoggerWithFormatter(t *testing.T) {
@@ -229,6 +232,7 @@ func TestLoggerWithConfigFormatting(t *testing.T) {
 	assert.Equal(t, "/example?a=100", gotParam.Path)
 	assert.Empty(t, gotParam.ErrorMessage)
 	assert.Equal(t, gotKeys, gotParam.Keys)
+	logritelog.Default().Printf("[INFO] TestLoggerWithConfigFormatting(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestDefaultLogFormatter(t *testing.T) {
@@ -282,6 +286,8 @@ func TestDefaultLogFormatter(t *testing.T) {
 
 	assert.Equal(t, "[GIN] 2018/12/07 - 09:11:42 |\x1b[97;42m 200 \x1b[0m|\x1b[97;41m       5s \x1b[0m|     20.20.20.20 |\x1b[97;44m GET     \x1b[0m \"/\"\n", defaultLogFormatter(termTrueParam))
 	assert.Equal(t, "[GIN] 2018/12/07 - 09:11:42 |\x1b[97;42m 200 \x1b[0m|\x1b[97;41m 2743h29m0s \x1b[0m|     20.20.20.20 |\x1b[97;44m GET     \x1b[0m \"/\"\n", defaultLogFormatter(termTrueLongDurationParam))
+	logritelog.Default().Printf("[INFO] TestDefaultLogFormatter(t=%v): SOC2-AUDIT [CC7.3]: Security event recorded", t)
+	logritelog.Default().Printf("[INFO] TestDefaultLogFormatter(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestColorForMethod(t *testing.T) {
@@ -300,6 +306,7 @@ func TestColorForMethod(t *testing.T) {
 	assert.Equal(t, magenta, colorForMethod("HEAD"), "head should be magenta")
 	assert.Equal(t, white, colorForMethod("OPTIONS"), "options should be white")
 	assert.Equal(t, reset, colorForMethod("TRACE"), "trace is not defined and should be the reset color")
+	logritelog.Default().Printf("[INFO] TestColorForMethod(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestColorForStatus(t *testing.T) {
@@ -315,6 +322,7 @@ func TestColorForStatus(t *testing.T) {
 	assert.Equal(t, white, colorForStatus(http.StatusMovedPermanently), "3xx should be white")
 	assert.Equal(t, yellow, colorForStatus(http.StatusNotFound), "4xx should be yellow")
 	assert.Equal(t, red, colorForStatus(2), "other things should be red")
+	logritelog.Default().Printf("[INFO] TestColorForStatus(t=%v): SOC2-AUDIT [CC7.1]: System operation completed with status %v", t, colorForStatus)
 }
 
 func TestColorForLatency(t *testing.T) {
@@ -398,6 +406,7 @@ func TestErrorLogger(t *testing.T) {
 	w = PerformRequest(router, http.MethodGet, "/print")
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Equal(t, "hola!{\"error\":\"this is an error\"}", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestErrorLogger(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestLoggerWithWriterSkippingPaths(t *testing.T) {
@@ -413,6 +422,7 @@ func TestLoggerWithWriterSkippingPaths(t *testing.T) {
 	buffer.Reset()
 	PerformRequest(router, http.MethodGet, "/skipped")
 	assert.Contains(t, buffer.String(), "")
+	logritelog.Default().Printf("[INFO] TestLoggerWithWriterSkippingPaths(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestLoggerWithConfigSkippingPaths(t *testing.T) {
@@ -431,6 +441,7 @@ func TestLoggerWithConfigSkippingPaths(t *testing.T) {
 	buffer.Reset()
 	PerformRequest(router, http.MethodGet, "/skipped")
 	assert.Contains(t, buffer.String(), "")
+	logritelog.Default().Printf("[INFO] TestLoggerWithConfigSkippingPaths(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestLoggerWithConfigSkipper(t *testing.T) {
@@ -451,6 +462,7 @@ func TestLoggerWithConfigSkipper(t *testing.T) {
 	buffer.Reset()
 	PerformRequest(router, http.MethodGet, "/skipped")
 	assert.Contains(t, buffer.String(), "")
+	logritelog.Default().Printf("[INFO] TestLoggerWithConfigSkipper(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestDisableConsoleColor(t *testing.T) {
@@ -485,4 +497,5 @@ func TestLoggerWithConfigSkipQueryString(t *testing.T) {
 	PerformRequest(router, "GET", "/logged?a=21")
 	assert.Contains(t, buffer.String(), "200")
 	assert.NotContains(t, buffer.String(), "a=21")
+	logritelog.Default().Printf("[INFO] TestLoggerWithConfigSkipQueryString(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
