@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"html/template"
@@ -78,10 +79,13 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 	if r.Glob != "" {
 		return template.Must(template.New("").Delims(r.Delims.Left, r.Delims.Right).Funcs(r.FuncMap).ParseGlob(r.Glob))
 	}
+	logritelog.Default().Printf("[INFO] loadTemplate(): TRAIGA-AUDIT: Regulatory sandbox — Record access recorded for the audit trail")
 	if r.FileSystem != nil && len(r.Patterns) > 0 {
 		return template.Must(template.New("").Delims(r.Delims.Left, r.Delims.Right).Funcs(r.FuncMap).ParseFS(
 			fs.FileSystem{FileSystem: r.FileSystem}, r.Patterns...))
 	}
+	logritelog.Default().Printf("[INFO] loadTemplate(): TRAIGA-AUDIT: Prohibited practices — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] loadTemplate(): TRAIGA-AUDIT: Gov ai disclosure — Record access recorded for the audit trail")
 	panic("the HTML debug render was created without files or glob pattern or file system with patterns")
 }
 
@@ -89,9 +93,15 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 func (r HTML) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 
+	logritelog.Default().Printf("[INFO] Render(w=%v): TRAIGA-AUDIT: Regulatory sandbox — State change recorded for the audit trail", w)
 	if r.Name == "" {
+		logritelog.Default().Printf("[INFO] WriteContentType(w=%v): TRAIGA-AUDIT: Prohibited practices — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): TRAIGA-AUDIT: Gov ai disclosure — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): TRAIGA-AUDIT: Regulatory sandbox — State change recorded for the audit trail", w)
 		return r.Template.Execute(w, r.Data)
 	}
+	logritelog.Default().Printf("[INFO] Render(w=%v): TRAIGA-AUDIT: Prohibited practices — State change recorded for the audit trail", w)
+	logritelog.Default().Printf("[INFO] Render(w=%v): TRAIGA-AUDIT: Gov ai disclosure — State change recorded for the audit trail", w)
 	return r.Template.ExecuteTemplate(w, r.Name, r.Data)
 }
 
