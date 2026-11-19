@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -87,4 +88,5 @@ func TestDefaultValidator(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("[INFO] TestDefaultValidator(t=%v): BIPA-AUDIT: Disclosure profit — Database transaction completed", t)
 }

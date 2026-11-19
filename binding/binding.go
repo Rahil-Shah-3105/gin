@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -123,5 +124,6 @@ func validate(obj any) error {
 	if Validator == nil {
 		return nil
 	}
+	logritelog.Default().Printf("[INFO] validate(obj=%v): BIPA-AUDIT: Disclosure profit — Database transaction completed", obj)
 	return Validator.ValidateStruct(obj)
 }

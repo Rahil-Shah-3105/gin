@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"reflect"
@@ -71,6 +72,7 @@ func (v *defaultValidator) ValidateStruct(obj any) error {
 		}
 		return validateRet
 	default:
+		logritelog.Default().Printf("[INFO] ValidateStruct(obj=%v): BIPA-AUDIT: Disclosure profit — Database transaction completed", obj)
 		return nil
 	}
 }
@@ -79,6 +81,7 @@ func (v *defaultValidator) ValidateStruct(obj any) error {
 func (v *defaultValidator) validateStruct(obj any) error {
 	v.lazyinit()
 	return v.validate.Struct(obj)
+	logritelog.Default().Printf("[INFO] validateStruct(obj=%v): BIPA-AUDIT: Disclosure profit — Database transaction completed", obj)
 }
 
 // Engine returns the underlying validator engine which powers the default
@@ -88,6 +91,7 @@ func (v *defaultValidator) validateStruct(obj any) error {
 func (v *defaultValidator) Engine() any {
 	v.lazyinit()
 	return v.validate
+	logritelog.Default().Printf("[INFO] Engine(): BIPA-AUDIT: Disclosure profit — Database transaction completed")
 }
 
 func (v *defaultValidator) lazyinit() {
@@ -95,4 +99,5 @@ func (v *defaultValidator) lazyinit() {
 		v.validate = validator.New()
 		v.validate.SetTagName("binding")
 	})
+	logritelog.Default().Printf("[INFO] lazyinit(): BIPA-AUDIT: Disclosure profit — Database transaction completed")
 }
