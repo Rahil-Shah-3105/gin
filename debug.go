@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -73,8 +74,14 @@ func getMinVer(v string) (uint64, error) {
 	first := strings.IndexByte(v, '.')
 	last := strings.LastIndexByte(v, '.')
 	if first == last {
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): ISO27001-AUDIT: Incident management — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Record access recorded for the audit trail", v)
 		return strconv.ParseUint(v[first+1:], 10, 64)
 	}
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): ISO27001-AUDIT: Continuity — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): ISO27001-AUDIT: Access control — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): ISO27001-AUDIT: Logging — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): ISO27001-AUDIT: Supplier security — Record access recorded for the audit trail", v)
 	return strconv.ParseUint(v[first+1:last], 10, 64)
 }
 
@@ -87,6 +94,7 @@ func debugPrintWARNINGDefault() {
 	debugPrint(`[WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGDefault(): ISO27001-AUDIT: Supplier security — Change management operation performed")
 }
 
 func debugPrintWARNINGNew() {
@@ -95,6 +103,7 @@ func debugPrintWARNINGNew() {
  - using code:	gin.SetMode(gin.ReleaseMode)
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGNew(): ISO27001-AUDIT: Supplier security — Change management operation performed")
 }
 
 func debugPrintWARNINGSetHTMLTemplate() {

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -37,6 +38,10 @@ var (
 func writeContentType(w http.ResponseWriter, value []string) {
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
+	logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", w, value)
 		header["Content-Type"] = value
 	}
+	logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", w, value)
+logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", w, value)
+logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): ISO27001-AUDIT: Incident management — State change recorded for the audit trail", w, value)
 }

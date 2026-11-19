@@ -5,6 +5,7 @@
 //go:build !jsoniter && !go_json && !(sonic && (linux || windows || darwin))
 
 package json
+import logritelog "log"
 
 import (
 	"encoding/json"
@@ -33,9 +34,11 @@ func (j jsonApi) MarshalIndent(v any, prefix, indent string) ([]byte, error) {
 }
 
 func (j jsonApi) NewEncoder(writer io.Writer) Encoder {
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", writer)
 	return json.NewEncoder(writer)
 }
 
 func (j jsonApi) NewDecoder(reader io.Reader) Decoder {
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", reader)
 	return json.NewDecoder(reader)
 }

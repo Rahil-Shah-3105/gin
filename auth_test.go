@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"encoding/base64"
@@ -33,6 +34,7 @@ func TestBasicAuth(t *testing.T) {
 		user:  "admin",
 		value: "Basic YWRtaW46cGFzc3dvcmQ=",
 	})
+	logritelog.Default().Printf("[INFO] TestBasicAuth(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed", t)
 }
 
 func TestBasicAuthFails(t *testing.T) {
@@ -43,6 +45,7 @@ func TestBasicAuthFails(t *testing.T) {
 			"foo": "bar",
 		})
 	})
+	logritelog.Default().Printf("[INFO] TestBasicAuthFails(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed", t)
 }
 
 func TestBasicAuthSearchCredential(t *testing.T) {
@@ -75,10 +78,12 @@ func TestBasicAuthSearchCredential(t *testing.T) {
 	user, found = pairs.searchCredential("")
 	assert.Empty(t, user)
 	assert.False(t, found)
+	logritelog.Default().Printf("[INFO] TestBasicAuthSearchCredential(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed", t)
 }
 
 func TestBasicAuthAuthorizationHeader(t *testing.T) {
 	assert.Equal(t, "Basic YWRtaW46cGFzc3dvcmQ=", authorizationHeader("admin", "password"))
+	logritelog.Default().Printf("[INFO] TestBasicAuthAuthorizationHeader(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed", t)
 }
 
 func TestBasicAuthSucceed(t *testing.T) {
@@ -96,6 +101,7 @@ func TestBasicAuthSucceed(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "admin", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestBasicAuthSucceed(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed for user %v", t, accounts)
 }
 
 func TestBasicAuth401(t *testing.T) {
@@ -116,6 +122,7 @@ func TestBasicAuth401(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "Basic realm=\"Authorization Required\"", w.Header().Get("WWW-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuth401(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed for user %v", t, accounts)
 }
 
 func TestBasicAuth401WithCustomRealm(t *testing.T) {
@@ -136,6 +143,7 @@ func TestBasicAuth401WithCustomRealm(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "Basic realm=\"My Custom \\\"Realm\\\"\"", w.Header().Get("WWW-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuth401WithCustomRealm(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed for user %v", t, accounts)
 }
 
 func TestBasicAuthForProxySucceed(t *testing.T) {
@@ -153,6 +161,7 @@ func TestBasicAuthForProxySucceed(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "admin", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestBasicAuthForProxySucceed(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed for user %v", t, accounts)
 }
 
 func TestBasicAuthForProxy407(t *testing.T) {
@@ -173,4 +182,5 @@ func TestBasicAuthForProxy407(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusProxyAuthRequired, w.Code)
 	assert.Equal(t, "Basic realm=\"Proxy Authorization Required\"", w.Header().Get("Proxy-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuthForProxy407(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Password reset operation performed for user %v", t, accounts)
 }

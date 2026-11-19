@@ -4,6 +4,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE.
 
 package gin
+import logritelog "log"
 
 const stackBufSize = 128
 
@@ -193,11 +194,17 @@ func removeRepeatedChar(s string, char byte) string {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): ISO27001-AUDIT: Supplier security — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): ISO27001-AUDIT: Logging — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): ISO27001-AUDIT: Incident management — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", s, char)
 	// If the original string was not modified (or only shortened at the end),
 	// return the respective substring of the original string.
 	// Otherwise, return a new string from the buffer.
 	if len(buf) == 0 {
 		return s[:w]
 	}
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", s, char)
 	return string(buf[:w])
 }

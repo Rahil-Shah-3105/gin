@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,12 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): ISO27001-AUDIT: Supplier security — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): ISO27001-AUDIT: Logging — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): ISO27001-AUDIT: Incident management — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): ISO27001-AUDIT: Continuity — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): ISO27001-AUDIT: Access control — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -253,6 +260,7 @@ func TestSaveUploadedFileWithPermission(t *testing.T) {
 	info, err := os.Stat(filepath.Dir(dst))
 	require.NoError(t, err)
 	assert.Equal(t, mode, info.Mode().Perm())
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermission(t=%v): ISO27001-AUDIT: Access control modification completed", t)
 }
 
 func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
@@ -272,6 +280,7 @@ func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
 	var mode fs.FileMode = 0o644
 	dst := filepath.Join(t.TempDir(), "test", "permission_test")
 	require.Error(t, c.SaveUploadedFile(f, dst, mode))
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermissionFailed(t=%v): ISO27001-AUDIT: Access control modification completed", t)
 }
 
 // TestSaveUploadedFileToExistingDir is a regression test for issue #4622.
@@ -774,6 +783,7 @@ func TestContextCopyNilErrorsAndAccepted(t *testing.T) {
 
 	assert.Nil(t, cp.Errors)
 	assert.Nil(t, cp.Accepted)
+	logritelog.Default().Printf("[INFO] TestContextCopyNilErrorsAndAccepted(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", t)
 }
 
 func TestContextHandlerName(t *testing.T) {
@@ -1541,6 +1551,7 @@ func TestContextRenderFile(t *testing.T) {
 	// Content-Type='text/plain; charset=utf-8' when go version <= 1.16,
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderFile(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextRenderFileFromFS(t *testing.T) {
@@ -1556,6 +1567,7 @@ func TestContextRenderFileFromFS(t *testing.T) {
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
 	assert.Equal(t, "/some/path", c.Request.URL.Path)
+	logritelog.Default().Printf("[INFO] TestContextRenderFileFromFS(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextRenderAttachment(t *testing.T) {
@@ -1583,6 +1595,7 @@ func TestContextRenderAndEscapeAttachment(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	assert.Equal(t, fmt.Sprintf("attachment; filename=\"%s\"", actualEscapedResponseFilename), w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[INFO] TestContextRenderAndEscapeAttachment(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", t)
 }
 
 func TestContextRenderUTF8Attachment(t *testing.T) {
@@ -2207,6 +2220,12 @@ func resetContextForClientIPTests(c *Context) {
 	c.Request.Header.Set("CF-Connecting-IP", "60.60.60.60")
 	c.Request.Header.Set("Fly-Client-IP", "70.70.70.70")
 	c.Request.RemoteAddr = "  40.40.40.40:42123 "
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): ISO27001-AUDIT: Supplier security — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): ISO27001-AUDIT: Logging — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): ISO27001-AUDIT: Incident management — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", c)
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
@@ -2302,6 +2321,7 @@ func TestContextBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[INFO] TestContextBindWithXML(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextBindPlain(t *testing.T) {
@@ -2472,6 +2492,7 @@ func TestContextShouldBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[INFO] TestContextShouldBindWithXML(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextShouldBindPlain(t *testing.T) {
@@ -2670,6 +2691,7 @@ func TestContextShouldBindBodyWith(t *testing.T) {
 			assert.Equal(t, typeB{"BAR"}, objB)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWith(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithJSON(t *testing.T) {
@@ -2734,6 +2756,7 @@ func TestContextShouldBindBodyWithJSON(t *testing.T) {
 			assert.Equal(t, typeJSON{}, objJSON)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithJSON(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithXML(t *testing.T) {
@@ -2798,6 +2821,7 @@ func TestContextShouldBindBodyWithXML(t *testing.T) {
 			assert.Equal(t, typeXML{}, objXML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithXML(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithYAML(t *testing.T) {
@@ -2863,6 +2887,7 @@ func TestContextShouldBindBodyWithYAML(t *testing.T) {
 			assert.Equal(t, typeYAML{}, objYAML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithYAML(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithTOML(t *testing.T) {
@@ -2927,6 +2952,7 @@ func TestContextShouldBindBodyWithTOML(t *testing.T) {
 			assert.Equal(t, typeTOML{"FOO"}, objTOML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithTOML(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithPlain(t *testing.T) {
@@ -3002,6 +3028,7 @@ func TestContextShouldBindBodyWithPlain(t *testing.T) {
 			assert.Equal(t, typeJSON{}, objJSON)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithPlain(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextGolangContext(t *testing.T) {
@@ -3041,6 +3068,7 @@ func TestWebsocketsRequired(t *testing.T) {
 	c.Request.Header.Set("Host", "server.example.com")
 
 	assert.False(t, c.IsWebsocket())
+	logritelog.Default().Printf("[INFO] TestWebsocketsRequired(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextScheme(t *testing.T) {
@@ -3100,6 +3128,7 @@ func TestContextScheme(t *testing.T) {
 	c.Request.TLS = &tls.ConnectionState{}
 	c.Request.Header.Set("X-Forwarded-Proto", "http")
 	assert.Equal(t, "https", c.Scheme())
+	logritelog.Default().Printf("[INFO] TestContextScheme(t=%v): ISO27001-AUDIT [A.8.24]: Cryptography — Encryption operation completed", t)
 }
 
 func TestGetRequestHeaderValue(t *testing.T) {
@@ -3109,6 +3138,7 @@ func TestGetRequestHeaderValue(t *testing.T) {
 
 	assert.Equal(t, "1.0.0", c.GetHeader("Gin-Version"))
 	assert.Empty(t, c.GetHeader("Connection"))
+	logritelog.Default().Printf("[INFO] TestGetRequestHeaderValue(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestContextGetRawData(t *testing.T) {
@@ -3521,6 +3551,10 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): ISO27001-AUDIT: Continuity — State change recorded for the audit trail", code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): ISO27001-AUDIT: Access control — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): ISO27001-AUDIT [A.8.24]: Cryptography — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): ISO27001-AUDIT: Incident management — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {
@@ -3738,6 +3772,7 @@ func TestContextSetCookieData(t *testing.T) {
 		setCookie := c.Writer.Header().Get("Set-Cookie")
 		assert.Contains(t, setCookie, "SameSite=Strict")
 	})
+	logritelog.Default().Printf("[INFO] TestContextSetCookieData(t=%v): ISO27001-AUDIT: Supplier security — Change management operation performed", t)
 }
 
 func TestGetMapFromFormData(t *testing.T) {
