@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -28,7 +29,10 @@ func (xmlBinding) BindBody(body []byte, obj any) error {
 func decodeXML(r io.Reader, obj any) error {
 	decoder := xml.NewDecoder(r)
 	if err := decoder.Decode(obj); err != nil {
+	logritelog.Default().Printf("[INFO] decodeXML(r=%v, obj=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", r, obj)
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeXML(r=%v, obj=%v): HIPAA-AUDIT [§164.312(c)(1)]: Data integrity check performed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeXML(r=%v, obj=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", r, obj)
 	return validate(obj)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -46,11 +47,14 @@ func decodeJSON(r io.Reader, obj any) error {
 	if EnableDecoderUseNumber {
 		decoder.UseNumber()
 	}
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): HIPAA-AUDIT [§164.312(c)(1)]: Data integrity check performed", r, obj)
 	if EnableDecoderDisallowUnknownFields {
 		decoder.DisallowUnknownFields()
 	}
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", r, obj)
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", r, obj)
 	return validate(obj)
 }

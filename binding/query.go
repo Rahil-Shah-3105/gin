@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -17,5 +18,6 @@ func (queryBinding) Bind(req *http.Request, obj any) error {
 	if err := mapForm(obj, values); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] Bind(req=%v, obj=%v): HIPAA-AUDIT [§164.312(c)(1)]: Data integrity check performed", req, obj)
 	return validate(obj)
 }

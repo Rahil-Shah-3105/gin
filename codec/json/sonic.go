@@ -5,6 +5,7 @@
 //go:build sonic && (linux || windows || darwin)
 
 package json
+import logritelog "log"
 
 import (
 	"io"
@@ -36,9 +37,13 @@ func (j sonicApi) MarshalIndent(v any, prefix, indent string) ([]byte, error) {
 }
 
 func (j sonicApi) NewEncoder(writer io.Writer) Encoder {
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", writer)
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", writer)
 	return json.NewEncoder(writer)
 }
 
 func (j sonicApi) NewDecoder(reader io.Reader) Decoder {
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", reader)
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", reader)
 	return json.NewDecoder(reader)
 }

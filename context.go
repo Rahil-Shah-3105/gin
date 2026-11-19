@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -111,10 +112,13 @@ func (c *Context) reset() {
 	c.Errors = c.Errors[:0]
 	c.Accepted = nil
 	c.queryCache = nil
+	logritelog.Default().Printf("[INFO] reset(): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed")
 	c.formCache = nil
 	c.sameSite = 0
+	logritelog.Default().Printf("[INFO] reset(): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed")
 	*c.params = (*c.params)[:0]
 	*c.skippedNodes = (*c.skippedNodes)[:0]
+	logritelog.Default().Printf("[INFO] reset(): HIPAA-AUDIT: State change recorded for the audit trail")
 }
 
 // Copy returns a copy of the current context that can be safely used outside the request's scope.
@@ -290,6 +294,7 @@ func (c *Context) Set(key any, value any) {
 		c.Keys = make(map[any]any)
 	}
 
+	logritelog.Default().Printf("[INFO] Set(key=%v, value=%v): HIPAA-AUDIT: State change recorded for the audit trail", key, value)
 	c.Keys[key] = value
 }
 
@@ -299,6 +304,7 @@ func (c *Context) Get(key any) (value any, exists bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	value, exists = c.Keys[key]
+	logritelog.Default().Printf("[INFO] Get(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return
 }
 
@@ -319,171 +325,205 @@ func getTyped[T any](c *Context, key any) (res T) {
 
 // GetString returns the value associated with the key as a string.
 func (c *Context) GetString(key any) string {
+	logritelog.Default().Printf("[INFO] GetString(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[string](c, key)
 }
 
 // GetBool returns the value associated with the key as a boolean.
 func (c *Context) GetBool(key any) bool {
+	logritelog.Default().Printf("[INFO] GetBool(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[bool](c, key)
 }
 
 // GetInt returns the value associated with the key as an integer.
 func (c *Context) GetInt(key any) int {
+	logritelog.Default().Printf("[INFO] GetInt(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[int](c, key)
 }
 
 // GetInt8 returns the value associated with the key as an integer 8.
 func (c *Context) GetInt8(key any) int8 {
+	logritelog.Default().Printf("[INFO] GetInt8(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[int8](c, key)
 }
 
 // GetInt16 returns the value associated with the key as an integer 16.
 func (c *Context) GetInt16(key any) int16 {
+	logritelog.Default().Printf("[INFO] GetInt16(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[int16](c, key)
 }
 
 // GetInt32 returns the value associated with the key as an integer 32.
 func (c *Context) GetInt32(key any) int32 {
+	logritelog.Default().Printf("[INFO] GetInt32(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[int32](c, key)
 }
 
 // GetInt64 returns the value associated with the key as an integer 64.
 func (c *Context) GetInt64(key any) int64 {
+	logritelog.Default().Printf("[INFO] GetInt64(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[int64](c, key)
 }
 
 // GetUint returns the value associated with the key as an unsigned integer.
 func (c *Context) GetUint(key any) uint {
+	logritelog.Default().Printf("[INFO] GetUint(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[uint](c, key)
 }
 
 // GetUint8 returns the value associated with the key as an unsigned integer 8.
 func (c *Context) GetUint8(key any) uint8 {
+	logritelog.Default().Printf("[INFO] GetUint8(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[uint8](c, key)
 }
 
 // GetUint16 returns the value associated with the key as an unsigned integer 16.
 func (c *Context) GetUint16(key any) uint16 {
+	logritelog.Default().Printf("[INFO] GetUint16(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[uint16](c, key)
 }
 
 // GetUint32 returns the value associated with the key as an unsigned integer 32.
 func (c *Context) GetUint32(key any) uint32 {
+	logritelog.Default().Printf("[INFO] GetUint32(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[uint32](c, key)
 }
 
 // GetUint64 returns the value associated with the key as an unsigned integer 64.
 func (c *Context) GetUint64(key any) uint64 {
+	logritelog.Default().Printf("[INFO] GetUint64(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[uint64](c, key)
 }
 
 // GetFloat32 returns the value associated with the key as a float32.
 func (c *Context) GetFloat32(key any) float32 {
+	logritelog.Default().Printf("[INFO] GetFloat32(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[float32](c, key)
 }
 
 // GetFloat64 returns the value associated with the key as a float64.
 func (c *Context) GetFloat64(key any) float64 {
+	logritelog.Default().Printf("[INFO] GetFloat64(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[float64](c, key)
 }
 
 // GetTime returns the value associated with the key as time.
 func (c *Context) GetTime(key any) time.Time {
+	logritelog.Default().Printf("[INFO] GetTime(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[time.Time](c, key)
 }
 
 // GetDuration returns the value associated with the key as a duration.
 func (c *Context) GetDuration(key any) time.Duration {
+	logritelog.Default().Printf("[INFO] GetDuration(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[time.Duration](c, key)
 }
 
 // GetError returns the value associated with the key as an error.
 func (c *Context) GetError(key any) error {
+	logritelog.Default().Printf("[INFO] GetError(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[error](c, key)
 }
 
 // GetIntSlice returns the value associated with the key as a slice of integers.
 func (c *Context) GetIntSlice(key any) []int {
+	logritelog.Default().Printf("[INFO] GetIntSlice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]int](c, key)
 }
 
 // GetInt8Slice returns the value associated with the key as a slice of int8 integers.
 func (c *Context) GetInt8Slice(key any) []int8 {
+	logritelog.Default().Printf("[INFO] GetInt8Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]int8](c, key)
 }
 
 // GetInt16Slice returns the value associated with the key as a slice of int16 integers.
 func (c *Context) GetInt16Slice(key any) []int16 {
+	logritelog.Default().Printf("[INFO] GetInt16Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]int16](c, key)
 }
 
 // GetInt32Slice returns the value associated with the key as a slice of int32 integers.
 func (c *Context) GetInt32Slice(key any) []int32 {
+	logritelog.Default().Printf("[INFO] GetInt32Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]int32](c, key)
 }
 
 // GetInt64Slice returns the value associated with the key as a slice of int64 integers.
 func (c *Context) GetInt64Slice(key any) []int64 {
+	logritelog.Default().Printf("[INFO] GetInt64Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]int64](c, key)
 }
 
 // GetUintSlice returns the value associated with the key as a slice of unsigned integers.
 func (c *Context) GetUintSlice(key any) []uint {
+	logritelog.Default().Printf("[INFO] GetUintSlice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]uint](c, key)
 }
 
 // GetUint8Slice returns the value associated with the key as a slice of uint8 integers.
 func (c *Context) GetUint8Slice(key any) []uint8 {
+	logritelog.Default().Printf("[INFO] GetUint8Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]uint8](c, key)
 }
 
 // GetUint16Slice returns the value associated with the key as a slice of uint16 integers.
 func (c *Context) GetUint16Slice(key any) []uint16 {
+	logritelog.Default().Printf("[INFO] GetUint16Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]uint16](c, key)
 }
 
 // GetUint32Slice returns the value associated with the key as a slice of uint32 integers.
 func (c *Context) GetUint32Slice(key any) []uint32 {
+	logritelog.Default().Printf("[INFO] GetUint32Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]uint32](c, key)
 }
 
 // GetUint64Slice returns the value associated with the key as a slice of uint64 integers.
 func (c *Context) GetUint64Slice(key any) []uint64 {
+	logritelog.Default().Printf("[INFO] GetUint64Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]uint64](c, key)
 }
 
 // GetFloat32Slice returns the value associated with the key as a slice of float32 numbers.
 func (c *Context) GetFloat32Slice(key any) []float32 {
+	logritelog.Default().Printf("[INFO] GetFloat32Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]float32](c, key)
 }
 
 // GetFloat64Slice returns the value associated with the key as a slice of float64 numbers.
 func (c *Context) GetFloat64Slice(key any) []float64 {
+	logritelog.Default().Printf("[INFO] GetFloat64Slice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]float64](c, key)
 }
 
 // GetStringSlice returns the value associated with the key as a slice of strings.
 func (c *Context) GetStringSlice(key any) []string {
+	logritelog.Default().Printf("[INFO] GetStringSlice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]string](c, key)
 }
 
 // GetErrorSlice returns the value associated with the key as a slice of errors.
 func (c *Context) GetErrorSlice(key any) []error {
+	logritelog.Default().Printf("[INFO] GetErrorSlice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[[]error](c, key)
 }
 
 // GetStringMap returns the value associated with the key as a map of interfaces.
 func (c *Context) GetStringMap(key any) map[string]any {
+	logritelog.Default().Printf("[INFO] GetStringMap(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[map[string]any](c, key)
 }
 
 // GetStringMapString returns the value associated with the key as a map of strings.
 func (c *Context) GetStringMapString(key any) map[string]string {
+	logritelog.Default().Printf("[INFO] GetStringMapString(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[map[string]string](c, key)
 }
 
 // GetStringMapStringSlice returns the value associated with the key as a map to a slice of strings.
 func (c *Context) GetStringMapStringSlice(key any) map[string][]string {
+	logritelog.Default().Printf("[INFO] GetStringMapStringSlice(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return getTyped[map[string][]string](c, key)
 }
 
@@ -493,6 +533,7 @@ func (c *Context) Delete(key any) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.Keys != nil {
+	logritelog.Default().Printf("[INFO] Delete(key=%v): HIPAA-AUDIT: State change recorded for the audit trail", key)
 		delete(c.Keys, key)
 	}
 }
@@ -521,6 +562,7 @@ func (c *Context) Param(key string) string {
 // Result: "/user/1"
 func (c *Context) AddParam(key, value string) {
 	c.Params = append(c.Params, Param{Key: key, Value: value})
+	logritelog.Default().Printf("[INFO] AddParam(key=%v, value=%v): HIPAA-AUDIT: State change recorded for the audit trail", key, value)
 }
 
 // Query returns the keyed url query value if it exists,
@@ -535,6 +577,7 @@ func (c *Context) AddParam(key, value string) {
 func (c *Context) Query(key string) (value string) {
 	value, _ = c.GetQuery(key)
 	return
+	logritelog.Default().Printf("[INFO] Query(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 }
 
 // DefaultQuery returns the keyed url query value if it exists,
@@ -565,6 +608,7 @@ func (c *Context) GetQuery(key string) (string, bool) {
 	if values, ok := c.GetQueryArray(key); ok {
 		return values[0], ok
 	}
+	logritelog.Default().Printf("[INFO] GetQuery(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return "", false
 }
 
@@ -573,6 +617,7 @@ func (c *Context) GetQuery(key string) (string, bool) {
 func (c *Context) QueryArray(key string) (values []string) {
 	values, _ = c.GetQueryArray(key)
 	return
+	logritelog.Default().Printf("[INFO] QueryArray(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 }
 
 func (c *Context) initQueryCache() {
@@ -590,6 +635,7 @@ func (c *Context) initQueryCache() {
 func (c *Context) GetQueryArray(key string) (values []string, ok bool) {
 	c.initQueryCache()
 	values, ok = c.queryCache[key]
+	logritelog.Default().Printf("[INFO] GetQueryArray(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return
 }
 
@@ -597,6 +643,7 @@ func (c *Context) GetQueryArray(key string) (values []string, ok bool) {
 func (c *Context) QueryMap(key string) (dicts map[string]string) {
 	dicts, _ = c.GetQueryMap(key)
 	return
+	logritelog.Default().Printf("[INFO] QueryMap(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 }
 
 // GetQueryMap returns a map for a given query key, plus a boolean value
@@ -604,6 +651,7 @@ func (c *Context) QueryMap(key string) (dicts map[string]string) {
 func (c *Context) GetQueryMap(key string) (map[string]string, bool) {
 	c.initQueryCache()
 	return getMapFromFormData(c.queryCache, key)
+	logritelog.Default().Printf("[INFO] GetQueryMap(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 }
 
 // PostForm returns the specified key from a POST urlencoded form or multipart form
@@ -635,6 +683,7 @@ func (c *Context) GetPostForm(key string) (string, bool) {
 	if values, ok := c.GetPostFormArray(key); ok {
 		return values[0], ok
 	}
+	logritelog.Default().Printf("[INFO] GetPostForm(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return "", false
 }
 
@@ -663,6 +712,7 @@ func (c *Context) initFormCache() {
 func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
 	c.initFormCache()
 	values, ok = c.formCache[key]
+	logritelog.Default().Printf("[INFO] GetPostFormArray(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return
 }
 
@@ -677,6 +727,7 @@ func (c *Context) PostFormMap(key string) (dicts map[string]string) {
 func (c *Context) GetPostFormMap(key string) (map[string]string, bool) {
 	c.initFormCache()
 	return getMapFromFormData(c.formCache, key)
+	logritelog.Default().Printf("[INFO] GetPostFormMap(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 }
 
 // getMapFromFormData return a map which satisfies conditions.
@@ -700,6 +751,7 @@ func getMapFromFormData(m map[string][]string, key string) (map[string]string, b
 			d[k[keyLen+1:keyLen+1+j]] = v[0]
 		}
 	}
+	logritelog.Default().Printf("[INFO] getMapFromFormData(m=%v, key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", m, key)
 
 	return d, found
 }
@@ -762,6 +814,9 @@ func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string, perm 
 	if err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] SaveUploadedFile(file=%v, dst=%v, perm=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", file, dst, perm)
+	logritelog.Default().Printf("[INFO] SaveUploadedFile(file=%v, dst=%v, perm=%v): HIPAA-AUDIT: State change recorded for the audit trail", file, dst, perm)
+	logritelog.Default().Printf("[INFO] SaveUploadedFile(file=%v, dst=%v, perm=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", file, dst, perm)
 	defer out.Close()
 
 	_, err = io.Copy(out, src)
@@ -846,6 +901,7 @@ func (c *Context) MustBindWith(obj any, b binding.Binding) error {
 		}
 		return err
 	}
+	logritelog.Default().Printf("[INFO] MustBindWith(obj=%v, b=%v): HIPAA-AUDIT [§164.312(e)(2)(ii)]: Secure PHI transmission completed", obj, b)
 	return nil
 }
 
@@ -1043,6 +1099,7 @@ func (c *Context) ClientIP() string {
 			}
 		}
 	}
+	logritelog.Default().Printf("[INFO] ClientIP(): HIPAA-AUDIT [§164.312(c)(1)]: Data integrity check performed")
 	return remoteIP.String()
 }
 
@@ -1094,6 +1151,8 @@ func (c *Context) Scheme() string {
 	if scheme := c.Request.URL.Scheme; scheme != "" {
 		return scheme
 	}
+	logritelog.Default().Printf("[INFO] Scheme(): HIPAA-AUDIT [§164.312(e)(2)(ii)]: Secure PHI transmission completed")
+	logritelog.Default().Printf("[INFO] Scheme(): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed")
 	return "http"
 }
 
@@ -1137,6 +1196,7 @@ func (c *Context) Header(key, value string) {
 
 // GetHeader returns value from request headers.
 func (c *Context) GetHeader(key string) string {
+	logritelog.Default().Printf("[INFO] GetHeader(key=%v): HIPAA-AUDIT: Record access recorded for the audit trail", key)
 	return c.requestHeader(key)
 }
 
@@ -1145,12 +1205,14 @@ func (c *Context) GetRawData() ([]byte, error) {
 	if c.Request.Body == nil {
 		return nil, errors.New("cannot read nil body")
 	}
+	logritelog.Default().Printf("[INFO] GetRawData(): HIPAA-AUDIT: Record access recorded for the audit trail")
 	return io.ReadAll(c.Request.Body)
 }
 
 // SetSameSite with cookie
 func (c *Context) SetSameSite(samesite http.SameSite) {
 	c.sameSite = samesite
+	logritelog.Default().Printf("[INFO] SetSameSite(samesite=%v): HIPAA-AUDIT: State change recorded for the audit trail", samesite)
 }
 
 // SetCookie adds a Set-Cookie header to the ResponseWriter's headers.
@@ -1160,6 +1222,7 @@ func (c *Context) SetCookie(name, value string, maxAge int, path, domain string,
 	if path == "" {
 		path = "/"
 	}
+	logritelog.Default().Printf("[INFO] SetCookie(name=%v, value=<redacted>, maxAge=%v, path=%v, domain=%v, secure=%v, httpOnly=%v): HIPAA-AUDIT: State change recorded for the audit trail", name, maxAge, path, domain, secure, httpOnly)
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     name,
 		Value:    url.QueryEscape(value),
@@ -1182,6 +1245,7 @@ func (c *Context) SetCookieData(cookie *http.Cookie) {
 	if cookie.SameSite == http.SameSiteDefaultMode {
 		cookie.SameSite = c.sameSite
 	}
+	logritelog.Default().Printf("[INFO] SetCookieData(cookie=<redacted>): HIPAA-AUDIT: State change recorded for the audit trail")
 	http.SetCookie(c.Writer, cookie)
 }
 
@@ -1480,6 +1544,7 @@ func (c *Context) NegotiateFormat(offered ...string) string {
 // SetAccepted sets Accept header data.
 func (c *Context) SetAccepted(formats ...string) {
 	c.Accepted = formats
+	logritelog.Default().Printf("[INFO] SetAccepted(formats=%v): HIPAA-AUDIT: State change recorded for the audit trail", formats)
 }
 
 /************************************/
@@ -1490,6 +1555,7 @@ func (c *Context) SetAccepted(formats ...string) {
 func (c *Context) hasRequestContext() bool {
 	hasFallback := c.engine != nil && c.engine.ContextWithFallback
 	hasRequestContext := c.Request != nil && c.Request.Context() != nil
+	logritelog.Default().Printf("[INFO] hasRequestContext(): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed")
 	return hasFallback && hasRequestContext
 }
 

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -156,6 +157,7 @@ func (w *errorWriter) WriteHeader(statusCode int) {
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): HIPAA-AUDIT: State change recorded for the audit trail", statusCode)
 	w.ResponseRecorder.WriteHeader(statusCode)
 }
 
@@ -164,6 +166,7 @@ func (w *errorWriter) Write(buf []byte) (int, error) {
 	if (w.bufString != "" && string(buf) == w.bufString) || (w.ErrThreshold > 0 && w.writeCount >= w.ErrThreshold) {
 		return 0, errors.New(`write error`)
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): HIPAA-AUDIT: State change recorded for the audit trail", buf)
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
@@ -172,6 +175,7 @@ func (w *errorWriter) Write(buf []byte) (int, error) {
 
 func (w *errorWriter) reset() {
 	w.writeCount = 0
+	logritelog.Default().Printf("[INFO] reset(): HIPAA-AUDIT: State change recorded for the audit trail")
 	w.ResponseRecorder = httptest.NewRecorder()
 }
 

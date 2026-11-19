@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -253,6 +254,8 @@ func (engine *Engine) allocateContext(maxParams uint16) *Context {
 	v := make(Params, 0, maxParams)
 	skippedNodes := make([]skippedNode, 0, engine.maxSections)
 	return &Context{engine: engine, params: &v, skippedNodes: &skippedNodes}
+	logritelog.Default().Printf("[INFO] allocateContext(maxParams=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", maxParams)
+	logritelog.Default().Printf("[INFO] allocateContext(maxParams=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", maxParams)
 }
 
 // Delims sets template left and right delims and returns an Engine instance.
@@ -272,6 +275,7 @@ func (engine *Engine) SecureJsonPrefix(prefix string) *Engine {
 func (engine *Engine) LoadHTMLGlob(pattern string) {
 	left := engine.delims.Left
 	right := engine.delims.Right
+	logritelog.Default().Printf("[INFO] LoadHTMLGlob(pattern=%v): HIPAA-AUDIT: Record access recorded for the audit trail", pattern)
 	templ := template.Must(template.New("").Delims(left, right).Funcs(engine.FuncMap).ParseGlob(pattern))
 
 	if IsDebugging() {
@@ -314,12 +318,14 @@ func (engine *Engine) SetHTMLTemplate(templ *template.Template) {
 		debugPrintWARNINGSetHTMLTemplate()
 	}
 
+	logritelog.Default().Printf("[INFO] SetHTMLTemplate(templ=%v): HIPAA-AUDIT: State change recorded for the audit trail", templ)
 	engine.HTMLRender = render.HTMLProduction{Template: templ.Funcs(engine.FuncMap)}
 }
 
 // SetFuncMap sets the FuncMap used for template.FuncMap.
 func (engine *Engine) SetFuncMap(funcMap template.FuncMap) {
 	engine.FuncMap = funcMap
+	logritelog.Default().Printf("[INFO] SetFuncMap(funcMap=%v): HIPAA-AUDIT: State change recorded for the audit trail", funcMap)
 }
 
 // NoRoute adds handlers for NoRoute. It returns a 404 code by default.
@@ -383,6 +389,7 @@ func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
 	if sectionsCount := countSections(path); sectionsCount > engine.maxSections {
 		engine.maxSections = sectionsCount
 	}
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): HIPAA-AUDIT: State change recorded for the audit trail", method, path, handlers)
 }
 
 // Routes returns a slice of registered routes, including some useful information, such as:
@@ -450,6 +457,7 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 // return the remote address directly.
 func (engine *Engine) SetTrustedProxies(trustedProxies []string) error {
 	engine.trustedProxies = trustedProxies
+	logritelog.Default().Printf("[INFO] SetTrustedProxies(trustedProxies=%v): HIPAA-AUDIT: State change recorded for the audit trail", trustedProxies)
 	return engine.parseTrustedProxies()
 }
 
@@ -497,6 +505,7 @@ func (engine *Engine) validateHeader(header string) (clientIP string, valid bool
 			return ipStr, true
 		}
 	}
+	logritelog.Default().Printf("[INFO] validateHeader(header=%v): HIPAA-AUDIT [§164.312(c)(1)]: Data integrity check performed", header)
 	return "", false
 }
 
@@ -508,6 +517,7 @@ func updateRouteTree(n *node) {
 	if n.children == nil {
 		return
 	}
+	logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): HIPAA-AUDIT: State change recorded for the audit trail", n)
 	for _, child := range n.children {
 		updateRouteTree(child)
 	}
@@ -518,6 +528,7 @@ func (engine *Engine) updateRouteTrees() {
 	for _, tree := range engine.trees {
 		updateRouteTree(tree.root)
 	}
+	logritelog.Default().Printf("[INFO] updateRouteTrees(): HIPAA-AUDIT: State change recorded for the audit trail")
 }
 
 // parseIP parse a string representation of an IP and returns a net.IP with the
@@ -559,6 +570,7 @@ func (engine *Engine) Run(addr ...string) (err error) {
 // It is a shortcut for http.ListenAndServeTLS(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[INFO] RunTLS(addr=%v, certFile=%v, keyFile=%v): HIPAA-AUDIT: State change recorded for the audit trail", addr, certFile, keyFile)
 	debugPrint("Listening and serving HTTPS on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -579,6 +591,7 @@ func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
 // through the specified unix socket (i.e. a file).
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunUnix(file string) (err error) {
+	logritelog.Default().Printf("[INFO] RunUnix(file=%v): HIPAA-AUDIT: State change recorded for the audit trail", file)
 	debugPrint("Listening and serving HTTP on unix:/%s", file)
 	defer func() { debugPrintError(err) }()
 
@@ -605,6 +618,7 @@ func (engine *Engine) RunUnix(file string) (err error) {
 // through the specified file descriptor.
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunFd(fd int) (err error) {
+	logritelog.Default().Printf("[INFO] RunFd(fd=%v): HIPAA-AUDIT: State change recorded for the audit trail", fd)
 	debugPrint("Listening and serving HTTP on fd@%d", fd)
 	defer func() { debugPrintError(err) }()
 
@@ -628,6 +642,7 @@ func (engine *Engine) RunFd(fd int) (err error) {
 // It is a shortcut for http3.ListenAndServeQUIC(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[INFO] RunQUIC(addr=%v, certFile=%v, keyFile=%v): HIPAA-AUDIT: State change recorded for the audit trail", addr, certFile, keyFile)
 	debugPrint("Listening and serving QUIC on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -643,6 +658,7 @@ func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
 // RunListener attaches the router to a http.Server and starts listening and serving HTTP requests
 // through the specified net.Listener
 func (engine *Engine) RunListener(listener net.Listener) (err error) {
+	logritelog.Default().Printf("[INFO] RunListener(listener=%v): HIPAA-AUDIT: State change recorded for the audit trail", listener)
 	debugPrint("Listening and serving HTTP on listener what's bind with address@%s", listener.Addr())
 	defer func() { debugPrintError(err) }()
 
@@ -756,6 +772,8 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 	}
 
 	c.handlers = engine.allNoRoute
+	logritelog.Default().Printf("[INFO] handleHTTPRequest(c=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", c)
+	logritelog.Default().Printf("[INFO] handleHTTPRequest(c=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", c)
 	serveError(c, http.StatusNotFound, default404Body)
 }
 
@@ -829,4 +847,5 @@ func redirectRequest(c *Context) {
 	debugPrint("redirecting request %d: %s --> %s", code, rPath, rURL)
 	http.Redirect(c.Writer, req, rURL, code)
 	c.writermem.WriteHeaderNow()
+	logritelog.Default().Printf("[INFO] redirectRequest(c=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", c)
 }

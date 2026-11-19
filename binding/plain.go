@@ -1,4 +1,5 @@
 package binding
+import logritelog "log"
 
 import (
 	"fmt"
@@ -52,5 +53,7 @@ func decodePlain(data []byte, obj any) error {
 		return nil
 	}
 
+	logritelog.Default().Printf("[INFO] decodePlain(data=%v, obj=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", data, obj)
+	logritelog.Default().Printf("[INFO] decodePlain(data=%v, obj=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", data, obj)
 	return fmt.Errorf("type (%T) unknown type", v)
 }

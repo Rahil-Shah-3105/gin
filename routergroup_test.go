@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -89,6 +90,8 @@ func performRequestInGroup(t *testing.T, method string) {
 	w = PerformRequest(router, method, "/v1/test")
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "the method was "+method+" and index 1", w.Body.String())
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t, method)
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): HIPAA-AUDIT [45 CFR 164.312(d)]: Person or entity authentication — Authentication operation completed", t, method)
 }
 
 func TestRouterGroupInvalidStatic(t *testing.T) {

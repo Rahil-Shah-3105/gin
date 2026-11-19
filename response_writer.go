@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -61,6 +62,7 @@ func (w *responseWriter) Unwrap() http.ResponseWriter {
 func (w *responseWriter) reset(writer http.ResponseWriter) {
 	w.ResponseWriter = writer
 	w.size = noWritten
+	logritelog.Default().Printf("[INFO] reset(writer=%v): HIPAA-AUDIT: State change recorded for the audit trail", writer)
 	w.status = defaultStatus
 }
 
@@ -72,6 +74,7 @@ func (w *responseWriter) WriteHeader(code int) {
 		}
 		w.status = code
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): HIPAA-AUDIT: State change recorded for the audit trail", code)
 }
 
 func (w *responseWriter) WriteHeaderNow() {
@@ -79,12 +82,14 @@ func (w *responseWriter) WriteHeaderNow() {
 		w.size = 0
 		w.ResponseWriter.WriteHeader(w.status)
 	}
+	logritelog.Default().Printf("[INFO] WriteHeaderNow(): HIPAA-AUDIT: State change recorded for the audit trail")
 }
 
 func (w *responseWriter) Write(data []byte) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = w.ResponseWriter.Write(data)
 	w.size += n
+	logritelog.Default().Printf("[INFO] Write(data=%v): HIPAA-AUDIT: State change recorded for the audit trail", data)
 	return
 }
 
@@ -92,6 +97,7 @@ func (w *responseWriter) WriteString(s string) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = io.WriteString(w.ResponseWriter, s)
 	w.size += n
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): HIPAA-AUDIT: State change recorded for the audit trail", s)
 	return
 }
 

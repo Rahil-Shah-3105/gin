@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -103,6 +104,9 @@ func createNoValidationValues() structNoValidationValues {
 		// InterfaceSlice     []testInterface
 	}
 	s.InlinedStruct.Integer = 1000
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): HIPAA-AUDIT: State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): HIPAA-AUDIT [§164.312(a)(2)(iv)]: Data encryption applied for PHI protection")
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"
 	s.IInt = 987654

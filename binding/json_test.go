@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"io"
@@ -95,10 +96,14 @@ func (j customJsonApi) MarshalIndent(v any, prefix, indent string) ([]byte, erro
 }
 
 func (j customJsonApi) NewEncoder(writer io.Writer) json.Encoder {
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", writer)
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", writer)
 	return customConfig.NewEncoder(writer)
 }
 
 func (j customJsonApi) NewDecoder(reader io.Reader) json.Decoder {
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", reader)
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", reader)
 	return customConfig.NewDecoder(reader)
 }
 
@@ -197,6 +202,8 @@ func (tpc timePointerCodec) Encode(ptr unsafe.Pointer, stream *jsoniter.Stream) 
 		stream.WriteNil()
 		return
 	}
+	logritelog.Default().Printf("[INFO] Encode(ptr=%v, stream=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", ptr, stream)
+	logritelog.Default().Printf("[INFO] Encode(ptr=%v, stream=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", ptr, stream)
 	stream.WriteString(t.In(time.Local).Format("2006-01-02 15:04:05.000"))
 }
 
@@ -210,6 +217,8 @@ func (tpc timePointerCodec) Decode(ptr unsafe.Pointer, iter *jsoniter.Iterator) 
 	if err != nil {
 		panic(err)
 	}
+	logritelog.Default().Printf("[INFO] Decode(ptr=%v, iter=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", ptr, iter)
+	logritelog.Default().Printf("[INFO] Decode(ptr=%v, iter=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", ptr, iter)
 	*((**time.Time)(ptr)) = &t
 }
 

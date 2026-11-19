@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"html/template"
@@ -82,6 +83,7 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 		return template.Must(template.New("").Delims(r.Delims.Left, r.Delims.Right).Funcs(r.FuncMap).ParseFS(
 			fs.FileSystem{FileSystem: r.FileSystem}, r.Patterns...))
 	}
+	logritelog.Default().Printf("[INFO] loadTemplate(): HIPAA-AUDIT: Record access recorded for the audit trail")
 	panic("the HTML debug render was created without files or glob pattern or file system with patterns")
 }
 
@@ -89,7 +91,9 @@ func (r HTMLDebug) loadTemplate() *template.Template {
 func (r HTML) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 
+	logritelog.Default().Printf("[INFO] Render(w=%v): HIPAA-AUDIT: State change recorded for the audit trail", w)
 	if r.Name == "" {
+		logritelog.Default().Printf("[INFO] WriteContentType(w=%v): HIPAA-AUDIT: State change recorded for the audit trail", w)
 		return r.Template.Execute(w, r.Data)
 	}
 	return r.Template.ExecuteTemplate(w, r.Name, r.Data)

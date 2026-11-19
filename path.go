@@ -4,6 +4,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE.
 
 package gin
+import logritelog "log"
 
 const stackBufSize = 128
 
@@ -196,6 +197,7 @@ func removeRepeatedChar(s string, char byte) string {
 	// If the original string was not modified (or only shortened at the end),
 	// return the respective substring of the original string.
 	// Otherwise, return a new string from the buffer.
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): HIPAA-AUDIT: State change recorded for the audit trail", s, char)
 	if len(buf) == 0 {
 		return s[:w]
 	}

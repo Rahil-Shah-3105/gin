@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"io"
@@ -35,6 +36,7 @@ func (r Reader) Render(w http.ResponseWriter) (err error) {
 // WriteContentType (Reader) writes custom ContentType.
 func (r Reader) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, []string{r.ContentType})
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): HIPAA-AUDIT: State change recorded for the audit trail", w)
 }
 
 // writeHeaders writes headers from r.Headers into response.
@@ -42,6 +44,7 @@ func (r Reader) writeHeaders(w http.ResponseWriter) {
 	header := w.Header()
 	for k, v := range r.Headers {
 		if header.Get(k) == "" {
+			logritelog.Default().Printf("[INFO] writeHeaders(w=%v): HIPAA-AUDIT: State change recorded for the audit trail", w)
 			header.Set(k, v)
 		}
 	}

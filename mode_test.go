@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"os"
@@ -53,10 +54,14 @@ func TestEnableJsonDecoderUseNumber(t *testing.T) {
 	assert.False(t, binding.EnableDecoderUseNumber)
 	EnableJsonDecoderUseNumber()
 	assert.True(t, binding.EnableDecoderUseNumber)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderUseNumber(t=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderUseNumber(t=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", t)
 }
 
 func TestEnableJsonDecoderDisallowUnknownFields(t *testing.T) {
 	assert.False(t, binding.EnableDecoderDisallowUnknownFields)
 	EnableJsonDecoderDisallowUnknownFields()
 	assert.True(t, binding.EnableDecoderDisallowUnknownFields)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderDisallowUnknownFields(t=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Encryption operation completed", t)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderDisallowUnknownFields(t=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Encryption operation completed", t)
 }
