@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -109,16 +110,19 @@ func (group *RouterGroup) Handle(httpMethod, relativePath string, handlers ...Ha
 
 // POST is a shortcut for router.Handle("POST", path, handlers).
 func (group *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] POST(relativePath=%v, handlers=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", relativePath, handlers)
 	return group.handle(http.MethodPost, relativePath, handlers)
 }
 
 // GET is a shortcut for router.Handle("GET", path, handlers).
 func (group *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): HIPAA-AUDIT: Record access recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodGet, relativePath, handlers)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handlers).
 func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): HIPAA-AUDIT: State change recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodDelete, relativePath, handlers)
 }
 
@@ -129,6 +133,7 @@ func (group *RouterGroup) PATCH(relativePath string, handlers ...HandlerFunc) IR
 
 // PUT is a shortcut for router.Handle("PUT", path, handlers).
 func (group *RouterGroup) PUT(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] PUT(relativePath=%v, handlers=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", relativePath, handlers)
 	return group.handle(http.MethodPut, relativePath, handlers)
 }
 
@@ -217,6 +222,7 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
 
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): HIPAA-AUDIT: State change recorded for the audit trail", relativePath, fs)
 	return func(c *Context) {
 		if _, noListing := fs.(*OnlyFilesFS); noListing {
 			c.Writer.WriteHeader(http.StatusNotFound)

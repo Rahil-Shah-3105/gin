@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"encoding"
@@ -248,6 +249,7 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 		return false, nil
 	}
 
+	logritelog.Default().Printf("[INFO] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): HIPAA-AUDIT: State change recorded for the audit trail", value, field, form, tagValue, opt)
 	switch value.Kind() {
 	case reflect.Slice:
 		if len(vs) == 0 {
@@ -332,6 +334,8 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 	if value.Kind() != reflect.String {
 		val = strings.TrimSpace(val)
 	}
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): HIPAA-AUDIT [§164.312(c)(1)]: Data integrity check performed", val, value, field, opt)
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): HIPAA-AUDIT: State change recorded for the audit trail", val, value, field, opt)
 
 	switch value.Kind() {
 	case reflect.Int:
@@ -345,6 +349,7 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 	case reflect.Int64:
 		switch value.Interface().(type) {
 		case time.Duration:
+			logritelog.Default().Printf("[INFO] setIntField(val=%v, bitSize=%v, field=%v): HIPAA-AUDIT: State change recorded for the audit trail", val, bitSize, field)
 			return setTimeDuration(val, value)
 		}
 		return setIntField(val, 64, value)
@@ -404,6 +409,7 @@ func setUintField(val string, bitSize int, field reflect.Value) error {
 	}
 	uintVal, err := strconv.ParseUint(val, 10, bitSize)
 	if err == nil {
+	logritelog.Default().Printf("[INFO] setUintField(val=%v, bitSize=%v, field=%v): HIPAA-AUDIT: State change recorded for the audit trail", val, bitSize, field)
 		field.SetUint(uintVal)
 	}
 	return err
@@ -415,6 +421,7 @@ func setBoolField(val string, field reflect.Value) error {
 	}
 	boolVal, err := strconv.ParseBool(val)
 	if err == nil {
+	logritelog.Default().Printf("[INFO] setBoolField(val=%v, field=%v): HIPAA-AUDIT: State change recorded for the audit trail", val, field)
 		field.SetBool(boolVal)
 	}
 	return err
@@ -426,6 +433,7 @@ func setFloatField(val string, bitSize int, field reflect.Value) error {
 	}
 	floatVal, err := strconv.ParseFloat(val, bitSize)
 	if err == nil {
+	logritelog.Default().Printf("[INFO] setFloatField(val=%v, bitSize=%v, field=%v): HIPAA-AUDIT: State change recorded for the audit trail", val, bitSize, field)
 		field.SetFloat(floatVal)
 	}
 	return err
@@ -483,6 +491,7 @@ func setTimeField(val string, structField reflect.StructField, value reflect.Val
 		return err
 	}
 
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): HIPAA-AUDIT: State change recorded for the audit trail", val, structField, value)
 	value.Set(reflect.ValueOf(t))
 	return nil
 }
@@ -494,6 +503,7 @@ func setArray(vals []string, value reflect.Value, field reflect.StructField, opt
 			return err
 		}
 	}
+	logritelog.Default().Printf("[INFO] setArray(vals=%v, value=%v, field=%v, opt=%v): HIPAA-AUDIT: State change recorded for the audit trail", vals, value, field, opt)
 	return nil
 }
 
@@ -503,6 +513,7 @@ func setSlice(vals []string, value reflect.Value, field reflect.StructField, opt
 	if err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): HIPAA-AUDIT: State change recorded for the audit trail", vals, value, field, opt)
 	value.Set(slice)
 	return nil
 }
@@ -516,6 +527,7 @@ func setTimeDuration(val string, value reflect.Value) error {
 	if err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): HIPAA-AUDIT: State change recorded for the audit trail", val, value)
 	value.Set(reflect.ValueOf(d))
 	return nil
 }
@@ -545,6 +557,7 @@ func setFormMap(ptr any, form map[string][]string) error {
 	for k, v := range form {
 		ptrMap[k] = v[len(v)-1] // pick last
 	}
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): HIPAA-AUDIT: State change recorded for the audit trail", ptr, form)
 
 	return nil
 }

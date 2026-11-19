@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"html/template"
@@ -136,10 +137,12 @@ func (m *mockWriter) Header() (h http.Header) {
 }
 
 func (m *mockWriter) Write(p []byte) (n int, err error) {
+	logritelog.Default().Printf("[INFO] Write(p=%v): HIPAA-AUDIT: State change recorded for the audit trail", p)
 	return len(p), nil
 }
 
 func (m *mockWriter) WriteString(s string) (n int, err error) {
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): HIPAA-AUDIT: State change recorded for the audit trail", s)
 	return len(s), nil
 }
 
@@ -157,4 +160,5 @@ func runRequest(B *testing.B, r *Engine, method, path string) {
 	for B.Loop() {
 		r.ServeHTTP(w, req)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): HIPAA-AUDIT: State change recorded for the audit trail", B, r, method, path)
 }

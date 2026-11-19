@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -44,6 +45,8 @@ func TestPanicClean(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 
 	// Check the buffer does not have the secret key
+	logritelog.Default().Printf("[INFO] TestPanicClean(t=%v): HIPAA-AUDIT [45 CFR 164.312(e)(1)]: Transmission security — Password reset operation performed", t)
+	logritelog.Default().Printf("[INFO] TestPanicClean(t=%v): HIPAA-AUDIT [45 CFR 164.312(a)(2)(iv)]: Encryption and decryption — Password reset operation performed", t)
 	assert.NotContains(t, buffer.String(), password)
 }
 

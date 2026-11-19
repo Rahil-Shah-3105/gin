@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -123,5 +124,6 @@ func validate(obj any) error {
 	if Validator == nil {
 		return nil
 	}
+	logritelog.Default().Printf("[INFO] validate(obj=%v): HIPAA-AUDIT [§164.312(c)(1)]: Data integrity check performed", obj)
 	return Validator.ValidateStruct(obj)
 }

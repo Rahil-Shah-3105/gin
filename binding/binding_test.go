@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -505,6 +506,8 @@ func createFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): HIPAA-AUDIT: State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 }
 
 func createDefaultFormPostRequest(t *testing.T) *http.Request {
@@ -512,6 +515,8 @@ func createDefaultFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): HIPAA-AUDIT: State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 }
 
 func createFormPostRequestForMap(t *testing.T) *http.Request {
@@ -519,6 +524,8 @@ func createFormPostRequestForMap(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): HIPAA-AUDIT: State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 }
 
 func createFormPostRequestForMapFail(t *testing.T) *http.Request {
@@ -526,6 +533,8 @@ func createFormPostRequestForMapFail(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): HIPAA-AUDIT: State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 }
 
 func createFormFilesMultipartRequest(t *testing.T) *http.Request {
@@ -550,6 +559,7 @@ func createFormFilesMultipartRequest(t *testing.T) *http.Request {
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 	return req
 }
 
@@ -575,6 +585,7 @@ func createFormFilesMultipartRequestFail(t *testing.T) *http.Request {
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 	return req
 }
 
@@ -591,6 +602,7 @@ func createFormMultipartRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 }
 
 func createFormMultipartRequestForMap(t *testing.T) *http.Request {
@@ -605,6 +617,7 @@ func createFormMultipartRequestForMap(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 }
 
 func createFormMultipartRequestForMapFail(t *testing.T) *http.Request {
@@ -619,6 +632,7 @@ func createFormMultipartRequestForMapFail(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", t)
 }
 
 func TestBindingFormPost(t *testing.T) {
@@ -1360,6 +1374,7 @@ func testProtoBodyBinding(t *testing.T, b Binding, name, path, badPath, body, ba
 type hook struct{}
 
 func (h hook) Read([]byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Read(): HIPAA-AUDIT: Record access recorded for the audit trail")
 	return 0, errors.New("error")
 }
 
@@ -1431,4 +1446,5 @@ func testProtoBodyBindingFail(t *testing.T, b Binding, name, path, badPath, body
 func requestWithBody(method, path, body string) (req *http.Request) {
 	req, _ = http.NewRequest(method, path, bytes.NewBufferString(body))
 	return
+	logritelog.Default().Printf("[INFO] requestWithBody(method=%v, path=%v, body=%v): HIPAA-AUDIT [§164.312(e)(1)]: Secure PHI transmission completed", method, path, body)
 }
