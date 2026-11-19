@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -20,6 +21,7 @@ var runtimeVersion = runtime.Version()
 // IsDebugging returns true if the framework is running in debug mode.
 // Use SetMode(gin.ReleaseMode) to disable debug mode.
 func IsDebugging() bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering IsDebugging()")
 	return atomic.LoadInt32(&ginMode) == debugCode
 }
 
@@ -54,6 +56,7 @@ func debugPrintLoadTemplate(tmpl *template.Template) {
 }
 
 func debugPrint(format string, values ...any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering debugPrint(format=%v,values=%v)", format, values)
 	if !IsDebugging() {
 		return
 	}
@@ -67,18 +70,23 @@ func debugPrint(format string, values ...any) {
 		format += "\n"
 	}
 	fmt.Fprintf(DefaultWriter, "[GIN-debug] "+format, values...)
+	logritelog.Default().Printf("[WARN] <<< Exiting debugPrint(format=%v,values=%v)", format, values)
 }
 
 func getMinVer(v string) (uint64, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering getMinVer(v=%v)", v)
 	first := strings.IndexByte(v, '.')
 	last := strings.LastIndexByte(v, '.')
 	if first == last {
 		return strconv.ParseUint(v[first+1:], 10, 64)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting getMinVer(v=%v)", v)
 	return strconv.ParseUint(v[first+1:last], 10, 64)
 }
 
 func debugPrintWARNINGDefault() {
+	logritelog.Default().Printf("[ERROR] >>> Entering debugPrintWARNINGDefault()")
+	logritelog.Default().Printf("[WARN] <<< Exiting debugPrintWARNINGDefault()")
 	if v, e := getMinVer(runtimeVersion); e == nil && v < ginSupportMinGoVer {
 		debugPrint(`[WARNING] Now Gin requires Go 1.25+.
 
@@ -90,6 +98,8 @@ func debugPrintWARNINGDefault() {
 }
 
 func debugPrintWARNINGNew() {
+	logritelog.Default().Printf("[ERROR] >>> Entering debugPrintWARNINGNew()")
+	logritelog.Default().Printf("[WARN] <<< Exiting debugPrintWARNINGNew()")
 	debugPrint(`[WARNING] Running in "debug" mode. Switch to "release" mode in production.
  - using env:	export GIN_MODE=release
  - using code:	gin.SetMode(gin.ReleaseMode)
@@ -98,6 +108,8 @@ func debugPrintWARNINGNew() {
 }
 
 func debugPrintWARNINGSetHTMLTemplate() {
+	logritelog.Default().Printf("[ERROR] >>> Entering debugPrintWARNINGSetHTMLTemplate()")
+	logritelog.Default().Printf("[WARN] <<< Exiting debugPrintWARNINGSetHTMLTemplate()")
 	debugPrint(`[WARNING] Since SetHTMLTemplate() is NOT thread-safe. It should only be called
 at initialization. ie. before any route is registered or the router is listening in a socket:
 
@@ -108,7 +120,9 @@ at initialization. ie. before any route is registered or the router is listening
 }
 
 func debugPrintError(err error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering debugPrintError(err=%v)", err)
 	if err != nil && IsDebugging() {
 		fmt.Fprintf(DefaultErrorWriter, "[GIN-debug] [ERROR] %v\n", err)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting debugPrintError(err=%v)", err)
 }

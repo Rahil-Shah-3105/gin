@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -16,8 +17,10 @@ import (
 var fakeHandlerValue string
 
 func fakeHandler(val string) HandlersChain {
+	logritelog.Default().Printf("[ERROR] >>> Entering fakeHandler(val=%v)", val)
 	return HandlersChain{func(c *Context) {
 		fakeHandlerValue = val
+		logritelog.Default().Printf("[DEBUG] fakeHandler(val=%v): fakeHandlerValue → %v", val, fakeHandlerValue)
 	}}
 }
 
@@ -29,19 +32,25 @@ type testRequests []struct {
 }
 
 func getParams() *Params {
+	logritelog.Default().Printf("[ERROR] >>> Entering getParams()")
 	ps := make(Params, 0, 20)
+	logritelog.Default().Printf("[WARN] <<< Exiting getParams()")
 	return &ps
 }
 
 func getSkippedNodes() *[]skippedNode {
+	logritelog.Default().Printf("[ERROR] >>> Entering getSkippedNodes()")
 	ps := make([]skippedNode, 0, 20)
+	logritelog.Default().Printf("[WARN] <<< Exiting getSkippedNodes()")
 	return &ps
 }
 
 func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ...bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering checkRequests(t=%v,tree=%v,requests=%v,unescapes=%v)", t, tree, requests, unescapes)
 	unescape := false
 	if len(unescapes) >= 1 {
 		unescape = unescapes[0]
+		logritelog.Default().Printf("[DEBUG] checkRequests(t=%v,tree=%v,requests=%v,unescapes=%v): unescape → %v", t, tree, requests, unescapes, unescape)
 	}
 
 	for _, request := range requests {
@@ -67,9 +76,11 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		}
 
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting checkRequests(t=%v,tree=%v,requests=%v,unescapes=%v)", t, tree, requests, unescapes)
 }
 
 func checkPriorities(t *testing.T, n *node) uint32 {
+	logritelog.Default().Printf("[ERROR] >>> Entering checkPriorities(t=%v,n=%v)", t, n)
 	var prio uint32
 	for i := range n.children {
 		prio += checkPriorities(t, n.children[i])
@@ -86,19 +97,23 @@ func checkPriorities(t *testing.T, n *node) uint32 {
 		)
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting checkPriorities(t=%v,n=%v)", t, n)
 	return prio
 }
 
 func TestCountParams(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCountParams(t=%v)", t)
 	if countParams("/path/:param1/static/*catch-all") != 2 {
 		t.Fail()
 	}
 	if countParams(strings.Repeat("/:param", 256)) != 256 {
 		t.Fail()
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCountParams(t=%v)", t)
 }
 
 func TestTreeAddAndGet(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeAddAndGet(t=%v)", t)
 	tree := &node{}
 
 	routes := [...]string{
@@ -133,9 +148,11 @@ func TestTreeAddAndGet(t *testing.T) {
 	})
 
 	checkPriorities(t, tree)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeAddAndGet(t=%v)", t)
 }
 
 func TestTreeWildcard(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeWildcard(t=%v)", t)
 	tree := &node{}
 
 	routes := [...]string{
@@ -320,9 +337,11 @@ func TestTreeWildcard(t *testing.T) {
 	})
 
 	checkPriorities(t, tree)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeWildcard(t=%v)", t)
 }
 
 func TestUnescapeParameters(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestUnescapeParameters(t=%v)", t)
 	tree := &node{}
 
 	routes := [...]string{
@@ -357,6 +376,7 @@ func TestUnescapeParameters(t *testing.T) {
 	}, unescape)
 
 	checkPriorities(t, tree)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestUnescapeParameters(t=%v)", t)
 }
 
 func catchPanic(testFunc func()) (recv any) {
@@ -374,6 +394,7 @@ type testRoute struct {
 }
 
 func testRoutes(t *testing.T, routes []testRoute) {
+	logritelog.Default().Printf("[ERROR] >>> Entering testRoutes(t=%v,routes=%v)", t, routes)
 	tree := &node{}
 
 	for _, route := range routes {
@@ -389,9 +410,11 @@ func testRoutes(t *testing.T, routes []testRoute) {
 			t.Errorf("unexpected panic for route '%s': %v", route.path, recv)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting testRoutes(t=%v,routes=%v)", t, routes)
 }
 
 func TestTreeWildcardConflict(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeWildcardConflict(t=%v)", t)
 	routes := []testRoute{
 		{"/cmd/:tool/:sub", false},
 		{"/cmd/vet", false},
@@ -426,16 +449,20 @@ func TestTreeWildcardConflict(t *testing.T) {
 		{"/escape/test:param", false},
 	}
 	testRoutes(t, routes)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeWildcardConflict(t=%v)", t)
 }
 
 func TestCatchAllAfterSlash(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCatchAllAfterSlash(t=%v)", t)
 	routes := []testRoute{
 		{"/non-leading-*catchall", true},
 	}
 	testRoutes(t, routes)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCatchAllAfterSlash(t=%v)", t)
 }
 
 func TestTreeChildConflict(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeChildConflict(t=%v)", t)
 	routes := []testRoute{
 		{"/cmd/vet", false},
 		{"/cmd/:tool", false},
@@ -452,9 +479,11 @@ func TestTreeChildConflict(t *testing.T) {
 		{"/*filepath", true},
 	}
 	testRoutes(t, routes)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeChildConflict(t=%v)", t)
 }
 
 func TestTreeDuplicatePath(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeDuplicatePath(t=%v)", t)
 	tree := &node{}
 
 	routes := [...]string{
@@ -490,9 +519,11 @@ func TestTreeDuplicatePath(t *testing.T) {
 		{"/search/someth!ng+in+ünìcodé", false, "/search/:query", Params{Param{"query", "someth!ng+in+ünìcodé"}}},
 		{"/user_gopher", false, "/user_:name", Params{Param{"name", "gopher"}}},
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeDuplicatePath(t=%v)", t)
 }
 
 func TestEmptyWildcardName(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEmptyWildcardName(t=%v)", t)
 	tree := &node{}
 
 	routes := [...]string{
@@ -509,9 +540,11 @@ func TestEmptyWildcardName(t *testing.T) {
 			t.Fatalf("no panic while inserting route with empty wildcard name '%s", route)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEmptyWildcardName(t=%v)", t)
 }
 
 func TestTreeCatchAllConflict(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeCatchAllConflict(t=%v)", t)
 	routes := []testRoute{
 		{"/src/*filepath/x", true},
 		{"/src2/", false},
@@ -520,23 +553,29 @@ func TestTreeCatchAllConflict(t *testing.T) {
 		{"/src3/*filepath/x", true},
 	}
 	testRoutes(t, routes)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeCatchAllConflict(t=%v)", t)
 }
 
 func TestTreeCatchAllConflictRoot(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeCatchAllConflictRoot(t=%v)", t)
 	routes := []testRoute{
 		{"/", false},
 		{"/*filepath", true},
 	}
 	testRoutes(t, routes)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeCatchAllConflictRoot(t=%v)", t)
 }
 
 func TestTreeCatchMaxParams(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeCatchMaxParams(t=%v)", t)
 	tree := &node{}
 	route := "/cmd/*filepath"
 	tree.addRoute(route, fakeHandler(route))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeCatchMaxParams(t=%v)", t)
 }
 
 func TestTreeDoubleWildcard(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeDoubleWildcard(t=%v)", t)
 	const panicMsg = "only one wildcard per path segment is allowed"
 
 	routes := [...]string{
@@ -555,6 +594,7 @@ func TestTreeDoubleWildcard(t *testing.T) {
 			t.Fatalf(`"Expected panic "%s" for route '%s', got "%v"`, panicMsg, route, recv)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeDoubleWildcard(t=%v)", t)
 }
 
 /*func TestTreeDuplicateWildcard(t *testing.T) {
@@ -568,6 +608,7 @@ func TestTreeDoubleWildcard(t *testing.T) {
 }*/
 
 func TestTreeTrailingSlashRedirect(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeTrailingSlashRedirect(t=%v)", t)
 	tree := &node{}
 
 	routes := [...]string{
@@ -671,9 +712,11 @@ func TestTreeTrailingSlashRedirect(t *testing.T) {
 			t.Errorf("expected no TSR recommendation for route '%s'", route)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeTrailingSlashRedirect(t=%v)", t)
 }
 
 func TestTreeRootTrailingSlashRedirect(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeRootTrailingSlashRedirect(t=%v)", t)
 	tree := &node{}
 
 	recv := catchPanic(func() {
@@ -689,9 +732,11 @@ func TestTreeRootTrailingSlashRedirect(t *testing.T) {
 	} else if value.tsr {
 		t.Errorf("expected no TSR recommendation")
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeRootTrailingSlashRedirect(t=%v)", t)
 }
 
 func TestRedirectTrailingSlash(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRedirectTrailingSlash(t=%v)", t)
 	data := []struct {
 		path string
 	}{
@@ -709,9 +754,11 @@ func TestRedirectTrailingSlash(t *testing.T) {
 	if value.tsr != true {
 		t.Fatalf("want true, is false")
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRedirectTrailingSlash(t=%v)", t)
 }
 
 func TestTreeFindCaseInsensitivePath(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeFindCaseInsensitivePath(t=%v)", t)
 	tree := &node{}
 
 	longPath := "/l" + strings.Repeat("o", 128) + "ng"
@@ -865,6 +912,7 @@ func TestTreeFindCaseInsensitivePath(t *testing.T) {
 			if found != test.found || (found && (string(out) != test.out)) {
 				t.Errorf("Wrong result for '%s': got %s, %t; want %s, %t",
 					test.in, string(out), found, test.out, test.found)
+				logritelog.Default().Printf("[WARN] <<< Exiting TestTreeFindCaseInsensitivePath(t=%v)", t)
 				return
 			}
 		}
@@ -872,6 +920,7 @@ func TestTreeFindCaseInsensitivePath(t *testing.T) {
 }
 
 func TestTreeInvalidNodeType(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeInvalidNodeType(t=%v)", t)
 	const panicMsg = "invalid node type"
 
 	tree := &node{}
@@ -894,11 +943,14 @@ func TestTreeInvalidNodeType(t *testing.T) {
 		tree.findCaseInsensitivePath("/test", true)
 	})
 	if rs, ok := recv.(string); !ok || rs != panicMsg {
+	logritelog.Default().Printf("[DEBUG] TestTreeInvalidNodeType(t=%v): recv → %v", t, recv)
 		t.Fatalf("Expected panic '"+panicMsg+"', got '%v'", recv)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeInvalidNodeType(t=%v)", t)
 }
 
 func TestTreeInvalidParamsType(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeInvalidParamsType(t=%v)", t)
 	tree := &node{}
 	// add a child with wildcard
 	route := "/:path"
@@ -909,9 +961,11 @@ func TestTreeInvalidParamsType(t *testing.T) {
 
 	// try to trigger slice bounds out of range with capacity 0
 	tree.getValue("/test", &params, getSkippedNodes(), false)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeInvalidParamsType(t=%v)", t)
 }
 
 func TestTreeExpandParamsCapacity(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeExpandParamsCapacity(t=%v)", t)
 	data := []struct {
 		path string
 	}{
@@ -937,9 +991,11 @@ func TestTreeExpandParamsCapacity(t *testing.T) {
 			continue
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeExpandParamsCapacity(t=%v)", t)
 }
 
 func TestTreeWildcardConflictEx(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeWildcardConflictEx(t=%v)", t)
 	conflicts := [...]struct {
 		route        string
 		segPath      string
@@ -975,9 +1031,11 @@ func TestTreeWildcardConflictEx(t *testing.T) {
 			t.Fatalf("invalid wildcard conflict error (%v)", recv)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeWildcardConflictEx(t=%v)", t)
 }
 
 func TestTreeInvalidEscape(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeInvalidEscape(t=%v)", t)
 	routes := map[string]bool{
 		"/r1/r":    true,
 		"/r2/:r":   true,
@@ -992,9 +1050,11 @@ func TestTreeInvalidEscape(t *testing.T) {
 			t.Fatalf("%s should be %t but got %v", route, valid, recv)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeInvalidEscape(t=%v)", t)
 }
 
 func TestWildcardInvalidSlash(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestWildcardInvalidSlash(t=%v)", t)
 	const panicMsgPrefix = "no / before catch-all in path"
 
 	routes := map[string]bool{
@@ -1017,9 +1077,11 @@ func TestWildcardInvalidSlash(t *testing.T) {
 			t.Fatalf(`"Expected panic "%s" for route '%s', got "%v"`, panicMsgPrefix, route, recv)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestWildcardInvalidSlash(t=%v)", t)
 }
 
 func TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t=%v)", t)
 	tree := &node{}
 
 	// Setup routes that create a node with both static children and a wildcard child.
@@ -1061,9 +1123,11 @@ func TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t *testing.T
 	} else if string(out) != "/aa/aa" {
 		t.Errorf("Wrong result for '/AA/AA': expected '/aa/aa', got: %s", string(out))
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t=%v)", t)
 }
 
 func TestTreeFindCaseInsensitivePathWildcardParamAndStaticChild(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTreeFindCaseInsensitivePathWildcardParamAndStaticChild(t=%v)", t)
 	tree := &node{}
 
 	// Another variant: param route + static route under same prefix
@@ -1110,4 +1174,5 @@ func TestTreeFindCaseInsensitivePathWildcardParamAndStaticChild(t *testing.T) {
 	} else if string(out) != "/prefix/something" {
 		t.Errorf("Wrong result for '/prefix/something': %s", string(out))
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTreeFindCaseInsensitivePathWildcardParamAndStaticChild(t=%v)", t)
 }

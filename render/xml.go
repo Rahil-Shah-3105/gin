@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -18,11 +19,15 @@ var xmlContentType = []string{"application/xml; charset=utf-8"}
 
 // Render (XML) encodes the given interface object and writes data with custom ContentType.
 func (r XML) Render(w http.ResponseWriter) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Render(w=%v)", w)
 	r.WriteContentType(w)
+	logritelog.Default().Printf("[WARN] <<< Exiting Render(w=%v)", w)
 	return xml.NewEncoder(w).Encode(r.Data)
 }
 
 // WriteContentType (XML) writes XML ContentType for response.
 func (r XML) WriteContentType(w http.ResponseWriter) {
+	logritelog.Default().Printf("[ERROR] >>> Entering WriteContentType(w=%v)", w)
 	writeContentType(w, xmlContentType)
+	logritelog.Default().Printf("[WARN] <<< Exiting WriteContentType(w=%v)", w)
 }

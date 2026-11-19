@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"bufio"
@@ -17,21 +21,25 @@ import (
 
 // TestResponseWriterFlushWithFlusher verifies Flush() calls the underlying Flusher.
 func TestResponseWriterFlushWithFlusher(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterFlushWithFlusher(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{ResponseWriter: testWriter}
 	writer.Flush()
 	assert.True(t, testWriter.Flushed)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterFlushWithFlusher(t=%v)", t)
 }
 
 // TestResponseWriterFlushWithNonFlusher verifies Flush() is a no-op
 // when the underlying ResponseWriter does not implement http.Flusher.
 // Guards against the panic reported in https://github.com/gin-gonic/gin/issues/4460
 func TestResponseWriterFlushWithNonFlusher(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterFlushWithNonFlusher(t=%v)", t)
 	nonFlusher := &nonFlusherWriter{header: http.Header{}}
 	writer := &responseWriter{ResponseWriter: nonFlusher}
 	require.NotPanics(t, func() {
 		writer.Flush()
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterFlushWithNonFlusher(t=%v)", t)
 }
 
 // nonFlusherWriter is a minimal http.ResponseWriter that does NOT implement http.Flusher.
@@ -39,8 +47,16 @@ type nonFlusherWriter struct {
 	header http.Header
 }
 
-func (w *nonFlusherWriter) Header() http.Header         { return w.header }
-func (w *nonFlusherWriter) Write(b []byte) (int, error) { return len(b), nil }
+func (w *nonFlusherWriter) Header() http.Header         {
+    logritelog.Default().Printf("[ERROR] >>> Entering Header()")
+    logritelog.Default().Printf("[WARN] <<< Exiting Header()")
+    return w.header
+}
+func (w *nonFlusherWriter) Write(b []byte) (int, error) {
+    logritelog.Default().Printf("[ERROR] >>> Entering Write(b=%v)", b)
+    logritelog.Default().Printf("[WARN] <<< Exiting Write(b=%v)", b)
+    return len(b), nil
+}
 func (w *nonFlusherWriter) WriteHeader(code int)        {}
 
 var (
@@ -53,16 +69,21 @@ var (
 )
 
 func init() {
+	logritelog.Default().Printf("[ERROR] >>> Entering init()")
 	SetMode(TestMode)
+	logritelog.Default().Printf("[WARN] <<< Exiting init()")
 }
 
 func TestResponseWriterUnwrap(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterUnwrap(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{ResponseWriter: testWriter}
 	assert.Same(t, testWriter, writer.Unwrap())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterUnwrap(t=%v)", t)
 }
 
 func TestResponseWriterReset(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterReset(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{}
 	var w ResponseWriter = writer
@@ -74,9 +95,11 @@ func TestResponseWriterReset(t *testing.T) {
 	assert.Equal(t, -1, w.Size())
 	assert.Equal(t, http.StatusOK, w.Status())
 	assert.False(t, w.Written())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterReset(t=%v)", t)
 }
 
 func TestResponseWriterWriteHeader(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterWriteHeader(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{}
 	writer.reset(testWriter)
@@ -89,9 +112,11 @@ func TestResponseWriterWriteHeader(t *testing.T) {
 
 	w.WriteHeader(-1)
 	assert.Equal(t, http.StatusMultipleChoices, w.Status())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterWriteHeader(t=%v)", t)
 }
 
 func TestResponseWriterWriteHeadersNow(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterWriteHeadersNow(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{}
 	writer.reset(testWriter)
@@ -105,11 +130,14 @@ func TestResponseWriterWriteHeadersNow(t *testing.T) {
 	assert.Equal(t, http.StatusMultipleChoices, testWriter.Code)
 
 	writer.size = 10
+	logritelog.Default().Printf("[DEBUG] TestResponseWriterWriteHeadersNow(t=%v): writer.size → %v", t, writer.size)
 	w.WriteHeaderNow()
 	assert.Equal(t, 10, w.Size())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterWriteHeadersNow(t=%v)", t)
 }
 
 func TestResponseWriterWrite(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterWrite(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{}
 	writer.reset(testWriter)
@@ -128,9 +156,11 @@ func TestResponseWriterWrite(t *testing.T) {
 	assert.Equal(t, 10, w.Size())
 	assert.Equal(t, "hola adios", testWriter.Body.String())
 	require.NoError(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterWrite(t=%v)", t)
 }
 
 func TestResponseWriterHijack(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterHijack(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{}
 	writer.reset(testWriter)
@@ -150,6 +180,7 @@ func TestResponseWriterHijack(t *testing.T) {
 	assert.Nil(t, w.CloseNotify())
 
 	w.Flush()
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterHijack(t=%v)", t)
 }
 
 type mockHijacker struct {
@@ -159,11 +190,15 @@ type mockHijacker struct {
 
 // Hijack implements the http.Hijacker interface. It just records that it was called.
 func (m *mockHijacker) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Hijack()")
 	m.hijacked = true
+	logritelog.Default().Printf("[DEBUG] Hijack(): m.hijacked → %v", m.hijacked)
+	logritelog.Default().Printf("[WARN] <<< Exiting Hijack()")
 	return nil, nil, nil
 }
 
 func TestResponseWriterHijackAfterWrite(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterHijackAfterWrite(t=%v)", t)
 	tests := []struct {
 		name                      string
 		action                    func(w ResponseWriter) error // Action to perform before hijacking
@@ -218,10 +253,12 @@ func TestResponseWriterHijackAfterWrite(t *testing.T) {
 			assert.Equal(t, tc.expectWrittenAfterHijack, w.Written(), "unexpected w.Written() state after hijack")
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterHijackAfterWrite(t=%v)", t)
 }
 
 // Test: WebSocket compatibility - allow hijack after WriteHeaderNow(), but block after body data.
 func TestResponseWriterHijackAfterWriteHeaderNow(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterHijackAfterWriteHeaderNow(t=%v)", t)
 	tests := []struct {
 		name                      string
 		action                    func(w ResponseWriter) error
@@ -276,9 +313,12 @@ func TestResponseWriterHijackAfterWriteHeaderNow(t *testing.T) {
 			assert.Equal(t, tc.expectWrittenAfterHijack, w.Written(), "unexpected w.Written() state after hijack")
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterHijackAfterWriteHeaderNow(t=%v)", t)
 }
 
 func TestResponseWriterFlush(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterFlush(t=%v)", t)
+	__logStart := logritetime.Now()
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		writer := &responseWriter{}
 		writer.reset(w)
@@ -292,9 +332,12 @@ func TestResponseWriterFlush(t *testing.T) {
 	resp, err := http.Get(testServer.URL)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	logritelog.Default().Printf("[ERROR] TestResponseWriterFlush(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterFlush(t=%v)", t)
 }
 
 func TestResponseWriterStatusCode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResponseWriterStatusCode(t=%v)", t)
 	testWriter := httptest.NewRecorder()
 	writer := &responseWriter{}
 	writer.reset(testWriter)
@@ -310,6 +353,7 @@ func TestResponseWriterStatusCode(t *testing.T) {
 
 	// status must be 200 although we tried to change it
 	assert.Equal(t, http.StatusOK, w.Status())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResponseWriterStatusCode(t=%v)", t)
 }
 
 // mockPusherResponseWriter is an http.ResponseWriter that implements http.Pusher.
@@ -318,6 +362,7 @@ type mockPusherResponseWriter struct {
 }
 
 func (m *mockPusherResponseWriter) Push(target string, opts *http.PushOptions) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Push(target=%v,opts=%v)", target, opts)
 	return nil
 }
 
@@ -327,17 +372,21 @@ type nonPusherResponseWriter struct {
 }
 
 func TestPusherWithPusher(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPusherWithPusher(t=%v)", t)
 	rw := &mockPusherResponseWriter{}
 	w := &responseWriter{ResponseWriter: rw}
 
 	pusher := w.Pusher()
 	assert.NotNil(t, pusher, "Expected pusher to be non-nil")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPusherWithPusher(t=%v)", t)
 }
 
 func TestPusherWithoutPusher(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPusherWithoutPusher(t=%v)", t)
 	rw := &nonPusherResponseWriter{}
 	w := &responseWriter{ResponseWriter: rw}
 
 	pusher := w.Pusher()
 	assert.Nil(t, pusher, "Expected pusher to be nil")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPusherWithoutPusher(t=%v)", t)
 }

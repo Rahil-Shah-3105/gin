@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -19,18 +20,23 @@ var tomlContentType = []string{"application/toml; charset=utf-8"}
 
 // Render (TOML) marshals the given interface object and writes data with custom ContentType.
 func (r TOML) Render(w http.ResponseWriter) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Render(w=%v)", w)
 	r.WriteContentType(w)
 
 	bytes, err := toml.Marshal(r.Data)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in Render(w=%v): %v", w, err)
 		return err
 	}
 
 	_, err = w.Write(bytes)
+	logritelog.Default().Printf("[WARN] <<< Exiting Render(w=%v)", w)
 	return err
 }
 
 // WriteContentType (TOML) writes TOML ContentType for response.
 func (r TOML) WriteContentType(w http.ResponseWriter) {
+	logritelog.Default().Printf("[ERROR] >>> Entering WriteContentType(w=%v)", w)
 	writeContentType(w, tomlContentType)
+	logritelog.Default().Printf("[WARN] <<< Exiting WriteContentType(w=%v)", w)
 }

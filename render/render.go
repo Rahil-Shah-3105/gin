@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -35,8 +36,10 @@ var (
 )
 
 func writeContentType(w http.ResponseWriter, value []string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering writeContentType(w=%v,value=%v)", w, value)
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
 		header["Content-Type"] = value
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting writeContentType(w=%v,value=%v)", w, value)
 }

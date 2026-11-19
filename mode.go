@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"flag"
@@ -50,12 +51,15 @@ var (
 )
 
 func init() {
+	logritelog.Default().Printf("[ERROR] >>> Entering init()")
 	mode := os.Getenv(EnvGinMode)
 	SetMode(mode)
+	logritelog.Default().Printf("[WARN] <<< Exiting init()")
 }
 
 // SetMode sets gin mode according to input string.
 func SetMode(value string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering SetMode(value=%v)", value)
 	if value == "" {
 		if flag.Lookup("test.v") != nil {
 			value = TestMode
@@ -75,26 +79,37 @@ func SetMode(value string) {
 		panic("gin mode unknown: " + value + " (available mode: debug release test)")
 	}
 	modeName.Store(value)
+	logritelog.Default().Printf("[WARN] <<< Exiting SetMode(value=%v)", value)
 }
 
 // DisableBindValidation closes the default validator.
 func DisableBindValidation() {
+	logritelog.Default().Printf("[ERROR] >>> Entering DisableBindValidation()")
 	binding.Validator = nil
+	logritelog.Default().Printf("[DEBUG] DisableBindValidation(): binding.Validator → %v", binding.Validator)
+logritelog.Default().Printf("[WARN] <<< Exiting DisableBindValidation()")
 }
 
 // EnableJsonDecoderUseNumber sets true for binding.EnableDecoderUseNumber to
 // call the UseNumber method on the JSON Decoder instance.
 func EnableJsonDecoderUseNumber() {
+	logritelog.Default().Printf("[ERROR] >>> Entering EnableJsonDecoderUseNumber()")
 	binding.EnableDecoderUseNumber = true
+	logritelog.Default().Printf("[DEBUG] EnableJsonDecoderUseNumber(): binding.EnableDecoderUseNumber → %v", binding.EnableDecoderUseNumber)
+logritelog.Default().Printf("[WARN] <<< Exiting EnableJsonDecoderUseNumber()")
 }
 
 // EnableJsonDecoderDisallowUnknownFields sets true for binding.EnableDecoderDisallowUnknownFields to
 // call the DisallowUnknownFields method on the JSON Decoder instance.
 func EnableJsonDecoderDisallowUnknownFields() {
+	logritelog.Default().Printf("[ERROR] >>> Entering EnableJsonDecoderDisallowUnknownFields()")
 	binding.EnableDecoderDisallowUnknownFields = true
+	logritelog.Default().Printf("[DEBUG] EnableJsonDecoderDisallowUnknownFields(): binding.EnableDecoderDisallowUnknownFields → %v", binding.EnableDecoderDisallowUnknownFields)
+logritelog.Default().Printf("[WARN] <<< Exiting EnableJsonDecoderDisallowUnknownFields()")
 }
 
 // Mode returns current gin mode.
 func Mode() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering Mode()")
 	return modeName.Load().(string)
 }

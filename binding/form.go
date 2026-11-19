@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -22,7 +23,9 @@ func (formBinding) Name() string {
 }
 
 func (formBinding) Bind(req *http.Request, obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Bind(req=%v,obj=%v)", req, obj)
 	if err := req.ParseForm(); err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in Bind(req=%v,obj=%v): %v", req, obj, err)
 		return err
 	}
 	if err := req.ParseMultipartForm(defaultMemory); err != nil && !errors.Is(err, http.ErrNotMultipart) {
@@ -31,6 +34,7 @@ func (formBinding) Bind(req *http.Request, obj any) error {
 	if err := mapForm(obj, req.Form); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Bind(req=%v,obj=%v)", req, obj)
 	return validate(obj)
 }
 

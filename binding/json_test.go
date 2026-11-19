@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"io"
@@ -20,25 +21,31 @@ import (
 )
 
 func TestJSONBindingBindBody(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestJSONBindingBindBody(t=%v)", t)
 	var s struct {
 		Foo string `json:"foo"`
 	}
 	err := jsonBinding{}.BindBody([]byte(`{"foo": "FOO"}`), &s)
 	require.NoError(t, err)
 	assert.Equal(t, "FOO", s.Foo)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestJSONBindingBindBody(t=%v)", t)
 }
 
 func TestJSONBindingBindBodyMap(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestJSONBindingBindBodyMap(t=%v)", t)
 	s := make(map[string]string)
 	err := jsonBinding{}.BindBody([]byte(`{"foo": "FOO","hello":"world"}`), &s)
 	require.NoError(t, err)
 	assert.Len(t, s, 2)
 	assert.Equal(t, "FOO", s["foo"])
 	assert.Equal(t, "world", s["hello"])
+	logritelog.Default().Printf("[WARN] <<< Exiting TestJSONBindingBindBodyMap(t=%v)", t)
 }
 
 func TestCustomJsonCodec(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCustomJsonCodec(t=%v)", t)
 	// Restore json encoding configuration after testing
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCustomJsonCodec(t=%v)", t)
 	oldMarshal := json.API
 	defer func() {
 		json.API = oldMarshal
@@ -76,29 +83,36 @@ var customConfig = jsoniter.Config{
 }.Froze()
 
 func init() {
+	logritelog.Default().Printf("[ERROR] >>> Entering init()")
 	customConfig.RegisterExtension(&TimeEx{})
 	customConfig.RegisterExtension(&TimePointerEx{})
+	logritelog.Default().Printf("[WARN] <<< Exiting init()")
 }
 
 type customJsonApi struct{}
 
 func (j customJsonApi) Marshal(v any) ([]byte, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Marshal(v=%v)", v)
 	return customConfig.Marshal(v)
 }
 
 func (j customJsonApi) Unmarshal(data []byte, v any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Unmarshal(data=%v,v=%v)", data, v)
 	return customConfig.Unmarshal(data, v)
 }
 
 func (j customJsonApi) MarshalIndent(v any, prefix, indent string) ([]byte, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering MarshalIndent(v=%v,prefix=%v,indent=%v)", v, prefix, indent)
 	return customConfig.MarshalIndent(v, prefix, indent)
 }
 
 func (j customJsonApi) NewEncoder(writer io.Writer) json.Encoder {
+	logritelog.Default().Printf("[ERROR] >>> Entering NewEncoder(writer=%v)", writer)
 	return customConfig.NewEncoder(writer)
 }
 
 func (j customJsonApi) NewDecoder(reader io.Reader) json.Decoder {
+	logritelog.Default().Printf("[ERROR] >>> Entering NewDecoder(reader=%v)", reader)
 	return customConfig.NewDecoder(reader)
 }
 
@@ -174,6 +188,7 @@ func (tpe *TimePointerEx) CreateDecoder(typ reflect2.Type) jsoniter.ValDecoder {
 	if typ == timePointerType {
 		return defaultTimePointerCodec
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting CreateDecoder(typ=%v)", typ)
 	return nil
 }
 
@@ -181,6 +196,7 @@ func (tpe *TimePointerEx) CreateEncoder(typ reflect2.Type) jsoniter.ValEncoder {
 	if typ == timePointerType {
 		return defaultTimePointerCodec
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting CreateEncoder(typ=%v)", typ)
 	return nil
 }
 
@@ -188,19 +204,23 @@ type timePointerCodec struct{}
 
 func (tpc timePointerCodec) IsEmpty(ptr unsafe.Pointer) bool {
 	t := *((**time.Time)(ptr))
+	logritelog.Default().Printf("[WARN] <<< Exiting IsEmpty(ptr=%v)", ptr)
 	return t == nil || (*t).Equal(zeroTime)
 }
 
 func (tpc timePointerCodec) Encode(ptr unsafe.Pointer, stream *jsoniter.Stream) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Encode(ptr=%v,stream=%v)", ptr, stream)
 	t := *((**time.Time)(ptr))
 	if t == nil || (*t).Equal(zeroTime) {
 		stream.WriteNil()
 		return
 	}
 	stream.WriteString(t.In(time.Local).Format("2006-01-02 15:04:05.000"))
+	logritelog.Default().Printf("[WARN] <<< Exiting Encode(ptr=%v,stream=%v)", ptr, stream)
 }
 
 func (tpc timePointerCodec) Decode(ptr unsafe.Pointer, iter *jsoniter.Iterator) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Decode(ptr=%v,iter=%v)", ptr, iter)
 	ts := iter.ReadString()
 	if len(ts) == 0 {
 		*((**time.Time)(ptr)) = nil
@@ -208,9 +228,11 @@ func (tpc timePointerCodec) Decode(ptr unsafe.Pointer, iter *jsoniter.Iterator) 
 	}
 	t, err := time.ParseInLocation("2006-01-02 15:04:05.000", ts, time.Local)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in Decode(ptr=%v,iter=%v): %v", ptr, iter, err)
 		panic(err)
 	}
 	*((**time.Time)(ptr)) = &t
+	logritelog.Default().Printf("[WARN] <<< Exiting Decode(ptr=%v,iter=%v)", ptr, iter)
 }
 
 // endregion

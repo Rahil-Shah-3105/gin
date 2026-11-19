@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"bytes"
@@ -16,6 +20,7 @@ import (
 )
 
 func TestFormMultipartBindingBindOneFile(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestFormMultipartBindingBindOneFile(t=%v)", t)
 	var s struct {
 		FileValue   multipart.FileHeader     `form:"file"`
 		FilePtr     *multipart.FileHeader    `form:"file"`
@@ -38,9 +43,11 @@ func TestFormMultipartBindingBindOneFile(t *testing.T) {
 	assertMultipartFileHeader(t, s.SlicePtrs[0], file)
 	assertMultipartFileHeader(t, &s.ArrayValues[0], file)
 	assertMultipartFileHeader(t, s.ArrayPtrs[0], file)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestFormMultipartBindingBindOneFile(t=%v)", t)
 }
 
 func TestFormMultipartBindingBindTwoFiles(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestFormMultipartBindingBindTwoFiles(t=%v)", t)
 	var s struct {
 		SliceValues []multipart.FileHeader   `form:"file"`
 		SlicePtrs   []*multipart.FileHeader  `form:"file"`
@@ -67,9 +74,11 @@ func TestFormMultipartBindingBindTwoFiles(t *testing.T) {
 		assertMultipartFileHeader(t, &s.ArrayValues[i], file)
 		assertMultipartFileHeader(t, s.ArrayPtrs[i], file)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestFormMultipartBindingBindTwoFiles(t=%v)", t)
 }
 
 func TestFormMultipartBindingBindError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestFormMultipartBindingBindError(t=%v)", t)
 	files := []testFile{
 		{"file", "file1", []byte("hello")},
 		{"file", "file2", []byte("world")},
@@ -93,6 +102,7 @@ func TestFormMultipartBindingBindError(t *testing.T) {
 		err := FormMultipart.Bind(req, tt.s)
 		require.Error(t, err)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestFormMultipartBindingBindError(t=%v)", t)
 }
 
 type testFile struct {
@@ -102,6 +112,8 @@ type testFile struct {
 }
 
 func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request {
+	logritelog.Default().Printf("[ERROR] >>> Entering createRequestMultipartFiles(t=%v,files=%v)", t, files)
+	__logStart := logritetime.Now()
 	var body bytes.Buffer
 
 	mw := multipart.NewWriter(&body)
@@ -120,10 +132,13 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 	require.NoError(t, err)
 
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+mw.Boundary())
+	logritelog.Default().Printf("[ERROR] createRequestMultipartFiles(t,files)=%v,%v: external service call took %v ms", t, files, logritetime.Since(__logStart).Milliseconds())
+	logritelog.Default().Printf("[WARN] <<< Exiting createRequestMultipartFiles(t=%v,files=%v)", t, files)
 	return req
 }
 
 func assertMultipartFileHeader(t *testing.T, fh *multipart.FileHeader, file testFile) {
+	logritelog.Default().Printf("[ERROR] >>> Entering assertMultipartFileHeader(t=%v,fh=%v,file=%v)", t, fh, file)
 	assert.Equal(t, file.Filename, fh.Filename)
 	assert.Equal(t, int64(len(file.Content)), fh.Size)
 
@@ -136,4 +151,6 @@ func assertMultipartFileHeader(t *testing.T, fh *multipart.FileHeader, file test
 
 	err = fl.Close()
 	require.NoError(t, err)
+	logritelog.Default().Printf("[DEBUG] assertMultipartFileHeader(t=%v,fh=%v,file=%v): err → %v", t, fh, file, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting assertMultipartFileHeader(t=%v,fh=%v,file=%v)", t, fh, file)
 }

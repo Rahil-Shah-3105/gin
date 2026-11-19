@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"errors"
@@ -17,6 +21,7 @@ import (
 )
 
 func TestPanicClean(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPanicClean(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	password := "my-super-secret-password"
@@ -45,10 +50,12 @@ func TestPanicClean(t *testing.T) {
 
 	// Check the buffer does not have the secret key
 	assert.NotContains(t, buffer.String(), password)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPanicClean(t=%v)", t)
 }
 
 // TestPanicInHandler assert that panic has been recovered.
 func TestPanicInHandler(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPanicInHandler(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	router.Use(RecoveryWithWriter(buffer))
@@ -73,10 +80,12 @@ func TestPanicInHandler(t *testing.T) {
 	assert.Contains(t, buffer.String(), "GET /recovery")
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPanicInHandler(t=%v)", t)
 }
 
 // TestPanicWithAbort assert that panic has been recovered even if context.Abort was used.
 func TestPanicWithAbort(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPanicWithAbort(t=%v)", t)
 	router := New()
 	router.Use(RecoveryWithWriter(nil))
 	router.GET("/recovery", func(c *Context) {
@@ -87,16 +96,20 @@ func TestPanicWithAbort(t *testing.T) {
 	w := PerformRequest(router, http.MethodGet, "/recovery")
 	// TEST
 	assert.Equal(t, http.StatusBadRequest, w.Code)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPanicWithAbort(t=%v)", t)
 }
 
 func TestFunction(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestFunction(t=%v)", t)
 	bs := function(1)
 	assert.Equal(t, dunno, bs)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestFunction(t=%v)", t)
 }
 
 // TestPanicWithBrokenPipe asserts that recovery specifically handles
 // writing responses to broken pipes
 func TestPanicWithBrokenPipe(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPanicWithBrokenPipe(t=%v)", t)
 	const expectCode = 204
 
 	expectErrnos := []syscall.Errno{
@@ -127,10 +140,12 @@ func TestPanicWithBrokenPipe(t *testing.T) {
 			assert.NotContains(t, strings.ToLower(buf.String()), "[Recovery]")
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPanicWithBrokenPipe(t=%v)", t)
 }
 
 // TestPanicWithAbortHandler asserts that recovery handles http.ErrAbortHandler as broken pipe
 func TestPanicWithAbortHandler(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPanicWithAbortHandler(t=%v)", t)
 	const expectCode = 204
 
 	var buf strings.Builder
@@ -151,9 +166,11 @@ func TestPanicWithAbortHandler(t *testing.T) {
 	out := buf.String()
 	assert.Contains(t, out, "net/http: abort Handler")
 	assert.NotContains(t, out, "panic recovered")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPanicWithAbortHandler(t=%v)", t)
 }
 
 func TestPanicInHandlerRecordsError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPanicInHandlerRecordsError(t=%v)", t)
 	tests := []struct {
 		name         string
 		recoveredErr any
@@ -179,6 +196,7 @@ func TestPanicInHandlerRecordsError(t *testing.T) {
 			router.Use(func(c *Context) {
 				c.Next()
 				recoveredErrors = c.Errors
+				logritelog.Default().Printf("[DEBUG] TestPanicInHandlerRecordsError(t=%v): recoveredErrors → %v", t, recoveredErrors)
 			})
 			router.Use(RecoveryWithWriter(nil))
 			router.GET("/recovery", func(_ *Context) {
@@ -194,9 +212,11 @@ func TestPanicInHandlerRecordsError(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPanicInHandlerRecordsError(t=%v)", t)
 }
 
 func TestCustomRecoveryWithWriter(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCustomRecoveryWithWriter(t=%v)", t)
 	errBuffer := new(strings.Builder)
 	buffer := new(strings.Builder)
 	router := New()
@@ -228,13 +248,16 @@ func TestCustomRecoveryWithWriter(t *testing.T) {
 	assert.Equal(t, strings.Repeat("Oops, Houston, we have a problem", 2), errBuffer.String())
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCustomRecoveryWithWriter(t=%v)", t)
 }
 
 func TestCustomRecovery(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCustomRecovery(t=%v)", t)
 	errBuffer := new(strings.Builder)
 	buffer := new(strings.Builder)
 	router := New()
 	DefaultErrorWriter = buffer
+	logritelog.Default().Printf("[DEBUG] TestCustomRecovery(t=%v): DefaultErrorWriter → %v", t, DefaultErrorWriter)
 	handleRecovery := func(c *Context, err any) {
 		errBuffer.WriteString(err.(string))
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -263,13 +286,16 @@ func TestCustomRecovery(t *testing.T) {
 	assert.Equal(t, strings.Repeat("Oops, Houston, we have a problem", 2), errBuffer.String())
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCustomRecovery(t=%v)", t)
 }
 
 func TestRecoveryWithWriterWithCustomRecovery(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRecoveryWithWriterWithCustomRecovery(t=%v)", t)
 	errBuffer := new(strings.Builder)
 	buffer := new(strings.Builder)
 	router := New()
 	DefaultErrorWriter = buffer
+	logritelog.Default().Printf("[DEBUG] TestRecoveryWithWriterWithCustomRecovery(t=%v): DefaultErrorWriter → %v", t, DefaultErrorWriter)
 	handleRecovery := func(c *Context, err any) {
 		errBuffer.WriteString(err.(string))
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -298,9 +324,12 @@ func TestRecoveryWithWriterWithCustomRecovery(t *testing.T) {
 	assert.Equal(t, strings.Repeat("Oops, Houston, we have a problem", 2), errBuffer.String())
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRecoveryWithWriterWithCustomRecovery(t=%v)", t)
 }
 
 func TestSecureRequestDump(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestSecureRequestDump(t=%v)", t)
+	__logStart := logritetime.Now()
 	tests := []struct {
 		name           string
 		req            *http.Request
@@ -360,14 +389,18 @@ func TestSecureRequestDump(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("[ERROR] TestSecureRequestDump(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestSecureRequestDump(t=%v)", t)
 }
 
 // TestReadNthLine tests the readNthLine function with various scenarios.
 func TestReadNthLine(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestReadNthLine(t=%v)", t)
 	// Create a temporary test file
 	testContent := "line 0 \n line 1  \nline 2 \nline 3  \nline 4"
 	tempFile, err := os.CreateTemp("", "testfile*.txt")
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in TestReadNthLine(t=%v): %v", t, err)
 		t.Fatal(err)
 	}
 	defer os.Remove(tempFile.Name())
@@ -403,11 +436,14 @@ func TestReadNthLine(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestReadNthLine(t=%v)", t)
 }
 
 func BenchmarkStack(b *testing.B) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BenchmarkStack(b=%v)", b)
 	b.ReportAllocs()
 	for b.Loop() {
 		_ = stack(stackSkip)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting BenchmarkStack(b=%v)", b)
 }

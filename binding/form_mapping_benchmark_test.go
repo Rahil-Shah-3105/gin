@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"testing"
@@ -30,10 +31,12 @@ type structFull struct {
 }
 
 func BenchmarkMapFormFull(b *testing.B) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BenchmarkMapFormFull(b=%v)", b)
 	var s structFull
 	for b.Loop() {
 		err := mapForm(&s, form)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in BenchmarkMapFormFull(b=%v): %v", b, err)
 			b.Fatalf("Error on a form mapping")
 		}
 	}
@@ -46,6 +49,7 @@ func BenchmarkMapFormFull(b *testing.B) {
 	assert.Equal(t, "12345678", s.ID.Number)
 	assert.Equal(t, time.Date(2018, 1, 20, 0, 0, 0, 0, time.UTC), s.ID.DateOfIssue)
 	assert.Nil(t, s.Nationality)
+	logritelog.Default().Printf("[WARN] <<< Exiting BenchmarkMapFormFull(b=%v)", b)
 }
 
 type structName struct {
@@ -53,10 +57,12 @@ type structName struct {
 }
 
 func BenchmarkMapFormName(b *testing.B) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BenchmarkMapFormName(b=%v)", b)
 	var s structName
 	for b.Loop() {
 		err := mapForm(&s, form)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in BenchmarkMapFormName(b=%v): %v", b, err)
 			b.Fatalf("Error on a form mapping")
 		}
 	}
@@ -64,4 +70,5 @@ func BenchmarkMapFormName(b *testing.B) {
 
 	t := b
 	assert.Equal(t, "mike", s.Name)
+	logritelog.Default().Printf("[WARN] <<< Exiting BenchmarkMapFormName(b=%v)", b)
 }

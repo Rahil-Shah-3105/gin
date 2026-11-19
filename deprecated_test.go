@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"bytes"
@@ -15,6 +19,7 @@ import (
 )
 
 func TestBindWith(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestBindWith(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 

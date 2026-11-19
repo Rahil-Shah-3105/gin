@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -33,16 +34,19 @@ type RecoveryFunc func(c *Context, err any)
 
 // Recovery returns a middleware that recovers from any panics and writes a 500 if there was one.
 func Recovery() HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering Recovery()")
 	return RecoveryWithWriter(DefaultErrorWriter)
 }
 
 // CustomRecovery returns a middleware that recovers from any panics and calls the provided handle func to handle it.
 func CustomRecovery(handle RecoveryFunc) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering CustomRecovery(handle=%v)", handle)
 	return RecoveryWithWriter(DefaultErrorWriter, handle)
 }
 
 // RecoveryWithWriter returns a middleware for a given writer that recovers from any panics and writes a 500 if there was one.
 func RecoveryWithWriter(out io.Writer, recovery ...RecoveryFunc) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering RecoveryWithWriter(out=%v,recovery=%v)", out, recovery)
 	if len(recovery) > 0 {
 		return CustomRecoveryWithWriter(out, recovery[0])
 	}
@@ -51,10 +55,12 @@ func RecoveryWithWriter(out io.Writer, recovery ...RecoveryFunc) HandlerFunc {
 
 // CustomRecoveryWithWriter returns a middleware for a given writer that recovers from any panics and calls the provided handle func to handle it.
 func CustomRecoveryWithWriter(out io.Writer, handle RecoveryFunc) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering CustomRecoveryWithWriter(out=%v,handle=%v)", out, handle)
 	var logger *log.Logger
 	if out != nil {
 		logger = log.New(out, "\n\n\x1b[31m", log.LstdFlags)
 	}
+		logritelog.Default().Printf("[DEBUG] CustomRecoveryWithWriter(out=%v,handle=%v): logger → %v", out, handle, logger)
 	return func(c *Context) {
 		defer func() {
 			if rec := recover(); rec != nil {
@@ -89,6 +95,7 @@ func CustomRecoveryWithWriter(out io.Writer, handle RecoveryFunc) HandlerFunc {
 		}()
 		c.Next()
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting CustomRecoveryWithWriter(out=%v,handle=%v)", out, handle)
 }
 
 // secureRequestDump returns a sanitized HTTP request dump where the Authorization header,
@@ -96,6 +103,7 @@ func CustomRecoveryWithWriter(out io.Writer, handle RecoveryFunc) HandlerFunc {
 //
 // Currently, only the Authorization header is sanitized. All other headers and request data remain unchanged.
 func secureRequestDump(r *http.Request) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering secureRequestDump(r=%v)", r)
 	httpRequest, _ := httputil.DumpRequest(r, false)
 	lines := strings.Split(bytesconv.BytesToString(httpRequest), "\r\n")
 	for i, line := range lines {
@@ -103,20 +111,24 @@ func secureRequestDump(r *http.Request) string {
 			lines[i] = "Authorization: *"
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting secureRequestDump(r=%v)", r)
 	return strings.Join(lines, "\r\n")
 }
 
 func defaultHandleRecovery(c *Context, err any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering defaultHandleRecovery(c=%v,err=%v)", c, err)
 	e, ok := err.(error)
 	if !ok {
 		e = fmt.Errorf("%v", err)
 	}
 	c.Error(e) //nolint: errcheck
 	c.AbortWithStatus(http.StatusInternalServerError)
+	logritelog.Default().Printf("[WARN] <<< Exiting defaultHandleRecovery(c=%v,err=%v)", c, err)
 }
 
 // stack returns a nicely formatted stack frame, skipping skip frames.
 func stack(skip int) []byte {
+	logritelog.Default().Printf("[ERROR] >>> Entering stack(skip=%v)", skip)
 	buf := new(bytes.Buffer) // the returned data
 	// As we loop, we open files and read them. These variables record the currently
 	// loaded file.
@@ -138,9 +150,11 @@ func stack(skip int) []byte {
 				continue
 			}
 			lastFile = file
+			logritelog.Default().Printf("[DEBUG] stack(skip=%v): lastFile → %v", skip, lastFile)
 		}
 		fmt.Fprintf(buf, "\t%s: %s\n", function(pc), cmp.Or(nLine, dunno))
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting stack(skip=%v)", skip)
 	return buf.Bytes()
 }
 
@@ -149,12 +163,14 @@ func stack(skip int) []byte {
 // or an empty string if the line doesn't exist.
 // If there's an error opening the file, it returns the error.
 func readNthLine(file string, n int) (string, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering readNthLine(file=%v,n=%v)", file, n)
 	if n < 0 {
 		return "", nil
 	}
 
 	f, err := os.Open(file)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in readNthLine(file=%v,n=%v): %v", file, n, err)
 		return "", err
 	}
 	defer f.Close()
@@ -170,11 +186,13 @@ func readNthLine(file string, n int) (string, error) {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting readNthLine(file=%v,n=%v)", file, n)
 	return "", nil
 }
 
 // function returns, if possible, the name of the function containing the PC.
 func function(pc uintptr) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering function(pc=%v)", pc)
 	fn := runtime.FuncForPC(pc)
 	if fn == nil {
 		return dunno
@@ -190,15 +208,18 @@ func function(pc uintptr) string {
 	// so first eliminate the path prefix
 	if lastSlash := strings.LastIndexByte(name, '/'); lastSlash >= 0 {
 		name = name[lastSlash+1:]
+		logritelog.Default().Printf("[DEBUG] function(pc=%v): name → %v", pc, name)
 	}
 	if period := strings.IndexByte(name, '.'); period >= 0 {
 		name = name[period+1:]
 	}
 	name = strings.ReplaceAll(name, "·", ".")
+	logritelog.Default().Printf("[WARN] <<< Exiting function(pc=%v)", pc)
 	return name
 }
 
 // timeFormat returns a customized time string for logger.
 func timeFormat(t time.Time) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering timeFormat(t=%v)", t)
 	return t.Format("2006/01/02 - 15:04:05")
 }

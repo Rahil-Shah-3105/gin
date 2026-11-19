@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -68,6 +69,7 @@ type structNoValidationValues struct {
 }
 
 func createNoValidationValues() structNoValidationValues {
+	logritelog.Default().Printf("[ERROR] >>> Entering createNoValidationValues()")
 	integer := 1
 	s := structNoValidationValues{
 		Boolean:            true,
@@ -105,11 +107,15 @@ func createNoValidationValues() structNoValidationValues {
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"
+	logritelog.Default().Printf("[DEBUG] createNoValidationValues(): s.IString → %v", s.IString)
 	s.IInt = 987654
+	logritelog.Default().Printf("[DEBUG] createNoValidationValues(): s.IInt → %v", s.IInt)
+	logritelog.Default().Printf("[WARN] <<< Exiting createNoValidationValues()")
 	return s
 }
 
 func TestValidateNoValidationValues(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestValidateNoValidationValues(t=%v)", t)
 	origin := createNoValidationValues()
 	test := createNoValidationValues()
 	empty := structNoValidationValues{}
@@ -120,6 +126,7 @@ func TestValidateNoValidationValues(t *testing.T) {
 	require.NoError(t, validate(&empty))
 
 	assert.Equal(t, origin, test)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestValidateNoValidationValues(t=%v)", t)
 }
 
 type structNoValidationPointer struct {
@@ -158,6 +165,7 @@ type structNoValidationPointer struct {
 }
 
 func TestValidateNoValidationPointers(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestValidateNoValidationPointers(t=%v)", t)
 	// origin := createNoValidation_values()
 	// test := createNoValidation_values()
 	empty := structNoValidationPointer{}
@@ -168,11 +176,13 @@ func TestValidateNoValidationPointers(t *testing.T) {
 	require.NoError(t, validate(&empty))
 
 	// assert.Equal(t, origin, test)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestValidateNoValidationPointers(t=%v)", t)
 }
 
 type Object map[string]any
 
 func TestValidatePrimitives(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestValidatePrimitives(t=%v)", t)
 	obj := Object{"foo": "bar", "bar": 1}
 	require.NoError(t, validate(obj))
 	require.NoError(t, validate(&obj))
@@ -191,6 +201,7 @@ func TestValidatePrimitives(t *testing.T) {
 	require.NoError(t, validate(str))
 	require.NoError(t, validate(&str))
 	assert.Equal(t, "value", str)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestValidatePrimitives(t=%v)", t)
 }
 
 type structModifyValidation struct {
@@ -198,11 +209,15 @@ type structModifyValidation struct {
 }
 
 func toZero(sl validator.StructLevel) {
+	logritelog.Default().Printf("[ERROR] >>> Entering toZero(sl=%v)", sl)
 	s := sl.Top().Interface().(*structModifyValidation)
 	s.Integer = 0
+	logritelog.Default().Printf("[DEBUG] toZero(sl=%v): s.Integer → %v", sl, s.Integer)
+logritelog.Default().Printf("[WARN] <<< Exiting toZero(sl=%v)", sl)
 }
 
 func TestValidateAndModifyStruct(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestValidateAndModifyStruct(t=%v)", t)
 	// This validates that pointers to structs are passed to the validator
 	// giving us the ability to modify the struct being validated.
 	engine, ok := Validator.Engine().(*validator.Validate)
@@ -215,6 +230,7 @@ func TestValidateAndModifyStruct(t *testing.T) {
 
 	require.NoError(t, errs)
 	assert.Equal(t, structModifyValidation{Integer: 0}, s)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestValidateAndModifyStruct(t=%v)", t)
 }
 
 // structCustomValidation is a helper struct we use to check that
@@ -225,13 +241,16 @@ type structCustomValidation struct {
 }
 
 func notOne(f1 validator.FieldLevel) bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering notOne(f1=%v)", f1)
 	if val, ok := f1.Field().Interface().(int); ok {
 		return val != 1
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting notOne(f1=%v)", f1)
 	return false
 }
 
 func TestValidatorEngine(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestValidatorEngine(t=%v)", t)
 	// This validates that the function `notOne` matches
 	// the expected function signature by `defaultValidator`
 	// and by extension the validator library.
@@ -250,4 +269,5 @@ func TestValidatorEngine(t *testing.T) {
 	require.Error(t, errs)
 	// Check that the error matches expectation
 	require.Error(t, errs, "notone")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestValidatorEngine(t=%v)", t)
 }

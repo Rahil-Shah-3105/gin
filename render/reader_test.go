@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http/httptest"
@@ -13,6 +14,7 @@ import (
 )
 
 func TestReaderRenderNoHeaders(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestReaderRenderNoHeaders(t=%v)", t)
 	content := "test"
 	r := Reader{
 		ContentLength: int64(len(content)),
@@ -20,4 +22,5 @@ func TestReaderRenderNoHeaders(t *testing.T) {
 	}
 	err := r.Render(httptest.NewRecorder())
 	require.NoError(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestReaderRenderNoHeaders(t=%v)", t)
 }

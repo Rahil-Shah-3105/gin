@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"fmt"
@@ -288,9 +292,11 @@ var githubAPI = []route{
 }
 
 func TestShouldBindUri(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestShouldBindUri(t=%v)", t)
 	DefaultWriter = os.Stdout
 	router := New()
 
+	logritelog.Default().Printf("[DEBUG] TestShouldBindUri(t=%v): DefaultWriter → %v", t, DefaultWriter)
 	type Person struct {
 		Name string `uri:"name" binding:"required"`
 		ID   string `uri:"id" binding:"required"`
@@ -307,12 +313,15 @@ func TestShouldBindUri(t *testing.T) {
 	w := PerformRequest(router, http.MethodGet, path)
 	assert.Equal(t, "ShouldBindUri test OK", w.Body.String())
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestShouldBindUri(t=%v)", t)
 }
 
 func TestBindUri(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestBindUri(t=%v)", t)
 	DefaultWriter = os.Stdout
 	router := New()
 
+	logritelog.Default().Printf("[DEBUG] TestBindUri(t=%v): DefaultWriter → %v", t, DefaultWriter)
 	type Person struct {
 		Name string `uri:"name" binding:"required"`
 		ID   string `uri:"id" binding:"required"`
@@ -329,12 +338,15 @@ func TestBindUri(t *testing.T) {
 	w := PerformRequest(router, http.MethodGet, path)
 	assert.Equal(t, "BindUri test OK", w.Body.String())
 	assert.Equal(t, http.StatusOK, w.Code)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestBindUri(t=%v)", t)
 }
 
 func TestBindUriError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestBindUriError(t=%v)", t)
 	DefaultWriter = os.Stdout
 	router := New()
 
+	logritelog.Default().Printf("[DEBUG] TestBindUriError(t=%v): DefaultWriter → %v", t, DefaultWriter)
 	type Member struct {
 		Number string `uri:"num" binding:"required,uuid"`
 	}
@@ -346,12 +358,15 @@ func TestBindUriError(t *testing.T) {
 	path1, _ := exampleFromPath("/new/rest/:num")
 	w1 := PerformRequest(router, http.MethodGet, path1)
 	assert.Equal(t, http.StatusBadRequest, w1.Code)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestBindUriError(t=%v)", t)
 }
 
 func TestRaceContextCopy(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRaceContextCopy(t=%v)", t)
 	DefaultWriter = os.Stdout
 	router := Default()
 	router.GET("/test/copy/race", func(c *Context) {
+	logritelog.Default().Printf("[DEBUG] TestRaceContextCopy(t=%v): DefaultWriter → %v", t, DefaultWriter)
 		c.Set("1", 0)
 		c.Set("2", 0)
 
@@ -362,16 +377,20 @@ func TestRaceContextCopy(t *testing.T) {
 	})
 	w := PerformRequest(router, http.MethodGet, "/test/copy/race")
 	assert.Equal(t, "run OK, no panics", w.Body.String())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRaceContextCopy(t=%v)", t)
 }
 
 func readWriteKeys(c *Context) {
+	logritelog.Default().Printf("[ERROR] >>> Entering readWriteKeys(c=%v)", c)
 	for {
 		c.Set("1", rand.Int())
 		c.Set("2", c.Value("1"))
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting readWriteKeys(c=%v)", c)
 }
 
 func githubConfigRouter(router *Engine) {
+	logritelog.Default().Printf("[ERROR] >>> Entering githubConfigRouter(router=%v)", router)
 	for _, route := range githubAPI {
 		router.Handle(route.method, route.path, func(c *Context) {
 			output := make(map[string]string, len(c.Params)+1)
@@ -382,13 +401,16 @@ func githubConfigRouter(router *Engine) {
 			c.JSON(http.StatusOK, output)
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting githubConfigRouter(router=%v)", router)
 }
 
 func TestGithubAPI(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestGithubAPI(t=%v)", t)
 	DefaultWriter = os.Stdout
 	router := New()
 	githubConfigRouter(router)
 
+	logritelog.Default().Printf("[DEBUG] TestGithubAPI(t=%v): DefaultWriter → %v", t, DefaultWriter)
 	for _, route := range githubAPI {
 		path, values := exampleFromPath(route.path)
 		w := PerformRequest(router, route.method, path)
@@ -400,9 +422,11 @@ func TestGithubAPI(t *testing.T) {
 			assert.Contains(t, w.Body.String(), str)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestGithubAPI(t=%v)", t)
 }
 
 func exampleFromPath(path string) (string, Params) {
+	logritelog.Default().Printf("[ERROR] >>> Entering exampleFromPath(path=%v)", path)
 	output := new(strings.Builder)
 	params := make(Params, 0, 6)
 	start := -1
@@ -434,20 +458,26 @@ func exampleFromPath(path string) (string, Params) {
 		output.WriteString(value)
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting exampleFromPath(path=%v)", path)
 	return output.String(), params
 }
 
 func BenchmarkGithub(b *testing.B) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BenchmarkGithub(b=%v)", b)
 	router := New()
 	githubConfigRouter(router)
 	runRequest(b, router, http.MethodGet, "/legacy/issues/search/:owner/:repository/:state/:keyword")
+	logritelog.Default().Printf("[WARN] <<< Exiting BenchmarkGithub(b=%v)", b)
 }
 
 func BenchmarkParallelGithub(b *testing.B) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BenchmarkParallelGithub(b=%v)", b)
+	__logStart := logritetime.Now()
 	DefaultWriter = os.Stdout
 	router := New()
 	githubConfigRouter(router)
 
+	logritelog.Default().Printf("[DEBUG] BenchmarkParallelGithub(b=%v): DefaultWriter → %v", b, DefaultWriter)
 	req, _ := http.NewRequest(http.MethodPost, "/repos/manucorporat/sse/git/blobs", nil)
 
 	b.RunParallel(func(pb *testing.PB) {
@@ -457,13 +487,17 @@ func BenchmarkParallelGithub(b *testing.B) {
 			router.ServeHTTP(w, req)
 		}
 	})
+	logritelog.Default().Printf("[ERROR] BenchmarkParallelGithub(b)=%v: external service call took %v ms", b, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting BenchmarkParallelGithub(b=%v)", b)
 }
 
 func BenchmarkParallelGithubDefault(b *testing.B) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BenchmarkParallelGithubDefault(b=%v)", b)
 	DefaultWriter = os.Stdout
 	router := New()
 	githubConfigRouter(router)
 
+	logritelog.Default().Printf("[DEBUG] BenchmarkParallelGithubDefault(b=%v): DefaultWriter → %v", b, DefaultWriter)
 	req, _ := http.NewRequest(http.MethodPost, "/repos/manucorporat/sse/git/blobs", nil)
 
 	b.RunParallel(func(pb *testing.PB) {
@@ -473,4 +507,6 @@ func BenchmarkParallelGithubDefault(b *testing.B) {
 			router.ServeHTTP(w, req)
 		}
 	})
+	logritelog.Default().Printf("[ERROR] BenchmarkParallelGithubDefault(b)=%v: external service call took %v ms", b, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting BenchmarkParallelGithubDefault(b=%v)", b)
 }

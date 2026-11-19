@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package render
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"encoding/xml"
@@ -24,6 +28,7 @@ import (
 )
 
 func TestRenderJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := map[string]any{
 		"foo":  "bar",
@@ -38,17 +43,21 @@ func TestRenderJSON(t *testing.T) {
 	require.NoError(t, err)
 	assert.JSONEq(t, "{\"foo\":\"bar\",\"html\":\"\\u003cb\\u003e\"}", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderJSON(t=%v)", t)
 }
 
 func TestRenderJSONError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderJSONError(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := make(chan int)
 
 	// json: unsupported type: chan int
 	require.Error(t, (JSON{data}).Render(w))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderJSONError(t=%v)", t)
 }
 
 func TestRenderIndentedJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderIndentedJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := map[string]any{
 		"foo": "bar",
@@ -60,18 +69,22 @@ func TestRenderIndentedJSON(t *testing.T) {
 	require.NoError(t, err)
 	assert.JSONEq(t, "{\n    \"bar\": \"foo\",\n    \"foo\": \"bar\"\n}", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderIndentedJSON(t=%v)", t)
 }
 
 func TestRenderIndentedJSONPanics(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderIndentedJSONPanics(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := make(chan int)
 
 	// json: unsupported type: chan int
 	err := (IndentedJSON{data}).Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderIndentedJSONPanics(t=%v)", t)
 }
 
 func TestRenderSecureJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderSecureJSON(t=%v)", t)
 	w1 := httptest.NewRecorder()
 	data := map[string]any{
 		"foo": "bar",
@@ -97,18 +110,22 @@ func TestRenderSecureJSON(t *testing.T) {
 	require.NoError(t, err2)
 	assert.Equal(t, "while(1);[{\"foo\":\"bar\"},{\"bar\":\"foo\"}]", w2.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w2.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderSecureJSON(t=%v)", t)
 }
 
 func TestRenderSecureJSONFail(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderSecureJSONFail(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := make(chan int)
 
 	// json: unsupported type: chan int
 	err := (SecureJSON{"while(1);", data}).Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderSecureJSONFail(t=%v)", t)
 }
 
 func TestRenderJsonpJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderJsonpJSON(t=%v)", t)
 	w1 := httptest.NewRecorder()
 	data := map[string]any{
 		"foo": "bar",
@@ -134,6 +151,7 @@ func TestRenderJsonpJSON(t *testing.T) {
 	require.NoError(t, err2)
 	assert.Equal(t, "x([{\"foo\":\"bar\"},{\"bar\":\"foo\"}]);", w2.Body.String())
 	assert.Equal(t, "application/javascript; charset=utf-8", w2.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderJsonpJSON(t=%v)", t)
 }
 
 type errorWriter struct {
@@ -146,20 +164,25 @@ type errorWriter struct {
 var _ http.ResponseWriter = (*errorWriter)(nil)
 
 func (w *errorWriter) Header() http.Header {
+	logritelog.Default().Printf("[ERROR] >>> Entering Header()")
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Header()")
 	return w.ResponseRecorder.Header()
 }
 
 func (w *errorWriter) WriteHeader(statusCode int) {
+	logritelog.Default().Printf("[ERROR] >>> Entering WriteHeader(statusCode=%v)", statusCode)
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
 	w.ResponseRecorder.WriteHeader(statusCode)
+	logritelog.Default().Printf("[WARN] <<< Exiting WriteHeader(statusCode=%v)", statusCode)
 }
 
 func (w *errorWriter) Write(buf []byte) (int, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Write(buf=%v)", buf)
 	w.writeCount++
 	if (w.bufString != "" && string(buf) == w.bufString) || (w.ErrThreshold > 0 && w.writeCount >= w.ErrThreshold) {
 		return 0, errors.New(`write error`)
@@ -167,15 +190,20 @@ func (w *errorWriter) Write(buf []byte) (int, error) {
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Write(buf=%v)", buf)
 	return w.ResponseRecorder.Write(buf)
 }
 
 func (w *errorWriter) reset() {
+	logritelog.Default().Printf("[ERROR] >>> Entering reset()")
 	w.writeCount = 0
 	w.ResponseRecorder = httptest.NewRecorder()
+	logritelog.Default().Printf("[DEBUG] reset(): w.writeCount → %v", w.writeCount)
+logritelog.Default().Printf("[WARN] <<< Exiting reset()")
 }
 
 func TestRenderJsonpJSONError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderJsonpJSONError(t=%v)", t)
 	ew := &errorWriter{
 		ResponseRecorder: httptest.NewRecorder(),
 	}
@@ -190,6 +218,7 @@ func TestRenderJsonpJSONError(t *testing.T) {
 	// error was returned while writing callback
 	ew.reset()
 	ew.ErrThreshold = 1
+	logritelog.Default().Printf("[DEBUG] TestRenderJsonpJSONError(t=%v): ew.ErrThreshold → %v", t, ew.ErrThreshold)
 	err := jsonpJSON.Render(ew)
 	require.Error(t, err)
 	assert.Equal(t, "write error", err.Error())
@@ -201,6 +230,7 @@ func TestRenderJsonpJSONError(t *testing.T) {
 	require.Error(t, err)
 	assert.Equal(t, "write error", err.Error())
 
+	logritelog.Default().Printf("[DEBUG] TestRenderJsonpJSONError(t=%v): err → %v", t, err)
 	// error was returned while writing data
 	ew.reset()
 	ew.ErrThreshold = 3
@@ -214,9 +244,11 @@ func TestRenderJsonpJSONError(t *testing.T) {
 	err = jsonpJSON.Render(ew)
 	require.Error(t, err)
 	assert.Equal(t, "write error", err.Error())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderJsonpJSONError(t=%v)", t)
 }
 
 func TestRenderJsonpJSONError2(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderJsonpJSONError2(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := map[string]any{
 		"foo": "bar",
@@ -229,18 +261,22 @@ func TestRenderJsonpJSONError2(t *testing.T) {
 
 	assert.JSONEq(t, "{\"foo\":\"bar\"}", w.Body.String())
 	assert.Equal(t, "application/javascript; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderJsonpJSONError2(t=%v)", t)
 }
 
 func TestRenderJsonpJSONFail(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderJsonpJSONFail(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := make(chan int)
 
 	// json: unsupported type: chan int
 	err := (JsonpJSON{"x", data}).Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderJsonpJSONFail(t=%v)", t)
 }
 
 func TestRenderAsciiJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderAsciiJSON(t=%v)", t)
 	w1 := httptest.NewRecorder()
 	data1 := map[string]any{
 		"lang": "GO语言",
@@ -259,17 +295,22 @@ func TestRenderAsciiJSON(t *testing.T) {
 	err = (AsciiJSON{data2}).Render(w2)
 	require.NoError(t, err)
 	assert.Equal(t, "3.1415926", w2.Body.String())
+	logritelog.Default().Printf("[DEBUG] TestRenderAsciiJSON(t=%v): err → %v", t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderAsciiJSON(t=%v)", t)
 }
 
 func TestRenderAsciiJSONFail(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderAsciiJSONFail(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := make(chan int)
 
 	// json: unsupported type: chan int
 	require.Error(t, (AsciiJSON{data}).Render(w))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderAsciiJSONFail(t=%v)", t)
 }
 
 func TestRenderPureJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderPureJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := map[string]any{
 		"foo":  "bar",
@@ -279,17 +320,22 @@ func TestRenderPureJSON(t *testing.T) {
 	require.NoError(t, err)
 	assert.JSONEq(t, "{\"foo\":\"bar\",\"html\":\"<b>\"}\n", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderPureJSON(t=%v)", t)
 }
 
 type xmlmap map[string]any
 
 // Allows type H to be used with xml.Marshal
 func (h xmlmap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering MarshalXML(e=%v,start=%v)", e, start)
+	logritelog.Default().Printf("[ERROR] >>> Entering MarshalXML(e=%v,start=%v)", e, start)
 	start.Name = xml.Name{
 		Space: "",
 		Local: "map",
 	}
+	logritelog.Default().Printf("[DEBUG] MarshalXML(e=%v,start=%v): start.Name → %v", e, start, start.Name)
 	if err := e.EncodeToken(start); err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in MarshalXML(e=%v,start=%v): %v", e, start, err)
 		return err
 	}
 	for key, value := range h {
@@ -302,11 +348,14 @@ func (h xmlmap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting MarshalXML(e=%v,start=%v)", e, start)
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
 func TestRenderYAML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderYAML(t=%v)", t)
 	w := httptest.NewRecorder()
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderYAML(t=%v)", t)
 	data := `
 a : Easy!
 b:
@@ -333,16 +382,20 @@ type fail struct{}
 
 // Hook MarshalYAML
 func (ft *fail) MarshalYAML() (any, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering MarshalYAML()")
 	return nil, errors.New("fail")
 }
 
 func TestRenderYAMLFail(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderYAMLFail(t=%v)", t)
 	w := httptest.NewRecorder()
 	err := (YAML{&fail{}}).Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderYAMLFail(t=%v)", t)
 }
 
 func TestRenderTOML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderTOML(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := map[string]any{
 		"foo":  "bar",
@@ -355,16 +408,20 @@ func TestRenderTOML(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "foo = 'bar'\nhtml = '<b>'\n", w.Body.String())
 	assert.Equal(t, "application/toml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderTOML(t=%v)", t)
 }
 
 func TestRenderTOMLFail(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderTOMLFail(t=%v)", t)
 	w := httptest.NewRecorder()
 	err := (TOML{net.IPv4bcast}).Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderTOMLFail(t=%v)", t)
 }
 
 // test Protobuf rendering
 func TestRenderProtoBuf(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderProtoBuf(t=%v)", t)
 	w := httptest.NewRecorder()
 	reps := []int64{int64(1), int64(2)}
 	label := "test"
@@ -380,19 +437,24 @@ func TestRenderProtoBuf(t *testing.T) {
 
 	err = (ProtoBuf{data}).Render(w)
 
+	logritelog.Default().Printf("[DEBUG] TestRenderProtoBuf(t=%v): err → %v", t, err)
 	require.NoError(t, err)
 	assert.Equal(t, string(protoData), w.Body.String())
 	assert.Equal(t, "application/x-protobuf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderProtoBuf(t=%v)", t)
 }
 
 func TestRenderProtoBufFail(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderProtoBufFail(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := &testdata.Test{}
 	err := (ProtoBuf{data}).Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderProtoBufFail(t=%v)", t)
 }
 
 func TestRenderBSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderBSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	reps := []int64{int64(1), int64(2)}
 	type mystruct struct {
@@ -412,20 +474,25 @@ func TestRenderBSON(t *testing.T) {
 
 	err = (BSON{data}).Render(w)
 
+	logritelog.Default().Printf("[DEBUG] TestRenderBSON(t=%v): err → %v", t, err)
 	require.NoError(t, err)
 	assert.Equal(t, bsonData, w.Body.Bytes())
 	assert.Equal(t, "application/bson", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderBSON(t=%v)", t)
 }
 
 func TestRenderBSONError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderBSONError(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := make(chan int)
 
 	err := (BSON{data}).Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderBSONError(t=%v)", t)
 }
 
 func TestRenderBSONWriteError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderBSONWriteError(t=%v)", t)
 	type testStruct struct {
 		Value string
 	}
@@ -439,9 +506,11 @@ func TestRenderBSONWriteError(t *testing.T) {
 	err := (BSON{data}).Render(ew)
 	require.Error(t, err)
 	assert.Equal(t, "write error", err.Error())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderBSONWriteError(t=%v)", t)
 }
 
 func TestRenderXML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderXML(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := xmlmap{
 		"foo": "bar",
@@ -455,18 +524,22 @@ func TestRenderXML(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "<map><foo>bar</foo></map>", w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderXML(t=%v)", t)
 }
 
 func TestRenderXMLError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderXMLError(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := make(chan int)
 
 	err := (XML{data}).Render(w)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "xml: unsupported type: chan int")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderXMLError(t=%v)", t)
 }
 
 func TestRenderPDF(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderPDF(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := []byte("%Test pdf content")
 
@@ -480,9 +553,12 @@ func TestRenderPDF(t *testing.T) {
 
 	assert.Equal(t, data, w.Body.Bytes())
 	assert.Equal(t, "application/pdf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderPDF(t=%v)", t)
 }
 
 func TestRenderRedirect(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderRedirect(t=%v)", t)
+	__logStart := logritetime.Now()
 	req, err := http.NewRequest(http.MethodGet, "/test-redirect", nil)
 	require.NoError(t, err)
 
@@ -496,6 +572,7 @@ func TestRenderRedirect(t *testing.T) {
 	err = data1.Render(w)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[DEBUG] TestRenderRedirect(t=%v): err → %v", t, err)
 	data2 := Redirect{
 		Code:     http.StatusOK,
 		Request:  req,
@@ -520,9 +597,12 @@ func TestRenderRedirect(t *testing.T) {
 
 	// only improve coverage
 	data2.WriteContentType(w)
+	logritelog.Default().Printf("[ERROR] TestRenderRedirect(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestRenderRedirect(t=%v)", t)
 }
 
 func TestRenderData(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderData(t=%v)", t)
 	w := httptest.NewRecorder()
 	data := []byte("#!PNG some raw data")
 
@@ -535,9 +615,11 @@ func TestRenderData(t *testing.T) {
 	assert.Equal(t, "#!PNG some raw data", w.Body.String())
 	assert.Equal(t, "image/png", w.Header().Get("Content-Type"))
 	assert.Equal(t, "19", w.Header().Get("Content-Length"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderData(t=%v)", t)
 }
 
 func TestRenderDataContentLength(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderDataContentLength(t=%v)", t)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		size, err := strconv.Atoi(r.URL.Query().Get("size"))
 		assert.NoError(t, err)
@@ -564,9 +646,12 @@ func TestRenderDataContentLength(t *testing.T) {
 			assert.EqualValues(t, size, actual)
 		})
 	}
+	logritelog.Default().Printf("[ERROR] TestRenderDataContentLength(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestRenderDataContentLength(t=%v)", t)
 }
 
 func TestRenderDataError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderDataError(t=%v)", t)
 	ew := &errorWriter{
 		ErrThreshold:     1,
 		ResponseRecorder: httptest.NewRecorder(),
@@ -580,9 +665,11 @@ func TestRenderDataError(t *testing.T) {
 
 	require.Error(t, err)
 	assert.Equal(t, "write error", err.Error())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderDataError(t=%v)", t)
 }
 
 func TestRenderString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderString(t=%v)", t)
 	w := httptest.NewRecorder()
 
 	(String{
@@ -599,9 +686,11 @@ func TestRenderString(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "hola manu 2", w.Body.String())
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderString(t=%v)", t)
 }
 
 func TestRenderStringLenZero(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderStringLenZero(t=%v)", t)
 	w := httptest.NewRecorder()
 
 	err := (String{
@@ -612,9 +701,11 @@ func TestRenderStringLenZero(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "hola %s %d", w.Body.String())
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderStringLenZero(t=%v)", t)
 }
 
 func TestRenderHTMLTemplate(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLTemplate(t=%v)", t)
 	w := httptest.NewRecorder()
 	templ := template.Must(template.New("t").Parse(`Hello {{.name}}`))
 
@@ -628,9 +719,11 @@ func TestRenderHTMLTemplate(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "Hello alexandernyquist", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLTemplate(t=%v)", t)
 }
 
 func TestRenderHTMLTemplateEmptyName(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLTemplateEmptyName(t=%v)", t)
 	w := httptest.NewRecorder()
 	templ := template.Must(template.New("").Parse(`Hello {{.name}}`))
 
@@ -644,9 +737,11 @@ func TestRenderHTMLTemplateEmptyName(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "Hello alexandernyquist", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLTemplateEmptyName(t=%v)", t)
 }
 
 func TestRenderHTMLDebugFiles(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLDebugFiles(t=%v)", t)
 	w := httptest.NewRecorder()
 	htmlRender := HTMLDebug{
 		Files:      []string{"../testdata/template/hello.tmpl"},
@@ -665,9 +760,11 @@ func TestRenderHTMLDebugFiles(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "<h1>Hello thinkerou</h1>", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLDebugFiles(t=%v)", t)
 }
 
 func TestRenderHTMLDebugGlob(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLDebugGlob(t=%v)", t)
 	w := httptest.NewRecorder()
 	htmlRender := HTMLDebug{
 		Files:      nil,
@@ -686,9 +783,11 @@ func TestRenderHTMLDebugGlob(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "<h1>Hello thinkerou</h1>", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLDebugGlob(t=%v)", t)
 }
 
 func TestRenderHTMLDebugFS(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLDebugFS(t=%v)", t)
 	w := httptest.NewRecorder()
 	htmlRender := HTMLDebug{
 		Files:      nil,
@@ -707,9 +806,11 @@ func TestRenderHTMLDebugFS(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "<h1>Hello thinkerou</h1>", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLDebugFS(t=%v)", t)
 }
 
 func TestRenderHTMLDebugPanics(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLDebugPanics(t=%v)", t)
 	htmlRender := HTMLDebug{
 		Files:      nil,
 		Glob:       "",
@@ -719,9 +820,11 @@ func TestRenderHTMLDebugPanics(t *testing.T) {
 		FuncMap:    nil,
 	}
 	assert.Panics(t, func() { htmlRender.Instance("", nil) })
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLDebugPanics(t=%v)", t)
 }
 
 func TestRenderHTMLTemplateError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLTemplateError(t=%v)", t)
 	w := httptest.NewRecorder()
 	templ := template.Must(template.New("t").Parse(`Hello {{if .name}}{{.name.DoesNotExist}}{{end}}`))
 
@@ -732,9 +835,11 @@ func TestRenderHTMLTemplateError(t *testing.T) {
 
 	err := instance.Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLTemplateError(t=%v)", t)
 }
 
 func TestRenderHTMLTemplateExecuteError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderHTMLTemplateExecuteError(t=%v)", t)
 	w := httptest.NewRecorder()
 	templ := template.Must(template.New("t").Parse(`Hello {{.name.invalid}}`))
 
@@ -745,9 +850,11 @@ func TestRenderHTMLTemplateExecuteError(t *testing.T) {
 
 	err := instance.Render(w)
 	require.Error(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderHTMLTemplateExecuteError(t=%v)", t)
 }
 
 func TestRenderReader(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderReader(t=%v)", t)
 	w := httptest.NewRecorder()
 
 	body := "#!PNG some raw data"
@@ -768,9 +875,11 @@ func TestRenderReader(t *testing.T) {
 	assert.Equal(t, strconv.Itoa(len(body)), w.Header().Get("Content-Length"))
 	assert.Equal(t, headers["Content-Disposition"], w.Header().Get("Content-Disposition"))
 	assert.Equal(t, headers["x-request-id"], w.Header().Get("x-request-id"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderReader(t=%v)", t)
 }
 
 func TestRenderReaderNoContentLength(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderReaderNoContentLength(t=%v)", t)
 	w := httptest.NewRecorder()
 
 	body := "#!PNG some raw data"
@@ -791,9 +900,11 @@ func TestRenderReaderNoContentLength(t *testing.T) {
 	assert.NotContains(t, "Content-Length", w.Header())
 	assert.Equal(t, headers["Content-Disposition"], w.Header().Get("Content-Disposition"))
 	assert.Equal(t, headers["x-request-id"], w.Header().Get("x-request-id"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderReaderNoContentLength(t=%v)", t)
 }
 
 func TestRenderWriteError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRenderWriteError(t=%v)", t)
 	data := []any{"value1", "value2"}
 	prefix := "my-prefix:"
 	r := SecureJSON{Data: data, Prefix: prefix}
@@ -804,4 +915,5 @@ func TestRenderWriteError(t *testing.T) {
 	err := r.Render(ew)
 	require.Error(t, err)
 	assert.Equal(t, "write error", err.Error())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRenderWriteError(t=%v)", t)
 }

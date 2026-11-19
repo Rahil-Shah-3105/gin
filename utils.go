@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -27,7 +28,9 @@ const localhostIPv6 = "::1"
 
 // Bind is a helper function for given interface object and returns a Gin middleware.
 func Bind(val any) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering Bind(val=%v)", val)
 	value := reflect.ValueOf(val)
+	logritelog.Default().Printf("[WARN] <<< Exiting Bind(val=%v)", val)
 	if value.Kind() == reflect.Ptr {
 		panic(`Bind struct can not be a pointer. Example:
 	Use: gin.Bind(Struct{}) instead of gin.Bind(&Struct{})
@@ -45,6 +48,7 @@ func Bind(val any) HandlerFunc {
 
 // WrapF is a helper function for wrapping http.HandlerFunc and returns a Gin middleware.
 func WrapF(f http.HandlerFunc) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering WrapF(f=%v)", f)
 	return func(c *Context) {
 		f(c.Writer, c.Request)
 	}
@@ -52,6 +56,7 @@ func WrapF(f http.HandlerFunc) HandlerFunc {
 
 // WrapH is a helper function for wrapping http.Handler and returns a Gin middleware.
 func WrapH(h http.Handler) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering WrapH(h=%v)", h)
 	return func(c *Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
@@ -62,11 +67,15 @@ type H map[string]any
 
 // MarshalXML allows type H to be used with xml.Marshal.
 func (h H) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering MarshalXML(e=%v,start=%v)", e, start)
+	logritelog.Default().Printf("[ERROR] >>> Entering MarshalXML(e=%v,start=%v)", e, start)
 	start.Name = xml.Name{
 		Space: "",
 		Local: "map",
 	}
+	logritelog.Default().Printf("[DEBUG] MarshalXML(e=%v,start=%v): start.Name → %v", e, start, start.Name)
 	if err := e.EncodeToken(start); err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in MarshalXML(e=%v,start=%v): %v", e, start, err)
 		return err
 	}
 	for key, value := range h {
@@ -79,25 +88,31 @@ func (h H) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting MarshalXML(e=%v,start=%v)", e, start)
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
 func assert1(guard bool, text string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering assert1(guard=%v,text=%v)", guard, text)
 	if !guard {
 		panic(text)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting assert1(guard=%v,text=%v)", guard, text)
 }
 
 func filterFlags(content string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering filterFlags(content=%v)", content)
 	for i, char := range content {
 		if char == ' ' || char == ';' {
 			return content[:i]
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting filterFlags(content=%v)", content)
 	return content
 }
 
 func chooseData(custom, wildcard any) any {
+	logritelog.Default().Printf("[ERROR] >>> Entering chooseData(custom=%v,wildcard=%v)", custom, wildcard)
 	if custom != nil {
 		return custom
 	}
@@ -105,9 +120,11 @@ func chooseData(custom, wildcard any) any {
 		return wildcard
 	}
 	panic("negotiation config is invalid")
+	logritelog.Default().Printf("[WARN] <<< Exiting chooseData(custom=%v,wildcard=%v)", custom, wildcard)
 }
 
 func parseAccept(acceptHeader string) []string {
+	logritelog.Default().Printf("[ERROR] >>> Entering parseAccept(acceptHeader=%v)", acceptHeader)
 	parts := strings.Split(acceptHeader, ",")
 	out := make([]string, 0, len(parts))
 	for _, part := range parts {
@@ -117,22 +134,28 @@ func parseAccept(acceptHeader string) []string {
 		if part = strings.TrimSpace(part); part != "" {
 			out = append(out, part)
 		}
+			logritelog.Default().Printf("[DEBUG] parseAccept(acceptHeader=%v): out → %v", acceptHeader, out)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting parseAccept(acceptHeader=%v)", acceptHeader)
 	return out
 }
 
 func lastChar(str string) uint8 {
+	logritelog.Default().Printf("[ERROR] >>> Entering lastChar(str=%v)", str)
 	if str == "" {
 		panic("The length of the string can't be 0")
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting lastChar(str=%v)", str)
 	return str[len(str)-1]
 }
 
 func nameOfFunction(f any) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering nameOfFunction(f=%v)", f)
 	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 }
 
 func joinPaths(absolutePath, relativePath string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering joinPaths(absolutePath=%v,relativePath=%v)", absolutePath, relativePath)
 	if relativePath == "" {
 		return absolutePath
 	}
@@ -141,6 +164,7 @@ func joinPaths(absolutePath, relativePath string) string {
 	if lastChar(relativePath) == '/' && lastChar(finalPath) != '/' {
 		return finalPath + "/"
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting joinPaths(absolutePath=%v,relativePath=%v)", absolutePath, relativePath)
 	return finalPath
 }
 
@@ -162,26 +186,32 @@ func resolveAddress(addr []string) string {
 
 // https://stackoverflow.com/questions/53069040/checking-a-string-contains-only-ascii-characters
 func isASCII(s string) bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering isASCII(s=%v)", s)
 	for i := range len(s) {
 		if s[i] > unicode.MaxASCII {
 			return false
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting isASCII(s=%v)", s)
 	return true
 }
 
 // safeInt8 converts int to int8 safely, capping at math.MaxInt8
 func safeInt8(n int) int8 {
+	logritelog.Default().Printf("[ERROR] >>> Entering safeInt8(n=%v)", n)
 	if n > math.MaxInt8 {
 		return math.MaxInt8
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting safeInt8(n=%v)", n)
 	return int8(n)
 }
 
 // safeUint16 converts int to uint16 safely, capping at math.MaxUint16
 func safeUint16(n int) uint16 {
+	logritelog.Default().Printf("[ERROR] >>> Entering safeUint16(n=%v)", n)
 	if n > math.MaxUint16 {
 		return math.MaxUint16
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting safeUint16(n=%v)", n)
 	return uint16(n)
 }

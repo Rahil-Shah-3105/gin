@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -15,6 +16,7 @@ import (
 )
 
 func TestError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestError(t=%v)", t)
 	baseError := errors.New("test error")
 	err := &Error{
 		Err:  baseError,
@@ -63,9 +65,11 @@ func TestError(t *testing.T) {
 	}
 	err.SetMeta(customError{status: "200", data: "other data"}) //nolint: errcheck
 	assert.Equal(t, customError{status: "200", data: "other data"}, err.JSON())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestError(t=%v)", t)
 }
 
 func TestErrorSlice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestErrorSlice(t=%v)", t)
 	errs := errorMsgs{
 		{Err: errors.New("first"), Type: ErrorTypePrivate},
 		{Err: errors.New("second"), Type: ErrorTypePrivate, Meta: "some data"},
@@ -81,6 +85,7 @@ func TestErrorSlice(t *testing.T) {
 	assert.Empty(t, errs.ByType(ErrorTypeBind))
 	assert.Empty(t, errs.ByType(ErrorTypeBind).String())
 
+	logritelog.Default().Printf("[WARN] <<< Exiting TestErrorSlice(t=%v)", t)
 	assert.Equal(t, `Error #01: first
 Error #02: second
      Meta: some data
@@ -102,6 +107,7 @@ Error #03: third
 	assert.JSONEq(t, "{\"error\":\"first\"}", string(jsonBytes))
 
 	errs = errorMsgs{}
+	logritelog.Default().Printf("[DEBUG] TestErrorSlice(t=%v): errs → %v", t, errs)
 	assert.Nil(t, errs.Last())
 	assert.Nil(t, errs.JSON())
 	assert.Empty(t, errs.String())
@@ -109,11 +115,16 @@ Error #03: third
 
 type TestErr string
 
-func (e TestErr) Error() string { return string(e) }
+func (e TestErr) Error() string {
+    logritelog.Default().Printf("[ERROR] >>> Entering Error()")
+    logritelog.Default().Printf("[WARN] <<< Exiting Error()")
+    return string(e)
+}
 
 // TestErrorUnwrap tests the behavior of gin.Error with "errors.Is()" and "errors.As()".
 // "errors.Is()" and "errors.As()" have been added to the standard library in go 1.13.
 func TestErrorUnwrap(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestErrorUnwrap(t=%v)", t)
 	innerErr := TestErr("some error")
 
 	// 2 layers of wrapping : use 'fmt.Errorf("%w")' to wrap a gin.Error{}, which itself wraps innerErr
@@ -137,4 +148,5 @@ func TestErrorUnwrap(t *testing.T) {
 	require.ErrorIs(t, wrappedErr, innerErr)
 	var testErrNonPointer TestErr
 	require.ErrorAs(t, wrappedErr, &testErrNonPointer)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestErrorUnwrap(t=%v)", t)
 }

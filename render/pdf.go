@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -15,12 +16,16 @@ var pdfContentType = []string{"application/pdf"}
 
 // Render (PDF) writes PDF data with custom ContentType.
 func (r PDF) Render(w http.ResponseWriter) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Render(w=%v)", w)
 	r.WriteContentType(w)
 	_, err := w.Write(r.Data)
+	logritelog.Default().Printf("[WARN] <<< Exiting Render(w=%v)", w)
 	return err
 }
 
 // WriteContentType (PDF) writes PDF ContentType for response.
 func (r PDF) WriteContentType(w http.ResponseWriter) {
+	logritelog.Default().Printf("[ERROR] >>> Entering WriteContentType(w=%v)", w)
 	writeContentType(w, pdfContentType)
+	logritelog.Default().Printf("[WARN] <<< Exiting WriteContentType(w=%v)", w)
 }

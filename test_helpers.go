@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -15,10 +16,12 @@ import (
 // along with a context, for example, to test middleware that doesn't depend on
 // specific routes. The ResponseWriter `w` is used to initialize the context's writer.
 func CreateTestContext(w http.ResponseWriter) (c *Context, r *Engine) {
+	logritelog.Default().Printf("[ERROR] >>> Entering CreateTestContext(w=%v)", w)
 	r = New()
 	c = r.allocateContext(0)
 	c.reset()
 	c.writermem.reset(w)
+	logritelog.Default().Printf("[WARN] <<< Exiting CreateTestContext(w=%v)", w)
 	return
 }
 
@@ -28,15 +31,18 @@ func CreateTestContext(w http.ResponseWriter) (c *Context, r *Engine) {
 // The ResponseWriter `w` is used to initialize the context's writer.
 // The context is allocated with the `maxParams` setting from the provided engine.
 func CreateTestContextOnly(w http.ResponseWriter, r *Engine) (c *Context) {
+	logritelog.Default().Printf("[ERROR] >>> Entering CreateTestContextOnly(w=%v,r=%v)", w, r)
 	c = r.allocateContext(r.maxParams)
 	c.reset()
 	c.writermem.reset(w)
+	logritelog.Default().Printf("[WARN] <<< Exiting CreateTestContextOnly(w=%v,r=%v)", w, r)
 	return
 }
 
 // waitForServerReady waits for a server to be ready by making HTTP requests
 // with exponential backoff. This is more reliable than time.Sleep() for testing.
 func waitForServerReady(url string, maxAttempts int) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering waitForServerReady(url=%v,maxAttempts=%v)", url, maxAttempts)
 	client := &http.Client{
 		Timeout: 100 * time.Millisecond,
 	}
@@ -53,5 +59,6 @@ func waitForServerReady(url string, maxAttempts int) error {
 		time.Sleep(backoff)
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting waitForServerReady(url=%v,maxAttempts=%v)", url, maxAttempts)
 	return fmt.Errorf("server at %s did not become ready after %d attempts", url, maxAttempts)
 }

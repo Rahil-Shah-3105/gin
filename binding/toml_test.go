@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"testing"
@@ -12,6 +13,7 @@ import (
 )
 
 func TestTOMLBindingBindBody(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestTOMLBindingBindBody(t=%v)", t)
 	var s struct {
 		Foo string `toml:"foo"`
 	}
@@ -19,4 +21,5 @@ func TestTOMLBindingBindBody(t *testing.T) {
 	err := tomlBinding{}.BindBody([]byte(tomlBody), &s)
 	require.NoError(t, err)
 	assert.Equal(t, "FOO", s.Foo)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestTOMLBindingBindBody(t=%v)", t)
 }

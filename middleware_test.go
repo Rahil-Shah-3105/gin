@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -15,6 +16,7 @@ import (
 )
 
 func TestMiddlewareGeneralCase(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareGeneralCase(t=%v)", t)
 	signature := ""
 	router := New()
 	router.Use(func(c *Context) {
@@ -40,9 +42,11 @@ func TestMiddlewareGeneralCase(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "ACDB", signature)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareGeneralCase(t=%v)", t)
 }
 
 func TestMiddlewareNoRoute(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareNoRoute(t=%v)", t)
 	signature := ""
 	router := New()
 	router.Use(func(c *Context) {
@@ -76,12 +80,15 @@ func TestMiddlewareNoRoute(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, "ACEGHFDB", signature)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareNoRoute(t=%v)", t)
 }
 
 func TestMiddlewareNoMethodEnabled(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareNoMethodEnabled(t=%v)", t)
 	signature := ""
 	router := New()
 	router.HandleMethodNotAllowed = true
+	logritelog.Default().Printf("[DEBUG] TestMiddlewareNoMethodEnabled(t=%v): router.HandleMethodNotAllowed → %v", t, router.HandleMethodNotAllowed)
 	router.Use(func(c *Context) {
 		signature += "A"
 		c.Next()
@@ -113,14 +120,17 @@ func TestMiddlewareNoMethodEnabled(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusMethodNotAllowed, w.Code)
 	assert.Equal(t, "ACEGHFDB", signature)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareNoMethodEnabled(t=%v)", t)
 }
 
 func TestMiddlewareNoMethodDisabled(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareNoMethodDisabled(t=%v)", t)
 	signature := ""
 	router := New()
 
 	// NoMethod disabled
 	router.HandleMethodNotAllowed = false
+	logritelog.Default().Printf("[DEBUG] TestMiddlewareNoMethodDisabled(t=%v): router.HandleMethodNotAllowed → %v", t, router.HandleMethodNotAllowed)
 
 	router.Use(func(c *Context) {
 		signature += "A"
@@ -154,9 +164,11 @@ func TestMiddlewareNoMethodDisabled(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, "AC X DB", signature)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareNoMethodDisabled(t=%v)", t)
 }
 
 func TestMiddlewareAbort(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareAbort(t=%v)", t)
 	signature := ""
 	router := New()
 	router.Use(func(c *Context) {
@@ -180,9 +192,11 @@ func TestMiddlewareAbort(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "ACD", signature)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareAbort(t=%v)", t)
 }
 
 func TestMiddlewareAbortHandlersChainAndNext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareAbortHandlersChainAndNext(t=%v)", t)
 	signature := ""
 	router := New()
 	router.Use(func(c *Context) {
@@ -201,11 +215,13 @@ func TestMiddlewareAbortHandlersChainAndNext(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusGone, w.Code)
 	assert.Equal(t, "ACB", signature)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareAbortHandlersChainAndNext(t=%v)", t)
 }
 
 // TestMiddlewareFailHandlersChain - ensure that Fail interrupt used middleware in fifo order as
 // as well as Abort
 func TestMiddlewareFailHandlersChain(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareFailHandlersChain(t=%v)", t)
 	// SETUP
 	signature := ""
 	router := New()
@@ -224,9 +240,11 @@ func TestMiddlewareFailHandlersChain(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Equal(t, "A", signature)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareFailHandlersChain(t=%v)", t)
 }
 
 func TestMiddlewareWrite(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMiddlewareWrite(t=%v)", t)
 	router := New()
 	router.Use(func(c *Context) {
 		c.String(http.StatusBadRequest, "hola\n")
@@ -250,4 +268,5 @@ func TestMiddlewareWrite(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, strings.ReplaceAll("hola\n<map><foo>bar</foo></map>{\"foo\":\"bar\"}{\"foo\":\"bar\"}event:test\ndata:message\n\n", " ", ""), strings.ReplaceAll(w.Body.String(), " ", ""))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMiddlewareWrite(t=%v)", t)
 }

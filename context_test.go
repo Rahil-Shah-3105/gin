@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"bytes"
@@ -48,6 +52,8 @@ var errTestRender = errors.New("TestRender")
 // test that information is not leaked when reusing Contexts (using the Pool)
 
 func createMultipartRequest() *http.Request {
+	logritelog.Default().Printf("[ERROR] >>> Entering createMultipartRequest()")
+	__logStart := logritetime.Now()
 	boundary := "--testboundary"
 	body := new(bytes.Buffer)
 	mw := multipart.NewWriter(body)
@@ -68,17 +74,23 @@ func createMultipartRequest() *http.Request {
 	req, err := http.NewRequest(http.MethodPost, "/", body)
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
+	logritelog.Default().Printf("[ERROR] createMultipartRequest(): external service call took %v ms", logritetime.Since(__logStart).Milliseconds())
+	logritelog.Default().Printf("[WARN] <<< Exiting createMultipartRequest()")
 	return req
 }
 
 func must(err error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering must(err=%v)", err)
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in must(err=%v): %v", err, err)
 		panic(err.Error())
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting must(err=%v)", err)
 }
 
 // TestContextFile tests the Context.File() method
 func TestContextFile(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextFile(t=%v)", t)
 	// Test serving an existing file
 	t.Run("serve existing file", func(t *testing.T) {
 		// Create a temporary test file
@@ -148,9 +160,11 @@ func TestContextFile(t *testing.T) {
 		assert.Equal(t, "bytes", w.Header().Get("Accept-Ranges"))
 		assert.Contains(t, w.Header().Get("Content-Range"), "bytes 0-10")
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextFile(t=%v)", t)
 }
 
 func TestContextFormFile(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextFormFile(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	w, err := mw.CreateFormFile("file", "test")
@@ -166,9 +180,12 @@ func TestContextFormFile(t *testing.T) {
 	assert.Equal(t, "test", f.Filename)
 
 	require.NoError(t, c.SaveUploadedFile(f, "test"))
+	logritelog.Default().Printf("[ERROR] TestContextFormFile(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextFormFile(t=%v)", t)
 }
 
 func TestContextFormFileFailed(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextFormFileFailed(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	mw.Close()
@@ -179,9 +196,12 @@ func TestContextFormFileFailed(t *testing.T) {
 	f, err := c.FormFile("file")
 	require.Error(t, err)
 	assert.Nil(t, f)
+	logritelog.Default().Printf("[ERROR] TestContextFormFileFailed(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextFormFileFailed(t=%v)", t)
 }
 
 func TestContextMultipartForm(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextMultipartForm(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	require.NoError(t, mw.WriteField("foo", "bar"))
@@ -198,9 +218,12 @@ func TestContextMultipartForm(t *testing.T) {
 	assert.NotNil(t, f)
 
 	require.NoError(t, c.SaveUploadedFile(f.File["file"][0], "test"))
+	logritelog.Default().Printf("[ERROR] TestContextMultipartForm(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextMultipartForm(t=%v)", t)
 }
 
 func TestSaveUploadedOpenFailed(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestSaveUploadedOpenFailed(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	mw.Close()
@@ -213,9 +236,12 @@ func TestSaveUploadedOpenFailed(t *testing.T) {
 		Filename: "file",
 	}
 	require.Error(t, c.SaveUploadedFile(f, "test"))
+	logritelog.Default().Printf("[ERROR] TestSaveUploadedOpenFailed(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestSaveUploadedOpenFailed(t=%v)", t)
 }
 
 func TestSaveUploadedCreateFailed(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestSaveUploadedCreateFailed(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	w, err := mw.CreateFormFile("file", "test")
@@ -231,9 +257,12 @@ func TestSaveUploadedCreateFailed(t *testing.T) {
 	assert.Equal(t, "test", f.Filename)
 
 	require.Error(t, c.SaveUploadedFile(f, "/"))
+	logritelog.Default().Printf("[ERROR] TestSaveUploadedCreateFailed(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestSaveUploadedCreateFailed(t=%v)", t)
 }
 
 func TestSaveUploadedFileWithPermission(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestSaveUploadedFileWithPermission(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	w, err := mw.CreateFormFile("file", "permission_test")
@@ -253,9 +282,12 @@ func TestSaveUploadedFileWithPermission(t *testing.T) {
 	info, err := os.Stat(filepath.Dir(dst))
 	require.NoError(t, err)
 	assert.Equal(t, mode, info.Mode().Perm())
+	logritelog.Default().Printf("[ERROR] TestSaveUploadedFileWithPermission(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestSaveUploadedFileWithPermission(t=%v)", t)
 }
 
 func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestSaveUploadedFileWithPermissionFailed(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	w, err := mw.CreateFormFile("file", "permission_test")
@@ -272,6 +304,8 @@ func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
 	var mode fs.FileMode = 0o644
 	dst := filepath.Join(t.TempDir(), "test", "permission_test")
 	require.Error(t, c.SaveUploadedFile(f, dst, mode))
+	logritelog.Default().Printf("[ERROR] TestSaveUploadedFileWithPermissionFailed(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestSaveUploadedFileWithPermissionFailed(t=%v)", t)
 }
 
 // TestSaveUploadedFileToExistingDir is a regression test for issue #4622.
@@ -282,6 +316,7 @@ func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
 // catches the regression on every platform, including environments (root/CI,
 // user-owned $TMPDIR) where chmod on the temp dir would otherwise succeed.
 func TestSaveUploadedFileToExistingDir(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestSaveUploadedFileToExistingDir(t=%v)", t)
 	buf := new(bytes.Buffer)
 	mw := multipart.NewWriter(buf)
 	w, err := mw.CreateFormFile("file", "existing_dir_test")
@@ -316,16 +351,21 @@ func TestSaveUploadedFileToExistingDir(t *testing.T) {
 	content, err := os.ReadFile(dst)
 	require.NoError(t, err)
 	assert.Equal(t, "existing_dir_test", string(content))
+	logritelog.Default().Printf("[ERROR] TestSaveUploadedFileToExistingDir(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestSaveUploadedFileToExistingDir(t=%v)", t)
 }
 
 func TestContextReset(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextReset(t=%v)", t)
 	router := New()
 	c := router.allocateContext(0)
 	assert.Equal(t, c.engine, router)
 
 	c.index = 2
+	logritelog.Default().Printf("[DEBUG] TestContextReset(t=%v): c.index → %v", t, c.index)
 	c.Writer = &responseWriter{ResponseWriter: httptest.NewRecorder()}
 	c.Params = Params{Param{}}
+	logritelog.Default().Printf("[DEBUG] TestContextReset(t=%v): c.Params → %v", t, c.Params)
 	c.Error(errors.New("test")) //nolint: errcheck
 	c.Set("foo", "bar")
 	c.reset()
@@ -339,14 +379,17 @@ func TestContextReset(t *testing.T) {
 	assert.Empty(t, c.Params)
 	assert.EqualValues(t, -1, c.index)
 	assert.Equal(t, c.Writer.(*responseWriter), &c.writermem)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextReset(t=%v)", t)
 }
 
 func TestContextHandlers(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextHandlers(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	assert.Nil(t, c.handlers)
 	assert.Nil(t, c.handlers.Last())
 
 	c.handlers = HandlersChain{}
+	logritelog.Default().Printf("[DEBUG] TestContextHandlers(t=%v): c.handlers → %v", t, c.handlers)
 	assert.NotNil(t, c.handlers)
 	assert.Nil(t, c.handlers.Last())
 
@@ -358,11 +401,13 @@ func TestContextHandlers(t *testing.T) {
 
 	c.handlers = HandlersChain{f, g}
 	compareFunc(t, g, c.handlers.Last())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextHandlers(t=%v)", t)
 }
 
 // TestContextSetGet tests that a parameter is set correctly on the
 // current context and can be retrieved using Get.
 func TestContextSetGet(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetGet(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("foo", "bar")
 
@@ -378,9 +423,11 @@ func TestContextSetGet(t *testing.T) {
 	assert.Panicsf(t, func() {
 		c.MustGet("no_exist")
 	}, "key no_exist does not exist")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetGet(t=%v)", t)
 }
 
 func TestContextSetGetAnyKey(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetGetAnyKey(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 
 	type key struct{}
@@ -405,9 +452,11 @@ func TestContextSetGetAnyKey(t *testing.T) {
 			assert.Equal(t, 1, value)
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetGetAnyKey(t=%v)", t)
 }
 
 func TestContextSetGetPanicsWhenKeyNotComparable(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetGetPanicsWhenKeyNotComparable(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 
 	assert.Panics(t, func() {
@@ -415,9 +464,11 @@ func TestContextSetGetPanicsWhenKeyNotComparable(t *testing.T) {
 		c.Set(func() {}, 1)
 		c.Set(make(chan int), 1)
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetGetPanicsWhenKeyNotComparable(t=%v)", t)
 }
 
 func TestContextSetGetValues(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetGetValues(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("string", "this is a string")
 	c.Set("int32", int32(-42))
@@ -435,21 +486,27 @@ func TestContextSetGetValues(t *testing.T) {
 	assert.InDelta(t, float32(4.2), c.MustGet("float32").(float32), 0.01)
 	assert.InDelta(t, 4.2, c.MustGet("float64").(float64), 0.01)
 	assert.Exactly(t, 1, c.MustGet("intInterface").(int))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetGetValues(t=%v)", t)
 }
 
 func TestContextGetString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetString(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("string", "this is a string")
 	assert.Equal(t, "this is a string", c.GetString("string"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetString(t=%v)", t)
 }
 
 func TestContextSetGetBool(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetGetBool(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("bool", true)
 	assert.True(t, c.GetBool("bool"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetGetBool(t=%v)", t)
 }
 
 func TestSetGetDelete(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestSetGetDelete(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "example-key"
 	value := "example-value"
@@ -460,226 +517,286 @@ func TestSetGetDelete(t *testing.T) {
 	c.Delete(key)
 	_, exists = c.Get(key)
 	assert.False(t, exists)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestSetGetDelete(t=%v)", t)
 }
 
 func TestContextGetInt(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("int", 1)
 	assert.Equal(t, 1, c.GetInt("int"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt(t=%v)", t)
 }
 
 func TestContextGetInt8(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt8(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int8"
 	value := int8(0x7F)
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetInt8(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt8(t=%v)", t)
 }
 
 func TestContextGetInt16(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt16(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int16"
 	value := int16(0x7FFF)
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetInt16(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt16(t=%v)", t)
 }
 
 func TestContextGetInt32(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt32(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int32"
 	value := int32(0x7FFFFFFF)
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetInt32(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt32(t=%v)", t)
 }
 
 func TestContextGetInt64(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt64(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("int64", int64(42424242424242))
 	assert.Equal(t, int64(42424242424242), c.GetInt64("int64"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt64(t=%v)", t)
 }
 
 func TestContextGetUint(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("uint", uint(1))
 	assert.Equal(t, uint(1), c.GetUint("uint"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint(t=%v)", t)
 }
 
 func TestContextGetUint8(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint8(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint8"
 	value := uint8(0xFF)
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUint8(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint8(t=%v)", t)
 }
 
 func TestContextGetUint16(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint16(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint16"
 	value := uint16(0xFFFF)
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUint16(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint16(t=%v)", t)
 }
 
 func TestContextGetUint32(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint32(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint32"
 	value := uint32(0xFFFFFFFF)
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUint32(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint32(t=%v)", t)
 }
 
 func TestContextGetUint64(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint64(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("uint64", uint64(18446744073709551615))
 	assert.Equal(t, uint64(18446744073709551615), c.GetUint64("uint64"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint64(t=%v)", t)
 }
 
 func TestContextGetFloat32(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetFloat32(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "float32"
 	value := float32(3.14)
 	c.Set(key, value)
 	assert.InDelta(t, value, c.GetFloat32(key), 0.01)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetFloat32(t=%v)", t)
 }
 
 func TestContextGetFloat64(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetFloat64(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("float64", 4.2)
 	assert.InDelta(t, 4.2, c.GetFloat64("float64"), 0.01)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetFloat64(t=%v)", t)
 }
 
 func TestContextGetTime(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetTime(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	t1, _ := time.Parse("1/2/2006 15:04:05", "01/01/2017 12:00:00")
 	c.Set("time", t1)
 	assert.Equal(t, t1, c.GetTime("time"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetTime(t=%v)", t)
 }
 
 func TestContextGetDuration(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetDuration(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("duration", time.Second)
 	assert.Equal(t, time.Second, c.GetDuration("duration"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetDuration(t=%v)", t)
 }
 
 func TestContextGetError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetError(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "error"
 	value := errors.New("test error")
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetError(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetError(t=%v)", t)
 }
 
 func TestContextGetIntSlice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetIntSlice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int-slice"
 	value := []int{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetIntSlice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetIntSlice(t=%v)", t)
 }
 
 func TestContextGetInt8Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt8Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int8-slice"
 	value := []int8{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetInt8Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt8Slice(t=%v)", t)
 }
 
 func TestContextGetInt16Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt16Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int16-slice"
 	value := []int16{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetInt16Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt16Slice(t=%v)", t)
 }
 
 func TestContextGetInt32Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt32Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int32-slice"
 	value := []int32{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetInt32Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt32Slice(t=%v)", t)
 }
 
 func TestContextGetInt64Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetInt64Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "int64-slice"
 	value := []int64{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetInt64Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetInt64Slice(t=%v)", t)
 }
 
 func TestContextGetUintSlice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUintSlice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint-slice"
 	value := []uint{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUintSlice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUintSlice(t=%v)", t)
 }
 
 func TestContextGetUint8Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint8Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint8-slice"
 	value := []uint8{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUint8Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint8Slice(t=%v)", t)
 }
 
 func TestContextGetUint16Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint16Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint16-slice"
 	value := []uint16{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUint16Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint16Slice(t=%v)", t)
 }
 
 func TestContextGetUint32Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint32Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint32-slice"
 	value := []uint32{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUint32Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint32Slice(t=%v)", t)
 }
 
 func TestContextGetUint64Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetUint64Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "uint64-slice"
 	value := []uint64{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetUint64Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetUint64Slice(t=%v)", t)
 }
 
 func TestContextGetFloat32Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetFloat32Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "float32-slice"
 	value := []float32{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetFloat32Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetFloat32Slice(t=%v)", t)
 }
 
 func TestContextGetFloat64Slice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetFloat64Slice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "float64-slice"
 	value := []float64{1, 2}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetFloat64Slice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetFloat64Slice(t=%v)", t)
 }
 
 func TestContextGetStringSlice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetStringSlice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Set("slice", []string{"foo"})
 	assert.Equal(t, []string{"foo"}, c.GetStringSlice("slice"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetStringSlice(t=%v)", t)
 }
 
 func TestContextGetErrorSlice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetErrorSlice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	key := "error-slice"
 	value := []error{errors.New("error1"), errors.New("error2")}
 	c.Set(key, value)
 	assert.Equal(t, value, c.GetErrorSlice(key))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetErrorSlice(t=%v)", t)
 }
 
 func TestContextGetStringMap(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetStringMap(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	m := make(map[string]any)
 	m["foo"] = 1
@@ -687,9 +804,11 @@ func TestContextGetStringMap(t *testing.T) {
 
 	assert.Equal(t, m, c.GetStringMap("map"))
 	assert.Equal(t, 1, c.GetStringMap("map")["foo"])
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetStringMap(t=%v)", t)
 }
 
 func TestContextGetStringMapString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetStringMapString(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	m := make(map[string]string)
 	m["foo"] = "bar"
@@ -697,9 +816,11 @@ func TestContextGetStringMapString(t *testing.T) {
 
 	assert.Equal(t, m, c.GetStringMapString("map"))
 	assert.Equal(t, "bar", c.GetStringMapString("map")["foo"])
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetStringMapString(t=%v)", t)
 }
 
 func TestContextGetStringMapStringSlice(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetStringMapStringSlice(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	m := make(map[string][]string)
 	m["foo"] = []string{"foo"}
@@ -707,16 +828,21 @@ func TestContextGetStringMapStringSlice(t *testing.T) {
 
 	assert.Equal(t, m, c.GetStringMapStringSlice("map"))
 	assert.Equal(t, []string{"foo"}, c.GetStringMapStringSlice("map")["foo"])
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetStringMapStringSlice(t=%v)", t)
 }
 
 func TestContextCopy(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextCopy(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.index = 2
+	logritelog.Default().Printf("[DEBUG] TestContextCopy(t=%v): c.index → %v", t, c.index)
 	c.Request, _ = http.NewRequest(http.MethodPost, "/hola", nil)
 	c.handlers = HandlersChain{func(c *Context) {}}
 	c.Params = Params{Param{Key: "foo", Value: "bar"}}
+	logritelog.Default().Printf("[DEBUG] TestContextCopy(t=%v): c.Params → %v", t, c.Params)
 	c.Set("foo", "bar")
 	c.fullPath = "/hola"
+	logritelog.Default().Printf("[DEBUG] TestContextCopy(t=%v): c.fullPath → %v", t, c.fullPath)
 
 	cp := c.Copy()
 	assert.Nil(t, cp.handlers)
@@ -730,9 +856,12 @@ func TestContextCopy(t *testing.T) {
 	cp.Set("foo", "notBar")
 	assert.NotEqual(t, cp.Keys["foo"], c.Keys["foo"])
 	assert.Equal(t, cp.fullPath, c.fullPath)
+	logritelog.Default().Printf("[ERROR] TestContextCopy(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextCopy(t=%v)", t)
 }
 
 func TestContextCopyCopiesErrors(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextCopyCopiesErrors(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
 	_ = c.Error(errors.New("first error"))
@@ -749,9 +878,12 @@ func TestContextCopyCopiesErrors(t *testing.T) {
 	_ = cp.Error(errors.New("third error"))
 	assert.Len(t, c.Errors, 2)
 	assert.Len(t, cp.Errors, 3)
+	logritelog.Default().Printf("[ERROR] TestContextCopyCopiesErrors(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextCopyCopiesErrors(t=%v)", t)
 }
 
 func TestContextCopyCopiesAccepted(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextCopyCopiesAccepted(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
 	c.SetAccepted("application/json", "text/html")
@@ -764,9 +896,12 @@ func TestContextCopyCopiesAccepted(t *testing.T) {
 	cp.SetAccepted("text/plain")
 	assert.Equal(t, []string{"application/json", "text/html"}, c.Accepted)
 	assert.Equal(t, []string{"text/plain"}, cp.Accepted)
+	logritelog.Default().Printf("[ERROR] TestContextCopyCopiesAccepted(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextCopyCopiesAccepted(t=%v)", t)
 }
 
 func TestContextCopyNilErrorsAndAccepted(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextCopyNilErrorsAndAccepted(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
 
@@ -774,16 +909,21 @@ func TestContextCopyNilErrorsAndAccepted(t *testing.T) {
 
 	assert.Nil(t, cp.Errors)
 	assert.Nil(t, cp.Accepted)
+	logritelog.Default().Printf("[ERROR] TestContextCopyNilErrorsAndAccepted(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextCopyNilErrorsAndAccepted(t=%v)", t)
 }
 
 func TestContextHandlerName(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextHandlerName(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.handlers = HandlersChain{func(c *Context) {}, handlerNameTest}
 
 	assert.Regexp(t, "^(.*/vendor/)?github.com/gin-gonic/gin.handlerNameTest$", c.HandlerName())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextHandlerName(t=%v)", t)
 }
 
 func TestContextHandlerNames(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextHandlerNames(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.handlers = HandlersChain{func(c *Context) {}, nil, handlerNameTest, func(c *Context) {}, handlerNameTest2}
 
@@ -793,25 +933,31 @@ func TestContextHandlerNames(t *testing.T) {
 	for _, name := range names {
 		assert.Regexp(t, `^(.*/vendor/)?(github\.com/gin-gonic/gin\.){1}(TestContextHandlerNames\.func.*){0,1}(handlerNameTest.*){0,1}`, name)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextHandlerNames(t=%v)", t)
 }
 
 func handlerNameTest(c *Context) {
+logritelog.Default().Printf("[ERROR] >>> Entering handlerNameTest(c=%v)", c)
 }
 
 func handlerNameTest2(c *Context) {
+logritelog.Default().Printf("[ERROR] >>> Entering handlerNameTest2(c=%v)", c)
 }
 
 var handlerTest HandlerFunc = func(c *Context) {
 }
 
 func TestContextHandler(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextHandler(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.handlers = HandlersChain{func(c *Context) {}, handlerTest}
 
 	assert.Equal(t, reflect.ValueOf(handlerTest).Pointer(), reflect.ValueOf(c.Handler()).Pointer())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextHandler(t=%v)", t)
 }
 
 func TestContextQuery(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextQuery(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "http://example.com/?foo=bar&page=10&id=", nil)
 
@@ -844,9 +990,12 @@ func TestContextQuery(t *testing.T) {
 	assert.False(t, ok)
 	assert.Empty(t, value)
 	assert.Empty(t, c.PostForm("foo"))
+	logritelog.Default().Printf("[ERROR] TestContextQuery(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextQuery(t=%v)", t)
 }
 
 func TestContextInitQueryCache(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextInitQueryCache(t=%v)", t)
 	validURL, err := url.Parse("https://github.com/gin-gonic/gin/pull/3969?key=value&otherkey=othervalue")
 	require.NoError(t, err)
 
@@ -886,9 +1035,11 @@ func TestContextInitQueryCache(t *testing.T) {
 			assert.Equal(t, test.expectedQueryCache, test.testContext.queryCache)
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextInitQueryCache(t=%v)", t)
 }
 
 func TestContextDefaultQueryOnEmptyRequest(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextDefaultQueryOnEmptyRequest(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder()) // here c.Request == nil
 	assert.NotPanics(t, func() {
 		value, ok := c.GetQuery("NoKey")
@@ -901,9 +1052,11 @@ func TestContextDefaultQueryOnEmptyRequest(t *testing.T) {
 	assert.NotPanics(t, func() {
 		assert.Empty(t, c.Query("NoKey"))
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextDefaultQueryOnEmptyRequest(t=%v)", t)
 }
 
 func TestContextQueryAndPostForm(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextQueryAndPostForm(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	body := strings.NewReader("foo=bar&page=11&both=&foo=second")
 	c.Request, _ = http.NewRequest(http.MethodPost,
@@ -970,6 +1123,7 @@ func TestContextQueryAndPostForm(t *testing.T) {
 	assert.Equal(t, "second", values[1])
 
 	values = c.QueryArray("nokey")
+	logritelog.Default().Printf("[DEBUG] TestContextQueryAndPostForm(t=%v): values → %v", t, values)
 	assert.Empty(t, values)
 
 	values = c.QueryArray("both")
@@ -998,10 +1152,14 @@ func TestContextQueryAndPostForm(t *testing.T) {
 	assert.Equal(t, "3.14", dicts["b"])
 
 	dicts = c.QueryMap("nokey")
+	logritelog.Default().Printf("[DEBUG] TestContextQueryAndPostForm(t=%v): dicts → %v", t, dicts)
 	assert.Empty(t, dicts)
+	logritelog.Default().Printf("[ERROR] TestContextQueryAndPostForm(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextQueryAndPostForm(t=%v)", t)
 }
 
 func TestContextPostFormMultipart(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextPostFormMultipart(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request = createMultipartRequest()
 
@@ -1070,6 +1228,7 @@ func TestContextPostFormMultipart(t *testing.T) {
 	assert.Equal(t, "second", values[1])
 
 	values = c.PostFormArray("nokey")
+	logritelog.Default().Printf("[DEBUG] TestContextPostFormMultipart(t=%v): values → %v", t, values)
 	assert.Empty(t, values)
 
 	values = c.PostFormArray("foo")
@@ -1090,24 +1249,31 @@ func TestContextPostFormMultipart(t *testing.T) {
 	assert.Equal(t, "tianou", dicts["b"])
 
 	dicts = c.PostFormMap("nokey")
+	logritelog.Default().Printf("[DEBUG] TestContextPostFormMultipart(t=%v): dicts → %v", t, dicts)
 	assert.Empty(t, dicts)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextPostFormMultipart(t=%v)", t)
 }
 
 func TestContextSetCookie(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetCookie(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("user", "gin", 1, "/", "localhost", true, true)
 	assert.Equal(t, "user=gin; Path=/; Domain=localhost; Max-Age=1; HttpOnly; Secure; SameSite=Lax", c.Writer.Header().Get("Set-Cookie"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetCookie(t=%v)", t)
 }
 
 func TestContextSetCookiePathEmpty(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetCookiePathEmpty(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("user", "gin", 1, "", "localhost", true, true)
 	assert.Equal(t, "user=gin; Path=/; Domain=localhost; Max-Age=1; HttpOnly; Secure; SameSite=Lax", c.Writer.Header().Get("Set-Cookie"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetCookiePathEmpty(t=%v)", t)
 }
 
 func TestContextGetCookie(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetCookie(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/get", nil)
 	c.Request.Header.Set("Cookie", "user=gin")
@@ -1116,37 +1282,45 @@ func TestContextGetCookie(t *testing.T) {
 
 	_, err := c.Cookie("nokey")
 	require.Error(t, err)
+	logritelog.Default().Printf("[ERROR] TestContextGetCookie(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetCookie(t=%v)", t)
 }
 
 func TestContextBodyAllowedForStatus(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBodyAllowedForStatus(t=%v)", t)
 	assert.False(t, bodyAllowedForStatus(http.StatusContinue))
 	assert.False(t, bodyAllowedForStatus(http.StatusProcessing))
 	assert.False(t, bodyAllowedForStatus(http.StatusNoContent))
 	assert.False(t, bodyAllowedForStatus(http.StatusNotModified))
 	assert.True(t, bodyAllowedForStatus(http.StatusInternalServerError))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextBodyAllowedForStatus(t=%v)", t)
 }
 
 type TestRender struct{}
 
 func (*TestRender) Render(http.ResponseWriter) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Render()")
 	return errTestRender
 }
 
 func (*TestRender) WriteContentType(http.ResponseWriter) {}
 
 func TestContextRenderIfErr(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderIfErr(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
 	c.Render(http.StatusOK, &TestRender{})
 
 	assert.Equal(t, errorMsgs{&Error{Err: errTestRender, Type: 1}}, c.Errors)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderIfErr(t=%v)", t)
 }
 
 // Tests that the response is serialized as JSON
 // and Content-Type is set to application/json
 // and special HTML characters are escaped
 func TestContextRenderJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1155,11 +1329,13 @@ func TestContextRenderJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, "{\"foo\":\"bar\",\"html\":\"\\u003cb\\u003e\"}", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderJSON(t=%v)", t)
 }
 
 // Tests that the response is serialized as JSONP
 // and Content-Type is set to application/javascript
 func TestContextRenderJSONP(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderJSONP(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodGet, "http://example.com/?callback=x", nil)
@@ -1169,11 +1345,14 @@ func TestContextRenderJSONP(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "x({\"foo\":\"bar\"});", w.Body.String())
 	assert.Equal(t, "application/javascript; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderJSONP(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderJSONP(t=%v)", t)
 }
 
 // Tests that the response is serialized as JSONP
 // and Content-Type is set to application/json
 func TestContextRenderJSONPWithoutCallback(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderJSONPWithoutCallback(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodGet, "http://example.com", nil)
@@ -1183,10 +1362,13 @@ func TestContextRenderJSONPWithoutCallback(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, `{"foo":"bar"}`, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderJSONPWithoutCallback(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderJSONPWithoutCallback(t=%v)", t)
 }
 
 // Tests that no JSON is rendered if code is 204
 func TestContextRenderNoContentJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1195,11 +1377,13 @@ func TestContextRenderNoContentJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentJSON(t=%v)", t)
 }
 
 // Tests that the response is serialized as JSON
 // we change the content-type before
 func TestContextRenderAPIJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderAPIJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1209,10 +1393,12 @@ func TestContextRenderAPIJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, `{"foo":"bar"}`, w.Body.String())
 	assert.Equal(t, "application/vnd.api+json", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderAPIJSON(t=%v)", t)
 }
 
 // Tests that no Custom JSON is rendered if code is 204
 func TestContextRenderNoContentAPIJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentAPIJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1222,11 +1408,13 @@ func TestContextRenderNoContentAPIJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/vnd.api+json", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentAPIJSON(t=%v)", t)
 }
 
 // Tests that the response is serialized as JSON
 // and Content-Type is set to application/json
 func TestContextRenderIndentedJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderIndentedJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1235,10 +1423,12 @@ func TestContextRenderIndentedJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, "{\n    \"bar\": \"foo\",\n    \"foo\": \"bar\",\n    \"nested\": {\n        \"foo\": \"bar\"\n    }\n}", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderIndentedJSON(t=%v)", t)
 }
 
 // Tests that no Custom JSON is rendered if code is 204
 func TestContextRenderNoContentIndentedJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentIndentedJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1247,9 +1437,11 @@ func TestContextRenderNoContentIndentedJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentIndentedJSON(t=%v)", t)
 }
 
 func TestContextClientIPWithMultipleHeaders(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextClientIPWithMultipleHeaders(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/test", nil)
 
@@ -1264,9 +1456,12 @@ func TestContextClientIPWithMultipleHeaders(t *testing.T) {
 
 	// Should return 5.6.7.8 (last non-trusted IP)
 	assert.Equal(t, "5.6.7.8", c.ClientIP())
+	logritelog.Default().Printf("[ERROR] TestContextClientIPWithMultipleHeaders(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextClientIPWithMultipleHeaders(t=%v)", t)
 }
 
 func TestContextClientIPWithSingleHeader(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextClientIPWithSingleHeader(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/test", nil)
 	c.Request.Header.Set("X-Forwarded-For", "1.2.3.4, "+localhostIP)
@@ -1278,11 +1473,14 @@ func TestContextClientIPWithSingleHeader(t *testing.T) {
 
 	// Should return 1.2.3.4
 	assert.Equal(t, "1.2.3.4", c.ClientIP())
+	logritelog.Default().Printf("[ERROR] TestContextClientIPWithSingleHeader(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextClientIPWithSingleHeader(t=%v)", t)
 }
 
 // Tests that the response is serialized as Secure JSON
 // and Content-Type is set to application/json
 func TestContextRenderSecureJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderSecureJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, router := CreateTestContext(w)
 
@@ -1292,10 +1490,12 @@ func TestContextRenderSecureJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "&&&START&&&[\"foo\",\"bar\"]", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderSecureJSON(t=%v)", t)
 }
 
 // Tests that no Custom JSON is rendered if code is 204
 func TestContextRenderNoContentSecureJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentSecureJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1304,9 +1504,11 @@ func TestContextRenderNoContentSecureJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentSecureJSON(t=%v)", t)
 }
 
 func TestContextRenderNoContentAsciiJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentAsciiJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1315,23 +1517,27 @@ func TestContextRenderNoContentAsciiJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentAsciiJSON(t=%v)", t)
 }
 
 // Tests that the response is serialized as JSON
 // and Content-Type is set to application/json
 // and special HTML characters are preserved
 func TestContextRenderPureJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderPureJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.PureJSON(http.StatusCreated, H{"foo": "bar", "html": "<b>"})
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, "{\"foo\":\"bar\",\"html\":\"<b>\"}\n", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderPureJSON(t=%v)", t)
 }
 
 // Tests that the response executes the templates
 // and responds with Content-Type set to text/html
 func TestContextRenderHTML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderHTML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, router := CreateTestContext(w)
 
@@ -1343,9 +1549,11 @@ func TestContextRenderHTML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "Hello alexandernyquist", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderHTML(t=%v)", t)
 }
 
 func TestContextRenderHTML2(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderHTML2(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, router := CreateTestContext(w)
 
@@ -1367,10 +1575,12 @@ func TestContextRenderHTML2(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "Hello alexandernyquist", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderHTML2(t=%v)", t)
 }
 
 // Tests that no HTML is rendered if code is 204
 func TestContextRenderNoContentHTML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentHTML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, router := CreateTestContext(w)
 	templ := template.Must(template.New("t").Parse(`Hello {{.name}}`))
@@ -1381,11 +1591,13 @@ func TestContextRenderNoContentHTML(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentHTML(t=%v)", t)
 }
 
 // TestContextRenderXML tests that the response is serialized as XML
 // and Content-Type is set to application/xml
 func TestContextRenderXML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderXML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1394,10 +1606,12 @@ func TestContextRenderXML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "<map><foo>bar</foo></map>", w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderXML(t=%v)", t)
 }
 
 // Tests that no XML is rendered if code is 204
 func TestContextRenderNoContentXML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentXML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1406,11 +1620,13 @@ func TestContextRenderNoContentXML(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentXML(t=%v)", t)
 }
 
 // TestContextRenderPDF tests that the response is serialized as PDF
 // and Content-Type is set to application/pdf
 func TestContextRenderPDF(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderPDF(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1420,10 +1636,12 @@ func TestContextRenderPDF(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, data, w.Body.Bytes())
 	assert.Equal(t, "application/pdf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderPDF(t=%v)", t)
 }
 
 // Tests that no PDF is rendered if code is 204
 func TestContextRenderNoContentPDF(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentPDF(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1433,11 +1651,13 @@ func TestContextRenderNoContentPDF(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.Bytes())
 	assert.Equal(t, "application/pdf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentPDF(t=%v)", t)
 }
 
 // TestContextRenderString tests that the response is returned
 // with Content-Type set to text/plain
 func TestContextRenderString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderString(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1446,10 +1666,12 @@ func TestContextRenderString(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "test string 2", w.Body.String())
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderString(t=%v)", t)
 }
 
 // Tests that no String is rendered if code is 204
 func TestContextRenderNoContentString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentString(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1458,11 +1680,13 @@ func TestContextRenderNoContentString(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentString(t=%v)", t)
 }
 
 // TestContextRenderHTMLString tests that the response is returned
 // with Content-Type set to text/html
 func TestContextRenderHTMLString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderHTMLString(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1472,10 +1696,12 @@ func TestContextRenderHTMLString(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "<html>string 3</html>", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderHTMLString(t=%v)", t)
 }
 
 // Tests that no HTML String is rendered if code is 204
 func TestContextRenderNoContentHTMLString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentHTMLString(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1485,11 +1711,13 @@ func TestContextRenderNoContentHTMLString(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentHTMLString(t=%v)", t)
 }
 
 // TestContextRenderData tests that the response can be written from `bytestring`
 // with specified MIME type
 func TestContextRenderData(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderData(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1498,10 +1726,12 @@ func TestContextRenderData(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "foo,bar", w.Body.String())
 	assert.Equal(t, "text/csv", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderData(t=%v)", t)
 }
 
 // Tests that no Custom Data is rendered if code is 204
 func TestContextRenderNoContentData(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderNoContentData(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1510,9 +1740,11 @@ func TestContextRenderNoContentData(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/csv", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderNoContentData(t=%v)", t)
 }
 
 func TestContextRenderSSE(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderSSE(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1527,9 +1759,11 @@ func TestContextRenderSSE(t *testing.T) {
 	})
 
 	assert.Equal(t, strings.ReplaceAll(w.Body.String(), " ", ""), strings.ReplaceAll("event:float\ndata:1.5\n\nid:123\ndata:text\n\nevent:chat\ndata:{\"bar\":\"foo\",\"foo\":\"bar\"}\n\n", " ", ""))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderSSE(t=%v)", t)
 }
 
 func TestContextRenderFile(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderFile(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1541,9 +1775,12 @@ func TestContextRenderFile(t *testing.T) {
 	// Content-Type='text/plain; charset=utf-8' when go version <= 1.16,
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderFile(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderFile(t=%v)", t)
 }
 
 func TestContextRenderFileFromFS(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderFileFromFS(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1556,9 +1793,12 @@ func TestContextRenderFileFromFS(t *testing.T) {
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
 	assert.Equal(t, "/some/path", c.Request.URL.Path)
+	logritelog.Default().Printf("[ERROR] TestContextRenderFileFromFS(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderFileFromFS(t=%v)", t)
 }
 
 func TestContextRenderAttachment(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderAttachment(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	newFilename := "new_filename.go"
@@ -1569,9 +1809,12 @@ func TestContextRenderAttachment(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	assert.Equal(t, fmt.Sprintf("attachment; filename=\"%s\"", newFilename), w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderAttachment(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderAttachment(t=%v)", t)
 }
 
 func TestContextRenderAndEscapeAttachment(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderAndEscapeAttachment(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	maliciousFilename := "tampering_field.sh\"; \\\"; dummy=.go"
@@ -1583,9 +1826,12 @@ func TestContextRenderAndEscapeAttachment(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	assert.Equal(t, fmt.Sprintf("attachment; filename=\"%s\"", actualEscapedResponseFilename), w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderAndEscapeAttachment(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderAndEscapeAttachment(t=%v)", t)
 }
 
 func TestContextRenderUTF8Attachment(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderUTF8Attachment(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	newFilename := "new🧡_filename.go"
@@ -1596,11 +1842,14 @@ func TestContextRenderUTF8Attachment(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	assert.Equal(t, `attachment; filename*=UTF-8''`+url.QueryEscape(newFilename), w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderUTF8Attachment(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderUTF8Attachment(t=%v)", t)
 }
 
 // TestContextRenderYAML tests that the response is serialized as YAML
 // and Content-Type is set to application/yaml
 func TestContextRenderYAML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderYAML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1609,11 +1858,13 @@ func TestContextRenderYAML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "foo: bar\n", w.Body.String())
 	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderYAML(t=%v)", t)
 }
 
 // TestContextRenderTOML tests that the response is serialized as TOML
 // and Content-Type is set to application/toml
 func TestContextRenderTOML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderTOML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1622,12 +1873,14 @@ func TestContextRenderTOML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "foo = 'bar'\n", w.Body.String())
 	assert.Equal(t, "application/toml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderTOML(t=%v)", t)
 }
 
 // TestContextRenderProtoBuf tests that the response is serialized as ProtoBuf
 // and Content-Type is set to application/x-protobuf
 // and we just use the example protobuf to check if the response is correct
 func TestContextRenderProtoBuf(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderProtoBuf(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1646,9 +1899,11 @@ func TestContextRenderProtoBuf(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, string(protoData), w.Body.String())
 	assert.Equal(t, "application/x-protobuf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderProtoBuf(t=%v)", t)
 }
 
 func TestContextHeaders(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextHeaders(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Header("Content-Type", "text/plain")
 	c.Header("X-Custom", "value")
@@ -1662,10 +1917,12 @@ func TestContextHeaders(t *testing.T) {
 	assert.Equal(t, "text/html", c.Writer.Header().Get("Content-Type"))
 	_, exist := c.Writer.Header()["X-Custom"]
 	assert.False(t, exist)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextHeaders(t=%v)", t)
 }
 
 // TODO
 func TestContextRenderRedirectWithRelativePath(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderRedirectWithRelativePath(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1677,9 +1934,12 @@ func TestContextRenderRedirectWithRelativePath(t *testing.T) {
 	c.Writer.WriteHeaderNow()
 	assert.Equal(t, http.StatusMovedPermanently, w.Code)
 	assert.Equal(t, "/path", w.Header().Get("Location"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderRedirectWithRelativePath(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderRedirectWithRelativePath(t=%v)", t)
 }
 
 func TestContextRenderRedirectWithAbsolutePath(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderRedirectWithAbsolutePath(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1689,9 +1949,12 @@ func TestContextRenderRedirectWithAbsolutePath(t *testing.T) {
 
 	assert.Equal(t, http.StatusFound, w.Code)
 	assert.Equal(t, "http://google.com", w.Header().Get("Location"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderRedirectWithAbsolutePath(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderRedirectWithAbsolutePath(t=%v)", t)
 }
 
 func TestContextRenderRedirectWith201(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderRedirectWith201(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -1701,9 +1964,12 @@ func TestContextRenderRedirectWith201(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "/resource", w.Header().Get("Location"))
+	logritelog.Default().Printf("[ERROR] TestContextRenderRedirectWith201(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderRedirectWith201(t=%v)", t)
 }
 
 func TestContextRenderRedirectAll(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderRedirectAll(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "http://example.com", nil)
 	assert.Panics(t, func() { c.Redirect(http.StatusOK, "/resource") })
@@ -1712,9 +1978,12 @@ func TestContextRenderRedirectAll(t *testing.T) {
 	assert.Panics(t, func() { c.Redirect(309, "/resource") })
 	assert.NotPanics(t, func() { c.Redirect(http.StatusMultipleChoices, "/resource") })
 	assert.NotPanics(t, func() { c.Redirect(http.StatusPermanentRedirect, "/resource") })
+	logritelog.Default().Printf("[ERROR] TestContextRenderRedirectAll(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderRedirectAll(t=%v)", t)
 }
 
 func TestContextNegotiationWithJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationWithJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
@@ -1727,9 +1996,12 @@ func TestContextNegotiationWithJSON(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.JSONEq(t, `{"foo":"bar"}`, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationWithJSON(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationWithJSON(t=%v)", t)
 }
 
 func TestContextNegotiationWithXML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationWithXML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
@@ -1742,9 +2014,12 @@ func TestContextNegotiationWithXML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "<map><foo>bar</foo></map>", w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationWithXML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationWithXML(t=%v)", t)
 }
 
 func TestContextNegotiationWithYAML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationWithYAML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
@@ -1757,9 +2032,12 @@ func TestContextNegotiationWithYAML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "foo: bar\n", w.Body.String())
 	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationWithYAML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationWithYAML(t=%v)", t)
 }
 
 func TestContextNegotiationWithTOML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationWithTOML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
@@ -1772,9 +2050,12 @@ func TestContextNegotiationWithTOML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "foo = 'bar'\n", w.Body.String())
 	assert.Equal(t, "application/toml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationWithTOML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationWithTOML(t=%v)", t)
 }
 
 func TestContextNegotiationWithHTML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationWithHTML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, router := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
@@ -1790,9 +2071,12 @@ func TestContextNegotiationWithHTML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "Hello gin", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationWithHTML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationWithHTML(t=%v)", t)
 }
 
 func TestContextNegotiationWithPROTOBUF(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationWithPROTOBUF(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request = httptest.NewRequest(http.MethodPost, "/", nil)
@@ -1816,9 +2100,11 @@ func TestContextNegotiationWithPROTOBUF(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, string(protoData), w.Body.String())
 	assert.Equal(t, "application/x-protobuf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationWithPROTOBUF(t=%v)", t)
 }
 
 func TestContextNegotiationWithBSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationWithBSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
@@ -1833,9 +2119,12 @@ func TestContextNegotiationWithBSON(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, string(bData), w.Body.String())
 	assert.Equal(t, "application/bson", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationWithBSON(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationWithBSON(t=%v)", t)
 }
 
 func TestContextNegotiationNotSupport(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationNotSupport(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
@@ -1847,18 +2136,24 @@ func TestContextNegotiationNotSupport(t *testing.T) {
 	assert.Equal(t, http.StatusNotAcceptable, w.Code)
 	assert.Equal(t, abortIndex, c.index)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationNotSupport(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationNotSupport(t=%v)", t)
 }
 
 func TestContextNegotiationFormat(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationFormat(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "", nil)
 
 	assert.Panics(t, func() { c.NegotiateFormat() })
 	assert.Equal(t, MIMEJSON, c.NegotiateFormat(MIMEJSON, MIMEXML)) //nolint:testifylint
 	assert.Equal(t, MIMEHTML, c.NegotiateFormat(MIMEHTML, MIMEJSON))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationFormat(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationFormat(t=%v)", t)
 }
 
 func TestContextNegotiationFormatWithAccept(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationFormatWithAccept(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	c.Request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9;q=0.8")
@@ -1866,9 +2161,12 @@ func TestContextNegotiationFormatWithAccept(t *testing.T) {
 	assert.Equal(t, MIMEXML, c.NegotiateFormat(MIMEJSON, MIMEXML))
 	assert.Equal(t, MIMEHTML, c.NegotiateFormat(MIMEXML, MIMEHTML))
 	assert.Empty(t, c.NegotiateFormat(MIMEJSON))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationFormatWithAccept(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationFormatWithAccept(t=%v)", t)
 }
 
 func TestContextNegotiationFormatWithWildcardAccept(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationFormatWithWildcardAccept(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	c.Request.Header.Add("Accept", "*/*")
@@ -1890,30 +2188,40 @@ func TestContextNegotiationFormatWithWildcardAccept(t *testing.T) {
 	assert.Empty(t, c.NegotiateFormat(MIMEJSON))
 	assert.Empty(t, c.NegotiateFormat(MIMEXML))
 	assert.Equal(t, MIMEHTML, c.NegotiateFormat(MIMEHTML))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationFormatWithWildcardAccept(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationFormatWithWildcardAccept(t=%v)", t)
 }
 
 func TestContextNegotiationFormatCustom(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationFormatCustom(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	c.Request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9;q=0.8")
 
 	c.Accepted = nil
+	logritelog.Default().Printf("[DEBUG] TestContextNegotiationFormatCustom(t=%v): c.Accepted → %v", t, c.Accepted)
 	c.SetAccepted(MIMEJSON, MIMEXML)
 
 	assert.Equal(t, MIMEJSON, c.NegotiateFormat(MIMEJSON, MIMEXML)) //nolint:testifylint
 	assert.Equal(t, MIMEXML, c.NegotiateFormat(MIMEXML, MIMEHTML))
 	assert.Equal(t, MIMEJSON, c.NegotiateFormat(MIMEJSON)) //nolint:testifylint
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationFormatCustom(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationFormatCustom(t=%v)", t)
 }
 
 func TestContextNegotiationFormat2(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNegotiationFormat2(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	c.Request.Header.Add("Accept", "image/tiff-fx")
 
 	assert.Empty(t, c.NegotiateFormat("image/tiff"))
+	logritelog.Default().Printf("[ERROR] TestContextNegotiationFormat2(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextNegotiationFormat2(t=%v)", t)
 }
 
 func TestContextIsAborted(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextIsAborted(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	assert.False(t, c.IsAborted())
 
@@ -1925,21 +2233,25 @@ func TestContextIsAborted(t *testing.T) {
 
 	c.index++
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextIsAborted(t=%v)", t)
 }
 
 // TestContextAbortWithStatus tests that the response can be written from `bytestring`
 // with specified MIME type
 func TestContextAbortWithStatus(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextAbortWithStatus(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
 	c.index = 4
+	logritelog.Default().Printf("[DEBUG] TestContextAbortWithStatus(t=%v): c.index → %v", t, c.index)
 	c.AbortWithStatus(http.StatusUnauthorized)
 
 	assert.Equal(t, abortIndex, c.index)
 	assert.Equal(t, http.StatusUnauthorized, c.Writer.Status())
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextAbortWithStatus(t=%v)", t)
 }
 
 type testJSONAbortMsg struct {
@@ -1948,13 +2260,17 @@ type testJSONAbortMsg struct {
 }
 
 func TestContextAbortWithStatusJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextAbortWithStatusJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.index = 4
+	logritelog.Default().Printf("[DEBUG] TestContextAbortWithStatusJSON(t=%v): c.index → %v", t, c.index)
 
 	in := new(testJSONAbortMsg)
 	in.Bar = "barValue"
+	logritelog.Default().Printf("[DEBUG] TestContextAbortWithStatusJSON(t=%v): in.Bar → %v", t, in.Bar)
 	in.Foo = "fooValue"
+	logritelog.Default().Printf("[DEBUG] TestContextAbortWithStatusJSON(t=%v): in.Foo → %v", t, in.Foo)
 
 	c.AbortWithStatusJSON(http.StatusUnsupportedMediaType, in)
 
@@ -1971,16 +2287,21 @@ func TestContextAbortWithStatusJSON(t *testing.T) {
 	require.NoError(t, err)
 	jsonStringBody := buf.String()
 	assert.JSONEq(t, "{\"foo\":\"fooValue\",\"bar\":\"barValue\"}", jsonStringBody)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextAbortWithStatusJSON(t=%v)", t)
 }
 
 func TestContextAbortWithStatusPureJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextAbortWithStatusPureJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 	c.index = 4
+	logritelog.Default().Printf("[DEBUG] TestContextAbortWithStatusPureJSON(t=%v): c.index → %v", t, c.index)
 
 	in := new(testJSONAbortMsg)
 	in.Bar = "barValue"
+	logritelog.Default().Printf("[DEBUG] TestContextAbortWithStatusPureJSON(t=%v): in.Bar → %v", t, in.Bar)
 	in.Foo = "fooValue"
+	logritelog.Default().Printf("[DEBUG] TestContextAbortWithStatusPureJSON(t=%v): in.Foo → %v", t, in.Foo)
 
 	c.AbortWithStatusPureJSON(http.StatusUnsupportedMediaType, in)
 
@@ -1997,9 +2318,11 @@ func TestContextAbortWithStatusPureJSON(t *testing.T) {
 	require.NoError(t, err)
 	jsonStringBody := buf.String()
 	assert.JSONEq(t, "{\"foo\":\"fooValue\",\"bar\":\"barValue\"}", jsonStringBody)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextAbortWithStatusPureJSON(t=%v)", t)
 }
 
 func TestContextError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextError(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	assert.Empty(t, c.Errors)
 
@@ -2026,6 +2349,7 @@ func TestContextError(t *testing.T) {
 
 	assert.Equal(t, c.Errors.Last(), c.Errors[1])
 
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextError(t=%v)", t)
 	defer func() {
 		if recover() == nil {
 			t.Error("didn't panic")
@@ -2035,6 +2359,7 @@ func TestContextError(t *testing.T) {
 }
 
 func TestContextTypedError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextTypedError(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Error(errors.New("externo 0")).SetType(ErrorTypePublic)  //nolint: errcheck
 	c.Error(errors.New("interno 0")).SetType(ErrorTypePrivate) //nolint: errcheck
@@ -2046,9 +2371,11 @@ func TestContextTypedError(t *testing.T) {
 		assert.Equal(t, ErrorTypePrivate, err.Type)
 	}
 	assert.Equal(t, []string{"externo 0", "interno 0"}, c.Errors.Errors())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextTypedError(t=%v)", t)
 }
 
 func TestContextAbortWithError(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextAbortWithError(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2057,9 +2384,11 @@ func TestContextAbortWithError(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, abortIndex, c.index)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextAbortWithError(t=%v)", t)
 }
 
 func TestContextClientIP(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextClientIP(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	c.engine.trustedCIDRs, _ = c.engine.prepareTrustedCIDRs()
@@ -2198,9 +2527,12 @@ func TestContextClientIP(t *testing.T) {
 	// no port
 	c.Request.RemoteAddr = "50.50.50.50"
 	assert.Empty(t, c.ClientIP())
+	logritelog.Default().Printf("[ERROR] TestContextClientIP(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextClientIP(t=%v)", t)
 }
 
 func resetContextForClientIPTests(c *Context) {
+	logritelog.Default().Printf("[ERROR] >>> Entering resetContextForClientIPTests(c=%v)", c)
 	c.Request.Header.Set("X-Real-IP", " 10.10.10.10  ")
 	c.Request.Header.Set("X-Forwarded-For", "  20.20.20.20, 30.30.30.30")
 	c.Request.Header.Set("X-Appengine-Remote-Addr", "50.50.50.50")
@@ -2210,17 +2542,22 @@ func resetContextForClientIPTests(c *Context) {
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
+	logritelog.Default().Printf("[WARN] <<< Exiting resetContextForClientIPTests(c=%v)", c)
 }
 
 func TestContextContentType(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextContentType(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	c.Request.Header.Set("Content-Type", "application/json; charset=utf-8")
 
 	assert.Equal(t, "application/json", c.ContentType())
+	logritelog.Default().Printf("[ERROR] TestContextContentType(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextContentType(t=%v)", t)
 }
 
 func TestContextBindRequestTooLarge(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindRequestTooLarge(t=%v)", t)
 	// When using go-json as JSON encoder, they do not propagate the http.MaxBytesError error
 	// The response will fail with a generic 400 instead of 413
 	// https://github.com/goccy/go-json/issues/485
@@ -2228,6 +2565,7 @@ func TestContextBindRequestTooLarge(t *testing.T) {
 	switch json.Package {
 	case "github.com/goccy/go-json":
 		expectedCode = http.StatusBadRequest
+		logritelog.Default().Printf("[DEBUG] TestContextBindRequestTooLarge(t=%v): expectedCode → %v", t, expectedCode)
 	default:
 		expectedCode = http.StatusRequestEntityTooLarge
 	}
@@ -2249,9 +2587,12 @@ func TestContextBindRequestTooLarge(t *testing.T) {
 	assert.Empty(t, obj.Foo)
 	assert.Equal(t, expectedCode, w.Code)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[ERROR] TestContextBindRequestTooLarge(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindRequestTooLarge(t=%v)", t)
 }
 
 func TestContextAutoBindJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextAutoBindJSON(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader(`{"foo":"bar", "bar":"foo"}`))
 	c.Request.Header.Add("Content-Type", MIMEJSON)
@@ -2264,9 +2605,12 @@ func TestContextAutoBindJSON(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Empty(t, c.Errors)
+	logritelog.Default().Printf("[ERROR] TestContextAutoBindJSON(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextAutoBindJSON(t=%v)", t)
 }
 
 func TestContextBindWithJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindWithJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2281,9 +2625,12 @@ func TestContextBindWithJSON(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextBindWithJSON(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindWithJSON(t=%v)", t)
 }
 
 func TestContextBindWithXML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindWithXML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2302,9 +2649,12 @@ func TestContextBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextBindWithXML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindWithXML(t=%v)", t)
 }
 
 func TestContextBindPlain(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindPlain(t=%v)", t)
 	// string
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
@@ -2326,9 +2676,12 @@ func TestContextBindPlain(t *testing.T) {
 	require.NoError(t, c.BindPlain(&bs))
 	assert.Equal(t, []byte("test []byte"), bs)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextBindPlain(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindPlain(t=%v)", t)
 }
 
 func TestContextBindHeader(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindHeader(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2348,9 +2701,12 @@ func TestContextBindHeader(t *testing.T) {
 	assert.Equal(t, "music", testHeader.Domain)
 	assert.Equal(t, 1000, testHeader.Limit)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextBindHeader(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindHeader(t=%v)", t)
 }
 
 func TestContextBindWithQuery(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindWithQuery(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2364,9 +2720,12 @@ func TestContextBindWithQuery(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextBindWithQuery(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindWithQuery(t=%v)", t)
 }
 
 func TestContextBindWithYAML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindWithYAML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2381,9 +2740,12 @@ func TestContextBindWithYAML(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextBindWithYAML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindWithYAML(t=%v)", t)
 }
 
 func TestContextBindWithTOML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBindWithTOML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2398,9 +2760,12 @@ func TestContextBindWithTOML(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextBindWithTOML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBindWithTOML(t=%v)", t)
 }
 
 func TestContextBadAutoBind(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBadAutoBind(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2419,9 +2784,12 @@ func TestContextBadAutoBind(t *testing.T) {
 	assert.Empty(t, obj.Foo)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[ERROR] TestContextBadAutoBind(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBadAutoBind(t=%v)", t)
 }
 
 func TestContextAutoShouldBindJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextAutoShouldBindJSON(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader(`{"foo":"bar", "bar":"foo"}`))
 	c.Request.Header.Add("Content-Type", MIMEJSON)
@@ -2434,9 +2802,12 @@ func TestContextAutoShouldBindJSON(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Empty(t, c.Errors)
+	logritelog.Default().Printf("[ERROR] TestContextAutoShouldBindJSON(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextAutoShouldBindJSON(t=%v)", t)
 }
 
 func TestContextShouldBindWithJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindWithJSON(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2451,9 +2822,12 @@ func TestContextShouldBindWithJSON(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindWithJSON(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindWithJSON(t=%v)", t)
 }
 
 func TestContextShouldBindWithXML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindWithXML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2472,9 +2846,12 @@ func TestContextShouldBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindWithXML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindWithXML(t=%v)", t)
 }
 
 func TestContextShouldBindPlain(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindPlain(t=%v)", t)
 	// string
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
@@ -2496,9 +2873,12 @@ func TestContextShouldBindPlain(t *testing.T) {
 	require.NoError(t, c.ShouldBindPlain(&bs))
 	assert.Equal(t, []byte("test []byte"), bs)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindPlain(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindPlain(t=%v)", t)
 }
 
 func TestContextShouldBindHeader(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindHeader(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2518,9 +2898,12 @@ func TestContextShouldBindHeader(t *testing.T) {
 	assert.Equal(t, "music", testHeader.Domain)
 	assert.Equal(t, 1000, testHeader.Limit)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindHeader(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindHeader(t=%v)", t)
 }
 
 func TestContextShouldBindWithQuery(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindWithQuery(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2538,9 +2921,12 @@ func TestContextShouldBindWithQuery(t *testing.T) {
 	assert.Equal(t, "foo1", obj.Bar1)
 	assert.Equal(t, "bar1", obj.Foo1)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindWithQuery(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindWithQuery(t=%v)", t)
 }
 
 func TestContextShouldBindWithYAML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindWithYAML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2555,9 +2941,12 @@ func TestContextShouldBindWithYAML(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindWithYAML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindWithYAML(t=%v)", t)
 }
 
 func TestContextShouldBindWithTOML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindWithTOML(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2572,9 +2961,12 @@ func TestContextShouldBindWithTOML(t *testing.T) {
 	assert.Equal(t, "foo", obj.Bar)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindWithTOML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindWithTOML(t=%v)", t)
 }
 
 func TestContextBadAutoShouldBind(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextBadAutoShouldBind(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -2591,15 +2983,20 @@ func TestContextBadAutoShouldBind(t *testing.T) {
 	assert.Empty(t, obj.Bar)
 	assert.Empty(t, obj.Foo)
 	assert.False(t, c.IsAborted())
+	logritelog.Default().Printf("[ERROR] TestContextBadAutoShouldBind(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextBadAutoShouldBind(t=%v)", t)
 }
 
 func TestContextShouldBindBodyWith(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindBodyWith(t=%v)", t)
 	type typeA struct {
 		Foo string `json:"foo" xml:"foo" binding:"required"`
 	}
 	type typeB struct {
 		Bar string `json:"bar" xml:"bar" binding:"required"`
 	}
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindBodyWith(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindBodyWith(t=%v)", t)
 	for _, tt := range []struct {
 		name               string
 		bindingA, bindingB binding.BindingBody
@@ -2673,6 +3070,9 @@ func TestContextShouldBindBodyWith(t *testing.T) {
 }
 
 func TestContextShouldBindBodyWithJSON(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindBodyWithJSON(t=%v)", t)
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindBodyWithJSON(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindBodyWithJSON(t=%v)", t)
 	for _, tt := range []struct {
 		name        string
 		bindingBody binding.BindingBody
@@ -2737,6 +3137,9 @@ func TestContextShouldBindBodyWithJSON(t *testing.T) {
 }
 
 func TestContextShouldBindBodyWithXML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindBodyWithXML(t=%v)", t)
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindBodyWithXML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindBodyWithXML(t=%v)", t)
 	for _, tt := range []struct {
 		name        string
 		bindingBody binding.BindingBody
@@ -2801,6 +3204,9 @@ func TestContextShouldBindBodyWithXML(t *testing.T) {
 }
 
 func TestContextShouldBindBodyWithYAML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindBodyWithYAML(t=%v)", t)
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindBodyWithYAML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindBodyWithYAML(t=%v)", t)
 	for _, tt := range []struct {
 		name        string
 		bindingBody binding.BindingBody
@@ -2866,6 +3272,9 @@ func TestContextShouldBindBodyWithYAML(t *testing.T) {
 }
 
 func TestContextShouldBindBodyWithTOML(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindBodyWithTOML(t=%v)", t)
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindBodyWithTOML(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindBodyWithTOML(t=%v)", t)
 	for _, tt := range []struct {
 		name        string
 		bindingBody binding.BindingBody
@@ -2930,6 +3339,9 @@ func TestContextShouldBindBodyWithTOML(t *testing.T) {
 }
 
 func TestContextShouldBindBodyWithPlain(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextShouldBindBodyWithPlain(t=%v)", t)
+	logritelog.Default().Printf("[ERROR] TestContextShouldBindBodyWithPlain(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextShouldBindBodyWithPlain(t=%v)", t)
 	for _, tt := range []struct {
 		name        string
 		bindingBody binding.BindingBody
@@ -3005,6 +3417,7 @@ func TestContextShouldBindBodyWithPlain(t *testing.T) {
 }
 
 func TestContextGolangContext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGolangContext(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader(`{"foo":"bar", "bar":"foo"}`))
 	require.NoError(t, c.Err())
@@ -3019,9 +3432,12 @@ func TestContextGolangContext(t *testing.T) {
 	c.Set("foo", "bar")
 	assert.Equal(t, "bar", c.Value("foo"))
 	assert.Nil(t, c.Value(1))
+	logritelog.Default().Printf("[ERROR] TestContextGolangContext(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextGolangContext(t=%v)", t)
 }
 
 func TestWebsocketsRequired(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestWebsocketsRequired(t=%v)", t)
 	// Example request from spec: https://tools.ietf.org/html/rfc6455#section-1.2
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/chat", nil)
@@ -3041,9 +3457,12 @@ func TestWebsocketsRequired(t *testing.T) {
 	c.Request.Header.Set("Host", "server.example.com")
 
 	assert.False(t, c.IsWebsocket())
+	logritelog.Default().Printf("[ERROR] TestWebsocketsRequired(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestWebsocketsRequired(t=%v)", t)
 }
 
 func TestContextScheme(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextScheme(t=%v)", t)
 	// TLS connection takes highest priority.
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
@@ -3100,18 +3519,24 @@ func TestContextScheme(t *testing.T) {
 	c.Request.TLS = &tls.ConnectionState{}
 	c.Request.Header.Set("X-Forwarded-Proto", "http")
 	assert.Equal(t, "https", c.Scheme())
+	logritelog.Default().Printf("[ERROR] TestContextScheme(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextScheme(t=%v)", t)
 }
 
 func TestGetRequestHeaderValue(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestGetRequestHeaderValue(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodGet, "/chat", nil)
 	c.Request.Header.Set("Gin-Version", "1.0.0")
 
 	assert.Equal(t, "1.0.0", c.GetHeader("Gin-Version"))
 	assert.Empty(t, c.GetHeader("Connection"))
+	logritelog.Default().Printf("[ERROR] TestGetRequestHeaderValue(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestGetRequestHeaderValue(t=%v)", t)
 }
 
 func TestContextGetRawData(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetRawData(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	body := strings.NewReader("Fetch binary post data")
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", body)
@@ -3120,9 +3545,12 @@ func TestContextGetRawData(t *testing.T) {
 	data, err := c.GetRawData()
 	require.NoError(t, err)
 	assert.Equal(t, "Fetch binary post data", string(data))
+	logritelog.Default().Printf("[ERROR] TestContextGetRawData(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetRawData(t=%v)", t)
 }
 
 func TestContextGetRawDataNilBody(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextGetRawDataNilBody(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 
@@ -3130,9 +3558,12 @@ func TestContextGetRawDataNilBody(t *testing.T) {
 	assert.Nil(t, data)
 	require.Error(t, err)
 	assert.Equal(t, "cannot read nil body", err.Error())
+	logritelog.Default().Printf("[ERROR] TestContextGetRawDataNilBody(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextGetRawDataNilBody(t=%v)", t)
 }
 
 func TestContextRenderDataFromReader(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderDataFromReader(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -3149,9 +3580,11 @@ func TestContextRenderDataFromReader(t *testing.T) {
 	assert.Equal(t, contentType, w.Header().Get("Content-Type"))
 	assert.Equal(t, strconv.FormatInt(contentLength, 10), w.Header().Get("Content-Length"))
 	assert.Equal(t, extraHeaders["Content-Disposition"], w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderDataFromReader(t=%v)", t)
 }
 
 func TestContextRenderDataFromReaderNoHeaders(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextRenderDataFromReaderNoHeaders(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -3166,6 +3599,7 @@ func TestContextRenderDataFromReaderNoHeaders(t *testing.T) {
 	assert.Equal(t, body, w.Body.String())
 	assert.Equal(t, contentType, w.Header().Get("Content-Type"))
 	assert.Equal(t, strconv.FormatInt(contentLength, 10), w.Header().Get("Content-Length"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextRenderDataFromReaderNoHeaders(t=%v)", t)
 }
 
 type TestResponseRecorder struct {
@@ -3174,14 +3608,18 @@ type TestResponseRecorder struct {
 }
 
 func (r *TestResponseRecorder) CloseNotify() <-chan bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering CloseNotify()")
 	return r.closeChannel
 }
 
 func (r *TestResponseRecorder) closeClient() {
+	logritelog.Default().Printf("[ERROR] >>> Entering closeClient()")
 	r.closeChannel <- true
+	logritelog.Default().Printf("[WARN] <<< Exiting closeClient()")
 }
 
 func CreateTestResponseRecorder() *TestResponseRecorder {
+	logritelog.Default().Printf("[ERROR] >>> Entering CreateTestResponseRecorder()")
 	return &TestResponseRecorder{
 		httptest.NewRecorder(),
 		make(chan bool, 1),
@@ -3189,6 +3627,7 @@ func CreateTestResponseRecorder() *TestResponseRecorder {
 }
 
 func TestContextStream(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextStream(t=%v)", t)
 	w := CreateTestResponseRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -3205,9 +3644,11 @@ func TestContextStream(t *testing.T) {
 	})
 
 	assert.Equal(t, "testtest", w.Body.String())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextStream(t=%v)", t)
 }
 
 func TestContextStreamWithClientGone(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextStreamWithClientGone(t=%v)", t)
 	w := CreateTestResponseRecorder()
 	c, _ := CreateTestContext(w)
 
@@ -3223,27 +3664,34 @@ func TestContextStreamWithClientGone(t *testing.T) {
 	})
 
 	assert.Equal(t, "test", w.Body.String())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextStreamWithClientGone(t=%v)", t)
 }
 
 func TestContextResetInHandler(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextResetInHandler(t=%v)", t)
 	w := CreateTestResponseRecorder()
 	c, _ := CreateTestContext(w)
 
 	c.handlers = []HandlerFunc{
 		func(c *Context) { c.reset() },
 	}
+	logritelog.Default().Printf("[DEBUG] TestContextResetInHandler(t=%v): c.handlers → %v", t, c.handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextResetInHandler(t=%v)", t)
 	assert.NotPanics(t, func() {
 		c.Next()
 	})
 }
 
 func TestRaceParamsContextCopy(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRaceParamsContextCopy(t=%v)", t)
 	DefaultWriter = os.Stdout
 	router := Default()
 	nameGroup := router.Group("/:name")
 	var wg sync.WaitGroup
+	logritelog.Default().Printf("[DEBUG] TestRaceParamsContextCopy(t=%v): DefaultWriter → %v", t, DefaultWriter)
 	wg.Add(2)
 	{
+		logritelog.Default().Printf("[WARN] <<< Exiting TestRaceParamsContextCopy(t=%v)", t)
 		nameGroup.GET("/api", func(c *Context) {
 			go func(c *Context, param string) {
 				defer wg.Done()
@@ -3259,6 +3707,7 @@ func TestRaceParamsContextCopy(t *testing.T) {
 }
 
 func TestContextWithKeysMutex(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextWithKeysMutex(t=%v)", t)
 	c := &Context{}
 	c.Set("foo", "bar")
 
@@ -3269,9 +3718,11 @@ func TestContextWithKeysMutex(t *testing.T) {
 	value, err = c.Get("foo2")
 	assert.Nil(t, value)
 	assert.False(t, err)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextWithKeysMutex(t=%v)", t)
 }
 
 func TestRemoteIPFail(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRemoteIPFail(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	c.Request.RemoteAddr = "[:::]:80"
@@ -3279,9 +3730,12 @@ func TestRemoteIPFail(t *testing.T) {
 	trust := c.engine.isTrustedProxy(ip)
 	assert.Nil(t, ip)
 	assert.False(t, trust)
+	logritelog.Default().Printf("[ERROR] TestRemoteIPFail(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestRemoteIPFail(t=%v)", t)
 }
 
 func TestHasRequestContext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestHasRequestContext(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	assert.False(t, c.hasRequestContext(), "no request, no fallback")
 	c.engine.ContextWithFallback = true
@@ -3297,9 +3751,12 @@ func TestHasRequestContext(t *testing.T) {
 	assert.False(t, c.hasRequestContext(), "no request, no engine")
 	c.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
 	assert.False(t, c.hasRequestContext(), "has request, no engine")
+	logritelog.Default().Printf("[ERROR] TestHasRequestContext(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestHasRequestContext(t=%v)", t)
 }
 
 func TestContextWithFallbackDeadlineFromRequestContext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextWithFallbackDeadlineFromRequestContext(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	// enable ContextWithFallback feature flag
 	c.engine.ContextWithFallback = true
@@ -3320,9 +3777,12 @@ func TestContextWithFallbackDeadlineFromRequestContext(t *testing.T) {
 	deadline, ok = c2.Deadline()
 	assert.Equal(t, d, deadline)
 	assert.True(t, ok)
+	logritelog.Default().Printf("[ERROR] TestContextWithFallbackDeadlineFromRequestContext(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextWithFallbackDeadlineFromRequestContext(t=%v)", t)
 }
 
 func TestContextWithFallbackDoneFromRequestContext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextWithFallbackDoneFromRequestContext(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	// enable ContextWithFallback feature flag
 	c.engine.ContextWithFallback = true
@@ -3338,9 +3798,12 @@ func TestContextWithFallbackDoneFromRequestContext(t *testing.T) {
 	c2.Request = c2.Request.WithContext(ctx)
 	cancel()
 	assert.NotNil(t, <-c2.Done())
+	logritelog.Default().Printf("[ERROR] TestContextWithFallbackDoneFromRequestContext(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextWithFallbackDoneFromRequestContext(t=%v)", t)
 }
 
 func TestContextWithFallbackErrFromRequestContext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextWithFallbackErrFromRequestContext(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	// enable ContextWithFallback feature flag
 	c.engine.ContextWithFallback = true
@@ -3357,9 +3820,12 @@ func TestContextWithFallbackErrFromRequestContext(t *testing.T) {
 	cancel()
 
 	assert.EqualError(t, c2.Err(), context.Canceled.Error())
+	logritelog.Default().Printf("[ERROR] TestContextWithFallbackErrFromRequestContext(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextWithFallbackErrFromRequestContext(t=%v)", t)
 }
 
 func TestContextWithFallbackValueFromRequestContext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextWithFallbackValueFromRequestContext(t=%v)", t)
 	type contextKey string
 
 	tests := []struct {
@@ -3400,6 +3866,7 @@ func TestContextWithFallbackValueFromRequestContext(t *testing.T) {
 				// enable ContextWithFallback feature flag
 				c.engine.ContextWithFallback = true
 				c.Request = nil
+				logritelog.Default().Printf("[DEBUG] TestContextWithFallbackValueFromRequestContext(t=%v): c.Request → %v", t, c.Request)
 				return c, "key"
 			},
 			value: nil,
@@ -3422,9 +3889,12 @@ func TestContextWithFallbackValueFromRequestContext(t *testing.T) {
 			assert.Equal(t, tt.value, c.Value(key))
 		})
 	}
+	logritelog.Default().Printf("[ERROR] TestContextWithFallbackValueFromRequestContext(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestContextWithFallbackValueFromRequestContext(t=%v)", t)
 }
 
 func TestContextCopyShouldNotCancel(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextCopyShouldNotCancel(t=%v)", t)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
@@ -3440,6 +3910,7 @@ func TestContextCopyShouldNotCancel(t *testing.T) {
 
 		ginctx = ginctx.Copy()
 
+		logritelog.Default().Printf("[DEBUG] TestContextCopyShouldNotCancel(t=%v): ginctx → %v", t, ginctx)
 		// start async goroutine for calling srv
 		go func() {
 			defer wg.Done()
@@ -3486,9 +3957,11 @@ func TestContextCopyShouldNotCancel(t *testing.T) {
 	}
 
 	wg.Wait()
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextCopyShouldNotCancel(t=%v)", t)
 }
 
 func TestContextAddParam(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextAddParam(t=%v)", t)
 	c := &Context{}
 	id := "id"
 	value := "1"
@@ -3497,9 +3970,11 @@ func TestContextAddParam(t *testing.T) {
 	v, ok := c.Params.Get(id)
 	assert.True(t, ok)
 	assert.Equal(t, value, v)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextAddParam(t=%v)", t)
 }
 
 func TestCreateTestContextWithRouteParams(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCreateTestContextWithRouteParams(t=%v)", t)
 	w := httptest.NewRecorder()
 	engine := New()
 	engine.GET("/:action/:name", func(ctx *Context) {
@@ -3511,6 +3986,8 @@ func TestCreateTestContextWithRouteParams(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "hello gin", w.Body.String())
+	logritelog.Default().Printf("[ERROR] TestCreateTestContextWithRouteParams(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestCreateTestContextWithRouteParams(t=%v)", t)
 }
 
 type interceptedWriter struct {
@@ -3519,11 +3996,14 @@ type interceptedWriter struct {
 }
 
 func (i interceptedWriter) WriteHeader(code int) {
+	logritelog.Default().Printf("[ERROR] >>> Entering WriteHeader(code=%v)", code)
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[WARN] <<< Exiting WriteHeader(code=%v)", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestInterceptedHeader(t=%v)", t)
 	w := httptest.NewRecorder()
 	c, r := CreateTestContext(w)
 
@@ -3533,6 +4013,7 @@ func TestInterceptedHeader(t *testing.T) {
 			b:              bytes.NewBuffer(nil),
 		}
 		c.Writer = i
+		logritelog.Default().Printf("[DEBUG] TestInterceptedHeader(t=%v): c.Writer → %v", t, c.Writer)
 		c.Next()
 		c.Header("X-Test", "overridden")
 		c.Writer = i.ResponseWriter
@@ -3550,9 +4031,11 @@ func TestInterceptedHeader(t *testing.T) {
 	// middleware. Assert this
 	assert.Empty(t, w.Result().Header.Get("X-Test"))
 	assert.Equal(t, "present", w.Result().Header.Get("X-Test-2"))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestInterceptedHeader(t=%v)", t)
 }
 
 func TestContextNext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextNext(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 
 	// Test with no handlers
@@ -3561,6 +4044,7 @@ func TestContextNext(t *testing.T) {
 
 	// Test with one handler
 	c.index = -1
+	logritelog.Default().Printf("[DEBUG] TestContextNext(t=%v): c.index → %v", t, c.index)
 	c.handlers = HandlersChain{func(c *Context) {
 		c.Set("key", "value")
 	}}
@@ -3582,6 +4066,8 @@ func TestContextNext(t *testing.T) {
 			c.Set("key3", "value3")
 		},
 	}
+	logritelog.Default().Printf("[DEBUG] TestContextNext(t=%v): c.handlers → %v", t, c.handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextNext(t=%v)", t)
 	c.index = -1
 	c.Next()
 	assert.Equal(t, int8(4), c.index)
@@ -3597,6 +4083,7 @@ func TestContextNext(t *testing.T) {
 }
 
 func TestContextSetCookieData(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestContextSetCookieData(t=%v)", t)
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.SetSameSite(http.SameSiteLaxMode)
 	var setCookie string
@@ -3620,6 +4107,7 @@ func TestContextSetCookieData(t *testing.T) {
 	assert.Contains(t, setCookie, "HttpOnly")
 	assert.Contains(t, setCookie, "Secure")
 	// SameSite=Lax might be omitted in Go 1.24+ as it's the default
+	logritelog.Default().Printf("[DEBUG] TestContextSetCookieData(t=%v): setCookie → <redacted>", t)
 	// assert.Contains(t, setCookie, "SameSite=Lax")
 
 	// Test that when Path is empty, "/" is automatically set
@@ -3632,6 +4120,7 @@ func TestContextSetCookieData(t *testing.T) {
 		Secure:   true,
 		HttpOnly: true,
 	}
+	logritelog.Default().Printf("[DEBUG] TestContextSetCookieData(t=%v): cookie → <redacted>", t)
 	c.SetCookieData(cookie)
 	setCookie = c.Writer.Header().Get("Set-Cookie")
 	assert.Contains(t, setCookie, "user=gin")
@@ -3738,9 +4227,11 @@ func TestContextSetCookieData(t *testing.T) {
 		setCookie := c.Writer.Header().Get("Set-Cookie")
 		assert.Contains(t, setCookie, "SameSite=Strict")
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestContextSetCookieData(t=%v)", t)
 }
 
 func TestGetMapFromFormData(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestGetMapFromFormData(t=%v)", t)
 	testCases := []struct {
 		name     string
 		data     map[string][]string
@@ -3869,9 +4360,11 @@ func TestGetMapFromFormData(t *testing.T) {
 			assert.Equal(t, tc.found, found, "found mismatch")
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestGetMapFromFormData(t=%v)", t)
 }
 
 func BenchmarkGetMapFromFormData(b *testing.B) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BenchmarkGetMapFromFormData(b=%v)", b)
 	// Test case 1: Small dataset with bracket notation
 	smallData := map[string][]string{
 		"ids[a]":   {"hi"},
@@ -3954,4 +4447,5 @@ func BenchmarkGetMapFromFormData(b *testing.B) {
 			}
 		})
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting BenchmarkGetMapFromFormData(b=%v)", b)
 }

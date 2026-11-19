@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -25,14 +26,17 @@ var (
 
 // TrySet tries to set a value by the multipart request with the binding a form file
 func (r *multipartRequest) TrySet(value reflect.Value, field reflect.StructField, key string, opt setOptions) (bool, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TrySet(value=%v,field=%v,key=%v,opt=%v)", value, field, key, opt)
 	if files := r.MultipartForm.File[key]; len(files) != 0 {
 		return setByMultipartFormFile(value, field, files)
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting TrySet(value=%v,field=%v,key=%v,opt=%v)", value, field, key, opt)
 	return setByForm(value, field, r.MultipartForm.Value, key, opt)
 }
 
 func setByMultipartFormFile(value reflect.Value, field reflect.StructField, files []*multipart.FileHeader) (isSet bool, err error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering setByMultipartFormFile(value=%v,field=%v,files=%v)", value, field, files)
 	switch value.Kind() {
 	case reflect.Ptr:
 		switch value.Interface().(type) {

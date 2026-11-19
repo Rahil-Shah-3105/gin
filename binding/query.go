@@ -3,19 +3,24 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
 type queryBinding struct{}
 
 func (queryBinding) Name() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
 	return "query"
 }
 
 func (queryBinding) Bind(req *http.Request, obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Bind(req=%v,obj=%v)", req, obj)
 	values := req.URL.Query()
 	if err := mapForm(obj, values); err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in Bind(req=%v,obj=%v): %v", req, obj, err)
 		return err
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Bind(req=%v,obj=%v)", req, obj)
 	return validate(obj)
 }

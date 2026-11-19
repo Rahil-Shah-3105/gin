@@ -3,6 +3,10 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import (
+	logritelog "log"
+	logritetime "time"
+)
 
 import (
 	"crypto/tls"
@@ -25,11 +29,14 @@ import (
 )
 
 func formatAsDate(t time.Time) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering formatAsDate(t=%v)", t)
 	year, month, day := t.Date()
+	logritelog.Default().Printf("[WARN] <<< Exiting formatAsDate(t=%v)", t)
 	return fmt.Sprintf("%d/%02d/%02d", year, month, day)
 }
 
 func setupHTMLFiles(t *testing.T, mode string, tls bool, loadMethod func(*Engine)) *httptest.Server {
+	logritelog.Default().Printf("[ERROR] >>> Entering setupHTMLFiles(t=%v,mode=%v,tls=%v,loadMethod=%v)", t, mode, tls, loadMethod)
 	SetMode(mode)
 	defer SetMode(TestMode)
 
@@ -59,10 +66,12 @@ func setupHTMLFiles(t *testing.T, mode string, tls bool, loadMethod func(*Engine
 		ts = httptest.NewServer(router)
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting setupHTMLFiles(t=%v,mode=%v,tls=%v,loadMethod=%v)", t, mode, tls, loadMethod)
 	return ts
 }
 
 func TestLoadHTMLGlobDebugMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLGlobDebugMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		DebugMode,
@@ -83,12 +92,15 @@ func TestLoadHTMLGlobDebugMode(t *testing.T) {
 }
 
 func TestH2c(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestH2c(t=%v)", t)
 	ln, err := net.Listen("tcp", localhostIP+":0")
 	if err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in TestH2c(t=%v): %v", t, err)
 		t.Error(err)
 	}
 	r := Default()
 	r.UseH2C = true
+	logritelog.Default().Printf("[DEBUG] TestH2c(t=%v): r.UseH2C → %v", t, r.UseH2C)
 	r.GET("/", func(c *Context) {
 		c.String(200, "<h1>Hello world</h1>")
 	})
@@ -118,9 +130,11 @@ func TestH2c(t *testing.T) {
 
 	resp, _ := io.ReadAll(res.Body)
 	assert.Equal(t, "<h1>Hello world</h1>", string(resp))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestH2c(t=%v)", t)
 }
 
 func TestLoadHTMLGlobTestMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLGlobTestMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -141,6 +155,7 @@ func TestLoadHTMLGlobTestMode(t *testing.T) {
 }
 
 func TestLoadHTMLGlobReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLGlobReleaseMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -161,6 +176,7 @@ func TestLoadHTMLGlobReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLGlobUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLGlobUsingTLS(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		DebugMode,
@@ -188,6 +204,7 @@ func TestLoadHTMLGlobUsingTLS(t *testing.T) {
 }
 
 func TestLoadHTMLGlobFromFuncMap(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLGlobFromFuncMap(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		DebugMode,
@@ -208,17 +225,22 @@ func TestLoadHTMLGlobFromFuncMap(t *testing.T) {
 }
 
 func init() {
+	logritelog.Default().Printf("[ERROR] >>> Entering init()")
 	SetMode(TestMode)
+	logritelog.Default().Printf("[WARN] <<< Exiting init()")
 }
 
 func TestCreateEngine(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCreateEngine(t=%v)", t)
 	router := New()
 	assert.Equal(t, "/", router.basePath)
 	assert.Equal(t, router.engine, router)
 	assert.Empty(t, router.Handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCreateEngine(t=%v)", t)
 }
 
 func TestLoadHTMLFilesTestMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFilesTestMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -239,6 +261,7 @@ func TestLoadHTMLFilesTestMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesDebugMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFilesDebugMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		DebugMode,
@@ -259,6 +282,7 @@ func TestLoadHTMLFilesDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFilesReleaseMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -279,6 +303,7 @@ func TestLoadHTMLFilesReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFilesUsingTLS(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -306,6 +331,7 @@ func TestLoadHTMLFilesUsingTLS(t *testing.T) {
 }
 
 func TestLoadHTMLFilesFuncMap(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFilesFuncMap(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -328,6 +354,7 @@ func TestLoadHTMLFilesFuncMap(t *testing.T) {
 var tmplFS = http.Dir("testdata/template")
 
 func TestLoadHTMLFSTestMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFSTestMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -348,6 +375,7 @@ func TestLoadHTMLFSTestMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSDebugMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFSDebugMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		DebugMode,
@@ -368,6 +396,7 @@ func TestLoadHTMLFSDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFSReleaseMode(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -388,6 +417,7 @@ func TestLoadHTMLFSReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFSUsingTLS(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -415,6 +445,7 @@ func TestLoadHTMLFSUsingTLS(t *testing.T) {
 }
 
 func TestLoadHTMLFSFuncMap(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoadHTMLFSFuncMap(t=%v)", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -435,6 +466,7 @@ func TestLoadHTMLFSFuncMap(t *testing.T) {
 }
 
 func TestAddRoute(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestAddRoute(t=%v)", t)
 	router := New()
 	router.addRoute(http.MethodGet, "/", HandlersChain{func(_ *Context) {}})
 
@@ -450,9 +482,11 @@ func TestAddRoute(t *testing.T) {
 
 	router.addRoute(http.MethodPost, "/post", HandlersChain{func(_ *Context) {}})
 	assert.Len(t, router.trees, 2)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestAddRoute(t=%v)", t)
 }
 
 func TestAddRouteFails(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestAddRouteFails(t=%v)", t)
 	router := New()
 	assert.Panics(t, func() { router.addRoute("", "/", HandlersChain{func(_ *Context) {}}) })
 	assert.Panics(t, func() { router.addRoute(http.MethodGet, "a", HandlersChain{func(_ *Context) {}}) })
@@ -462,14 +496,18 @@ func TestAddRouteFails(t *testing.T) {
 	assert.Panics(t, func() {
 		router.addRoute(http.MethodPost, "/post", HandlersChain{func(_ *Context) {}})
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestAddRouteFails(t=%v)", t)
 }
 
 func TestCreateDefaultRouter(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCreateDefaultRouter(t=%v)", t)
 	router := Default()
 	assert.Len(t, router.Handlers, 2)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCreateDefaultRouter(t=%v)", t)
 }
 
 func TestNoRouteWithoutGlobalHandlers(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestNoRouteWithoutGlobalHandlers(t=%v)", t)
 	var middleware0 HandlerFunc = func(c *Context) {}
 	var middleware1 HandlerFunc = func(c *Context) {}
 
@@ -489,9 +527,11 @@ func TestNoRouteWithoutGlobalHandlers(t *testing.T) {
 	compareFunc(t, router.allNoRoute[0], middleware1)
 	compareFunc(t, router.noRoute[1], middleware0)
 	compareFunc(t, router.allNoRoute[1], middleware0)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestNoRouteWithoutGlobalHandlers(t=%v)", t)
 }
 
 func TestNoRouteWithGlobalHandlers(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestNoRouteWithGlobalHandlers(t=%v)", t)
 	var middleware0 HandlerFunc = func(c *Context) {}
 	var middleware1 HandlerFunc = func(c *Context) {}
 	var middleware2 HandlerFunc = func(c *Context) {}
@@ -520,9 +560,11 @@ func TestNoRouteWithGlobalHandlers(t *testing.T) {
 	compareFunc(t, router.allNoRoute[0], middleware2)
 	compareFunc(t, router.allNoRoute[1], middleware1)
 	compareFunc(t, router.allNoRoute[2], middleware0)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestNoRouteWithGlobalHandlers(t=%v)", t)
 }
 
 func TestNoMethodWithoutGlobalHandlers(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestNoMethodWithoutGlobalHandlers(t=%v)", t)
 	var middleware0 HandlerFunc = func(c *Context) {}
 	var middleware1 HandlerFunc = func(c *Context) {}
 
@@ -542,9 +584,11 @@ func TestNoMethodWithoutGlobalHandlers(t *testing.T) {
 	compareFunc(t, router.allNoMethod[0], middleware1)
 	compareFunc(t, router.noMethod[1], middleware0)
 	compareFunc(t, router.allNoMethod[1], middleware0)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestNoMethodWithoutGlobalHandlers(t=%v)", t)
 }
 
 func TestRebuild404Handlers(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestRebuild404Handlers(t=%v)", t)
 	var middleware0 HandlerFunc = func(c *Context) {}
 	var middleware1 HandlerFunc = func(c *Context) {}
 
@@ -568,9 +612,11 @@ func TestRebuild404Handlers(t *testing.T) {
 	// Global middleware should come first
 	compareFunc(t, router.allNoRoute[0], middleware1)
 	compareFunc(t, router.allNoRoute[1], middleware0)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestRebuild404Handlers(t=%v)", t)
 }
 
 func TestNoMethodWithGlobalHandlers(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestNoMethodWithGlobalHandlers(t=%v)", t)
 	var middleware0 HandlerFunc = func(c *Context) {}
 	var middleware1 HandlerFunc = func(c *Context) {}
 	var middleware2 HandlerFunc = func(c *Context) {}
@@ -599,17 +645,21 @@ func TestNoMethodWithGlobalHandlers(t *testing.T) {
 	compareFunc(t, router.allNoMethod[0], middleware2)
 	compareFunc(t, router.allNoMethod[1], middleware1)
 	compareFunc(t, router.allNoMethod[2], middleware0)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestNoMethodWithGlobalHandlers(t=%v)", t)
 }
 
 func compareFunc(t *testing.T, a, b any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering compareFunc(t=%v,a=%v,b=%v)", t, a, b)
 	sf1 := reflect.ValueOf(a)
 	sf2 := reflect.ValueOf(b)
 	if sf1.Pointer() != sf2.Pointer() {
 		t.Error("different functions")
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting compareFunc(t=%v,a=%v,b=%v)", t, a, b)
 }
 
 func TestListOfRoutes(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestListOfRoutes(t=%v)", t)
 	router := New()
 	router.GET("/favicon.ico", handlerTest1)
 	router.GET("/", handlerTest1)
@@ -649,9 +699,11 @@ func TestListOfRoutes(t *testing.T) {
 		Path:    "/users/:id",
 		Handler: "^(.*/vendor/)?github.com/gin-gonic/gin.handlerTest2$",
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestListOfRoutes(t=%v)", t)
 }
 
 func TestEngineHandleContext(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContext(t=%v)", t)
 	r := New()
 	r.GET("/", func(c *Context) {
 		c.Request.URL.Path = "/v2"
@@ -666,9 +718,11 @@ func TestEngineHandleContext(t *testing.T) {
 		w := PerformRequest(r, http.MethodGet, "/")
 		assert.Equal(t, 301, w.Code)
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContext(t=%v)", t)
 }
 
 func TestEngineHandleContextManyReEntries(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContextManyReEntries(t=%v)", t)
 	expectValue := 10000
 
 	var handlerCounter, middlewareCounter int64
@@ -703,9 +757,11 @@ func TestEngineHandleContextManyReEntries(t *testing.T) {
 
 	assert.Equal(t, int64(expectValue), handlerCounter)
 	assert.Equal(t, int64(expectValue), middlewareCounter)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContextManyReEntries(t=%v)", t)
 }
 
 func TestEngineHandleContextPreventsMiddlewareReEntry(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContextPreventsMiddlewareReEntry(t=%v)", t)
 	// given
 	var handlerCounterV1, handlerCounterV2, middlewareCounterV1 int64
 
@@ -741,9 +797,11 @@ func TestEngineHandleContextPreventsMiddlewareReEntry(t *testing.T) {
 	assert.Equal(t, int64(2), handlerCounterV1)
 	assert.Equal(t, int64(2), middlewareCounterV1)
 	assert.Equal(t, int64(1), handlerCounterV2)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContextPreventsMiddlewareReEntry(t=%v)", t)
 }
 
 func TestEngineHandleContextNoRouteWithGroupMiddleware(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContextNoRouteWithGroupMiddleware(t=%v)", t)
 	// Scenario from issue #1848:
 	// - Engine with no global middleware (gin.New())
 	// - A group with middleware
@@ -776,9 +834,11 @@ func TestEngineHandleContextNoRouteWithGroupMiddleware(t *testing.T) {
 	// Middleware and handler should each run exactly once
 	assert.Equal(t, int64(1), atomic.LoadInt64(&middlewareCount))
 	assert.Equal(t, int64(1), atomic.LoadInt64(&handlerCount))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContextNoRouteWithGroupMiddleware(t=%v)", t)
 }
 
 func TestEngineHandleContextNoRouteWithEngineMiddleware(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContextNoRouteWithEngineMiddleware(t=%v)", t)
 	// When engine middleware exists and NoRoute redirects via HandleContext,
 	// verify the handlers run the expected number of times.
 
@@ -813,12 +873,16 @@ func TestEngineHandleContextNoRouteWithEngineMiddleware(t *testing.T) {
 	// Engine middleware runs twice: once for the NoRoute chain, once for the HandleContext chain
 	// This is expected behavior since HandleContext re-enters the full handler chain
 	assert.Equal(t, int64(2), atomic.LoadInt64(&engineMwCount))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContextNoRouteWithEngineMiddleware(t=%v)", t)
 }
 
 func TestEngineHandleContextUseEscapedPathPercentEncoded(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContextUseEscapedPathPercentEncoded(t=%v)", t)
 	r := New()
 	r.UseEscapedPath = true
+	logritelog.Default().Printf("[DEBUG] TestEngineHandleContextUseEscapedPathPercentEncoded(t=%v): r.UseEscapedPath → %v", t, r.UseEscapedPath)
 	r.UnescapePathValues = false
+	logritelog.Default().Printf("[DEBUG] TestEngineHandleContextUseEscapedPathPercentEncoded(t=%v): r.UnescapePathValues → %v", t, r.UnescapePathValues)
 
 	r.GET("/v1/:path", func(c *Context) {
 		// Path is Escaped, the %25 is not interpreted as %
@@ -829,12 +893,16 @@ func TestEngineHandleContextUseEscapedPathPercentEncoded(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/foo%252Fbar", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContextUseEscapedPathPercentEncoded(t=%v)", t)
 }
 
 func TestEngineHandleContextUseRawPathPercentEncoded(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContextUseRawPathPercentEncoded(t=%v)", t)
 	r := New()
 	r.UseRawPath = true
+	logritelog.Default().Printf("[DEBUG] TestEngineHandleContextUseRawPathPercentEncoded(t=%v): r.UseRawPath → %v", t, r.UseRawPath)
 	r.UnescapePathValues = false
+	logritelog.Default().Printf("[DEBUG] TestEngineHandleContextUseRawPathPercentEncoded(t=%v): r.UnescapePathValues → %v", t, r.UnescapePathValues)
 
 	r.GET("/v1/:path", func(c *Context) {
 		// Path is used, the %25 is interpreted as %
@@ -845,13 +913,18 @@ func TestEngineHandleContextUseRawPathPercentEncoded(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/foo%252Fbar", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContextUseRawPathPercentEncoded(t=%v)", t)
 }
 
 func TestEngineHandleContextUseEscapedPathOverride(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestEngineHandleContextUseEscapedPathOverride(t=%v)", t)
 	r := New()
 	r.UseEscapedPath = true
+	logritelog.Default().Printf("[DEBUG] TestEngineHandleContextUseEscapedPathOverride(t=%v): r.UseEscapedPath → %v", t, r.UseEscapedPath)
 	r.UseRawPath = true
+	logritelog.Default().Printf("[DEBUG] TestEngineHandleContextUseEscapedPathOverride(t=%v): r.UseRawPath → %v", t, r.UseRawPath)
 	r.UnescapePathValues = false
+	logritelog.Default().Printf("[DEBUG] TestEngineHandleContextUseEscapedPathOverride(t=%v): r.UnescapePathValues → %v", t, r.UnescapePathValues)
 
 	r.GET("/v1/:path", func(c *Context) {
 		assert.Equal(t, "foo%25bar", c.Param("path"))
@@ -862,9 +935,11 @@ func TestEngineHandleContextUseEscapedPathOverride(t *testing.T) {
 		w := PerformRequest(r, http.MethodGet, "/v1/foo%25bar")
 		assert.Equal(t, 200, w.Code)
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestEngineHandleContextUseEscapedPathOverride(t=%v)", t)
 }
 
 func TestPrepareTrustedCIRDsWith(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestPrepareTrustedCIRDsWith(t=%v)", t)
 	r := New()
 
 	// valid ipv4 cidr
@@ -967,17 +1042,21 @@ func TestPrepareTrustedCIRDsWith(t *testing.T) {
 		assert.Nil(t, r.trustedCIDRs)
 		require.NoError(t, err)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting TestPrepareTrustedCIRDsWith(t=%v)", t)
 }
 
 func parseCIDR(cidr string) *net.IPNet {
+	logritelog.Default().Printf("[ERROR] >>> Entering parseCIDR(cidr=%v)", cidr)
 	_, parsedCIDR, err := net.ParseCIDR(cidr)
 	if err != nil {
 		fmt.Println(err)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting parseCIDR(cidr=%v)", cidr)
 	return parsedCIDR
 }
 
 func assertRoutePresent(t *testing.T, gotRoutes RoutesInfo, wantRoute RouteInfo) {
+	logritelog.Default().Printf("[ERROR] >>> Entering assertRoutePresent(t=%v,gotRoutes=%v,wantRoute=%v)", t, gotRoutes, wantRoute)
 	for _, gotRoute := range gotRoutes {
 		if gotRoute.Path == wantRoute.Path && gotRoute.Method == wantRoute.Method {
 			assert.Regexp(t, wantRoute.Handler, gotRoute.Handler)
@@ -985,12 +1064,14 @@ func assertRoutePresent(t *testing.T, gotRoutes RoutesInfo, wantRoute RouteInfo)
 		}
 	}
 	t.Errorf("route not found: %v", wantRoute)
+	logritelog.Default().Printf("[WARN] <<< Exiting assertRoutePresent(t=%v,gotRoutes=%v,wantRoute=%v)", t, gotRoutes, wantRoute)
 }
 
 func handlerTest1(c *Context) {}
 func handlerTest2(c *Context) {}
 
 func TestNewOptionFunc(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestNewOptionFunc(t=%v)", t)
 	fc := func(e *Engine) {
 		e.GET("/test1", handlerTest1)
 		e.GET("/test2", handlerTest2)
@@ -1005,9 +1086,11 @@ func TestNewOptionFunc(t *testing.T) {
 	routes := r.Routes()
 	assertRoutePresent(t, routes, RouteInfo{Path: "/test1", Method: http.MethodGet, Handler: "github.com/gin-gonic/gin.handlerTest1"})
 	assertRoutePresent(t, routes, RouteInfo{Path: "/test2", Method: http.MethodGet, Handler: "github.com/gin-gonic/gin.handlerTest2"})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestNewOptionFunc(t=%v)", t)
 }
 
 func TestWithOptionFunc(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestWithOptionFunc(t=%v)", t)
 	r := New()
 
 	r.With(func(e *Engine) {
@@ -1022,16 +1105,20 @@ func TestWithOptionFunc(t *testing.T) {
 	routes := r.Routes()
 	assertRoutePresent(t, routes, RouteInfo{Path: "/test1", Method: http.MethodGet, Handler: "github.com/gin-gonic/gin.handlerTest1"})
 	assertRoutePresent(t, routes, RouteInfo{Path: "/test2", Method: http.MethodGet, Handler: "github.com/gin-gonic/gin.handlerTest2"})
+	logritelog.Default().Printf("[WARN] <<< Exiting TestWithOptionFunc(t=%v)", t)
 }
 
 type Birthday string
 
 func (b *Birthday) UnmarshalParam(param string) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering UnmarshalParam(param=%v)", param)
 	*b = Birthday(strings.ReplaceAll(param, "-", "/"))
+	logritelog.Default().Printf("[WARN] <<< Exiting UnmarshalParam(param=%v)", param)
 	return nil
 }
 
 func TestCustomUnmarshalStruct(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestCustomUnmarshalStruct(t=%v)", t)
 	route := Default()
 	var request struct {
 		Birthday Birthday `form:"birthday"`
@@ -1045,21 +1132,27 @@ func TestCustomUnmarshalStruct(t *testing.T) {
 	route.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `"2000/01/01"`, w.Body.String())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestCustomUnmarshalStruct(t=%v)", t)
 }
 
 // Test the fix for https://github.com/gin-gonic/gin/issues/4002
 func TestMethodNotAllowedNoRoute(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestMethodNotAllowedNoRoute(t=%v)", t)
 	g := New()
 	g.HandleMethodNotAllowed = true
+	logritelog.Default().Printf("[DEBUG] TestMethodNotAllowedNoRoute(t=%v): g.HandleMethodNotAllowed → %v", t, g.HandleMethodNotAllowed)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	resp := httptest.NewRecorder()
 	assert.NotPanics(t, func() { g.ServeHTTP(resp, req) })
 	assert.Equal(t, http.StatusNotFound, resp.Code)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestMethodNotAllowedNoRoute(t=%v)", t)
 }
 
 // Test the fix for https://github.com/gin-gonic/gin/pull/4415
 func TestLiteralColonWithRun(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLiteralColonWithRun(t=%v)", t)
+	__logStart := logritetime.Now()
 	SetMode(TestMode)
 	router := New()
 
@@ -1076,9 +1169,12 @@ func TestLiteralColonWithRun(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "literal_colon")
+	logritelog.Default().Printf("[ERROR] TestLiteralColonWithRun(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestLiteralColonWithRun(t=%v)", t)
 }
 
 func TestLiteralColonWithDirectServeHTTP(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLiteralColonWithDirectServeHTTP(t=%v)", t)
 	SetMode(TestMode)
 	router := New()
 
@@ -1092,9 +1188,12 @@ func TestLiteralColonWithDirectServeHTTP(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "literal_colon")
+	logritelog.Default().Printf("[ERROR] TestLiteralColonWithDirectServeHTTP(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestLiteralColonWithDirectServeHTTP(t=%v)", t)
 }
 
 func TestLiteralColonWithHandler(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLiteralColonWithHandler(t=%v)", t)
 	SetMode(TestMode)
 	router := New()
 
@@ -1110,9 +1209,12 @@ func TestLiteralColonWithHandler(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "literal_colon")
+	logritelog.Default().Printf("[ERROR] TestLiteralColonWithHandler(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestLiteralColonWithHandler(t=%v)", t)
 }
 
 func TestLiteralColonWithHTTPServer(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLiteralColonWithHTTPServer(t=%v)", t)
 	SetMode(TestMode)
 	router := New()
 
@@ -1137,10 +1239,13 @@ func TestLiteralColonWithHTTPServer(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w2.Code)
 	assert.Contains(t, w2.Body.String(), "foo")
+	logritelog.Default().Printf("[ERROR] TestLiteralColonWithHTTPServer(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestLiteralColonWithHTTPServer(t=%v)", t)
 }
 
 // Test that updateRouteTrees is called only once
 func TestUpdateRouteTreesCalledOnce(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestUpdateRouteTreesCalledOnce(t=%v)", t)
 	SetMode(TestMode)
 	router := New()
 
@@ -1155,4 +1260,6 @@ func TestUpdateRouteTreesCalledOnce(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Code)
 		assert.Equal(t, "ok", w.Body.String())
 	}
+	logritelog.Default().Printf("[ERROR] TestUpdateRouteTreesCalledOnce(t)=%v: external service call took %v ms", t, logritetime.Since(__logStart).Milliseconds())
+logritelog.Default().Printf("[WARN] <<< Exiting TestUpdateRouteTreesCalledOnce(t=%v)", t)
 }

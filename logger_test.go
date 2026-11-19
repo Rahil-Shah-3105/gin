@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -16,10 +17,13 @@ import (
 )
 
 func init() {
+	logritelog.Default().Printf("[ERROR] >>> Entering init()")
 	SetMode(TestMode)
+	logritelog.Default().Printf("[WARN] <<< Exiting init()")
 }
 
 func TestLogger(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLogger(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	router.Use(LoggerWithWriter(buffer))
@@ -81,9 +85,11 @@ func TestLogger(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLogger(t=%v)", t)
 }
 
 func TestLoggerWithConfig(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoggerWithConfig(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	router.Use(LoggerWithConfig(LoggerConfig{Output: buffer}))
@@ -145,13 +151,17 @@ func TestLoggerWithConfig(t *testing.T) {
 	assert.Contains(t, buffer.String(), "404")
 	assert.Contains(t, buffer.String(), http.MethodGet)
 	assert.Contains(t, buffer.String(), "/notfound")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoggerWithConfig(t=%v)", t)
 }
 
 func TestLoggerWithFormatter(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoggerWithFormatter(t=%v)", t)
 	buffer := new(strings.Builder)
 
 	d := DefaultWriter
 	DefaultWriter = buffer
+	logritelog.Default().Printf("[DEBUG] TestLoggerWithFormatter(t=%v): DefaultWriter → %v", t, DefaultWriter)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoggerWithFormatter(t=%v)", t)
 	defer func() {
 		DefaultWriter = d
 	}()
@@ -180,6 +190,7 @@ func TestLoggerWithFormatter(t *testing.T) {
 }
 
 func TestLoggerWithConfigFormatting(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoggerWithConfigFormatting(t=%v)", t)
 	var gotParam LogFormatterParams
 	var gotKeys map[any]any
 	buffer := new(strings.Builder)
@@ -192,6 +203,7 @@ func TestLoggerWithConfigFormatting(t *testing.T) {
 		Formatter: func(param LogFormatterParams) string {
 			// for assert test
 			gotParam = param
+			logritelog.Default().Printf("[DEBUG] TestLoggerWithConfigFormatting(t=%v): gotParam → %v", t, gotParam)
 
 			return fmt.Sprintf("[FORMATTER TEST] %v | %3d | %13v | %15s | %-7s %s\n%s",
 				param.TimeStamp.Format("2006/01/02 - 15:04:05"),
@@ -208,6 +220,7 @@ func TestLoggerWithConfigFormatting(t *testing.T) {
 		// set dummy ClientIP
 		c.Request.Header.Set("X-Forwarded-For", "20.20.20.20")
 		gotKeys = c.Keys
+		logritelog.Default().Printf("[DEBUG] TestLoggerWithConfigFormatting(t=%v): gotKeys → %v", t, gotKeys)
 		time.Sleep(time.Millisecond)
 	})
 	PerformRequest(router, http.MethodGet, "/example?a=100")
@@ -229,9 +242,11 @@ func TestLoggerWithConfigFormatting(t *testing.T) {
 	assert.Equal(t, "/example?a=100", gotParam.Path)
 	assert.Empty(t, gotParam.ErrorMessage)
 	assert.Equal(t, gotKeys, gotParam.Keys)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoggerWithConfigFormatting(t=%v)", t)
 }
 
 func TestDefaultLogFormatter(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestDefaultLogFormatter(t=%v)", t)
 	timeStamp := time.Unix(1544173902, 0).UTC()
 
 	termFalseParam := LogFormatterParams{
@@ -282,9 +297,11 @@ func TestDefaultLogFormatter(t *testing.T) {
 
 	assert.Equal(t, "[GIN] 2018/12/07 - 09:11:42 |\x1b[97;42m 200 \x1b[0m|\x1b[97;41m       5s \x1b[0m|     20.20.20.20 |\x1b[97;44m GET     \x1b[0m \"/\"\n", defaultLogFormatter(termTrueParam))
 	assert.Equal(t, "[GIN] 2018/12/07 - 09:11:42 |\x1b[97;42m 200 \x1b[0m|\x1b[97;41m 2743h29m0s \x1b[0m|     20.20.20.20 |\x1b[97;44m GET     \x1b[0m \"/\"\n", defaultLogFormatter(termTrueLongDurationParam))
+	logritelog.Default().Printf("[WARN] <<< Exiting TestDefaultLogFormatter(t=%v)", t)
 }
 
 func TestColorForMethod(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestColorForMethod(t=%v)", t)
 	colorForMethod := func(method string) string {
 		p := LogFormatterParams{
 			Method: method,
@@ -300,9 +317,11 @@ func TestColorForMethod(t *testing.T) {
 	assert.Equal(t, magenta, colorForMethod("HEAD"), "head should be magenta")
 	assert.Equal(t, white, colorForMethod("OPTIONS"), "options should be white")
 	assert.Equal(t, reset, colorForMethod("TRACE"), "trace is not defined and should be the reset color")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestColorForMethod(t=%v)", t)
 }
 
 func TestColorForStatus(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestColorForStatus(t=%v)", t)
 	colorForStatus := func(code int) string {
 		p := LogFormatterParams{
 			StatusCode: code,
@@ -315,9 +334,11 @@ func TestColorForStatus(t *testing.T) {
 	assert.Equal(t, white, colorForStatus(http.StatusMovedPermanently), "3xx should be white")
 	assert.Equal(t, yellow, colorForStatus(http.StatusNotFound), "4xx should be yellow")
 	assert.Equal(t, red, colorForStatus(2), "other things should be red")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestColorForStatus(t=%v)", t)
 }
 
 func TestColorForLatency(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestColorForLatency(t=%v)", t)
 	colorForLatency := func(latency time.Duration) string {
 		p := LogFormatterParams{
 			Latency: latency,
@@ -333,20 +354,25 @@ func TestColorForLatency(t *testing.T) {
 	assert.Equal(t, yellow, colorForLatency(time.Millisecond*600), "600ms should be yellow")
 	assert.Equal(t, magenta, colorForLatency(time.Millisecond*1500), "1.5s should be magenta")
 	assert.Equal(t, red, colorForLatency(time.Second*3), "other things should be red")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestColorForLatency(t=%v)", t)
 }
 
 func TestResetColor(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestResetColor(t=%v)", t)
 	p := LogFormatterParams{}
 	assert.Equal(t, string([]byte{27, 91, 48, 109}), p.ResetColor())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestResetColor(t=%v)", t)
 }
 
 func TestIsOutputColor(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestIsOutputColor(t=%v)", t)
 	// test with isTerm flag true.
 	p := LogFormatterParams{
 		isTerm: true,
 	}
 
 	consoleColorMode = autoColor
+	logritelog.Default().Printf("[DEBUG] TestIsOutputColor(t=%v): consoleColorMode → %v", t, consoleColorMode)
 	assert.True(t, p.IsOutputColor())
 
 	ForceConsoleColor()
@@ -370,10 +396,12 @@ func TestIsOutputColor(t *testing.T) {
 	assert.False(t, p.IsOutputColor())
 
 	// reset console color mode.
+	logritelog.Default().Printf("[WARN] <<< Exiting TestIsOutputColor(t=%v)", t)
 	consoleColorMode = autoColor
 }
 
 func TestErrorLogger(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestErrorLogger(t=%v)", t)
 	router := New()
 	router.Use(ErrorLogger())
 	router.GET("/error", func(c *Context) {
@@ -398,9 +426,11 @@ func TestErrorLogger(t *testing.T) {
 	w = PerformRequest(router, http.MethodGet, "/print")
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Equal(t, "hola!{\"error\":\"this is an error\"}", w.Body.String())
+	logritelog.Default().Printf("[WARN] <<< Exiting TestErrorLogger(t=%v)", t)
 }
 
 func TestLoggerWithWriterSkippingPaths(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoggerWithWriterSkippingPaths(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	router.Use(LoggerWithWriter(buffer, "/skipped"))
@@ -413,9 +443,11 @@ func TestLoggerWithWriterSkippingPaths(t *testing.T) {
 	buffer.Reset()
 	PerformRequest(router, http.MethodGet, "/skipped")
 	assert.Contains(t, buffer.String(), "")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoggerWithWriterSkippingPaths(t=%v)", t)
 }
 
 func TestLoggerWithConfigSkippingPaths(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoggerWithConfigSkippingPaths(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	router.Use(LoggerWithConfig(LoggerConfig{
@@ -431,9 +463,11 @@ func TestLoggerWithConfigSkippingPaths(t *testing.T) {
 	buffer.Reset()
 	PerformRequest(router, http.MethodGet, "/skipped")
 	assert.Contains(t, buffer.String(), "")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoggerWithConfigSkippingPaths(t=%v)", t)
 }
 
 func TestLoggerWithConfigSkipper(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoggerWithConfigSkipper(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	router.Use(LoggerWithConfig(LoggerConfig{
@@ -451,9 +485,11 @@ func TestLoggerWithConfigSkipper(t *testing.T) {
 	buffer.Reset()
 	PerformRequest(router, http.MethodGet, "/skipped")
 	assert.Contains(t, buffer.String(), "")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoggerWithConfigSkipper(t=%v)", t)
 }
 
 func TestDisableConsoleColor(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestDisableConsoleColor(t=%v)", t)
 	New()
 	assert.Equal(t, autoColor, consoleColorMode)
 	DisableConsoleColor()
@@ -461,9 +497,12 @@ func TestDisableConsoleColor(t *testing.T) {
 
 	// reset console color mode.
 	consoleColorMode = autoColor
+	logritelog.Default().Printf("[DEBUG] TestDisableConsoleColor(t=%v): consoleColorMode → %v", t, consoleColorMode)
+logritelog.Default().Printf("[WARN] <<< Exiting TestDisableConsoleColor(t=%v)", t)
 }
 
 func TestForceConsoleColor(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestForceConsoleColor(t=%v)", t)
 	New()
 	assert.Equal(t, autoColor, consoleColorMode)
 	ForceConsoleColor()
@@ -471,9 +510,12 @@ func TestForceConsoleColor(t *testing.T) {
 
 	// reset console color mode.
 	consoleColorMode = autoColor
+	logritelog.Default().Printf("[DEBUG] TestForceConsoleColor(t=%v): consoleColorMode → %v", t, consoleColorMode)
+logritelog.Default().Printf("[WARN] <<< Exiting TestForceConsoleColor(t=%v)", t)
 }
 
 func TestLoggerWithConfigSkipQueryString(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestLoggerWithConfigSkipQueryString(t=%v)", t)
 	buffer := new(strings.Builder)
 	router := New()
 	router.Use(LoggerWithConfig(LoggerConfig{
@@ -485,4 +527,5 @@ func TestLoggerWithConfigSkipQueryString(t *testing.T) {
 	PerformRequest(router, "GET", "/logged?a=21")
 	assert.Contains(t, buffer.String(), "200")
 	assert.NotContains(t, buffer.String(), "a=21")
+	logritelog.Default().Printf("[WARN] <<< Exiting TestLoggerWithConfigSkipQueryString(t=%v)", t)
 }

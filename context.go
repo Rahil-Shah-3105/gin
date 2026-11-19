@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -101,25 +102,39 @@ type Context struct {
 /************************************/
 
 func (c *Context) reset() {
+	logritelog.Default().Printf("[ERROR] >>> Entering reset()")
 	c.Writer = &c.writermem
 	c.Params = c.Params[:0]
+	logritelog.Default().Printf("[DEBUG] reset(): c.Params → %v", c.Params)
+	logritelog.Default().Printf("[DEBUG] reset(): c.Writer → %v", c.Writer)
 	c.handlers = nil
+	logritelog.Default().Printf("[DEBUG] reset(): c.handlers → %v", c.handlers)
 	c.index = -1
+	logritelog.Default().Printf("[DEBUG] reset(): c.index → %v", c.index)
 
 	c.fullPath = ""
+	logritelog.Default().Printf("[DEBUG] reset(): c.fullPath → %v", c.fullPath)
 	c.Keys = nil
+	logritelog.Default().Printf("[DEBUG] reset(): c.Keys → %v", c.Keys)
 	c.Errors = c.Errors[:0]
+	logritelog.Default().Printf("[DEBUG] reset(): c.Errors → %v", c.Errors)
 	c.Accepted = nil
+	logritelog.Default().Printf("[DEBUG] reset(): c.Accepted → %v", c.Accepted)
 	c.queryCache = nil
+	logritelog.Default().Printf("[DEBUG] reset(): c.queryCache → %v", c.queryCache)
 	c.formCache = nil
+	logritelog.Default().Printf("[DEBUG] reset(): c.formCache → %v", c.formCache)
 	c.sameSite = 0
+	logritelog.Default().Printf("[DEBUG] reset(): c.sameSite → %v", c.sameSite)
 	*c.params = (*c.params)[:0]
 	*c.skippedNodes = (*c.skippedNodes)[:0]
+	logritelog.Default().Printf("[WARN] <<< Exiting reset()")
 }
 
 // Copy returns a copy of the current context that can be safely used outside the request's scope.
 // This has to be used when the context has to be passed to a goroutine.
 func (c *Context) Copy() *Context {
+	logritelog.Default().Printf("[ERROR] >>> Entering Copy()")
 	cp := Context{
 		writermem: c.writermem,
 		Request:   c.Request,
@@ -128,9 +143,13 @@ func (c *Context) Copy() *Context {
 
 	cp.writermem.ResponseWriter = nil
 	cp.Writer = &cp.writermem
+	logritelog.Default().Printf("[DEBUG] Copy(): cp.Writer → %v", cp.Writer)
 	cp.index = abortIndex
+	logritelog.Default().Printf("[DEBUG] Copy(): cp.index → %v", cp.index)
 	cp.handlers = nil
+	logritelog.Default().Printf("[DEBUG] Copy(): cp.handlers → %v", cp.handlers)
 	cp.fullPath = c.fullPath
+	logritelog.Default().Printf("[DEBUG] Copy(): cp.fullPath → %v", cp.fullPath)
 
 	cKeys := c.Keys
 	c.mu.RLock()
@@ -151,18 +170,21 @@ func (c *Context) Copy() *Context {
 		copy(cp.Accepted, c.Accepted)
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting Copy()")
 	return &cp
 }
 
 // HandlerName returns the main handler's name. For example if the handler is "handleGetUsers()",
 // this function will return "main.handleGetUsers".
 func (c *Context) HandlerName() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering HandlerName()")
 	return nameOfFunction(c.handlers.Last())
 }
 
 // HandlerNames returns a list of all registered handlers for this context in descending order,
 // following the semantics of HandlerName()
 func (c *Context) HandlerNames() []string {
+	logritelog.Default().Printf("[ERROR] >>> Entering HandlerNames()")
 	hn := make([]string, 0, len(c.handlers))
 	for _, val := range c.handlers {
 		if val == nil {
@@ -170,11 +192,13 @@ func (c *Context) HandlerNames() []string {
 		}
 		hn = append(hn, nameOfFunction(val))
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting HandlerNames()")
 	return hn
 }
 
 // Handler returns the main handler.
 func (c *Context) Handler() HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering Handler()")
 	return c.handlers.Last()
 }
 
@@ -185,6 +209,7 @@ func (c *Context) Handler() HandlerFunc {
 //	    c.FullPath() == "/user/:id" // true
 //	})
 func (c *Context) FullPath() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering FullPath()")
 	return c.fullPath
 }
 
@@ -196,6 +221,7 @@ func (c *Context) FullPath() string {
 // It executes the pending handlers in the chain inside the calling handler.
 // See example in GitHub.
 func (c *Context) Next() {
+	logritelog.Default().Printf("[ERROR] >>> Entering Next()")
 	c.index++
 	for c.index < safeInt8(len(c.handlers)) {
 		if c.handlers[c.index] != nil {
@@ -203,10 +229,12 @@ func (c *Context) Next() {
 		}
 		c.index++
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Next()")
 }
 
 // IsAborted returns true if the current context was aborted.
 func (c *Context) IsAborted() bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering IsAborted()")
 	return c.index >= abortIndex
 }
 
@@ -215,38 +243,49 @@ func (c *Context) IsAborted() bool {
 // If the authorization fails (ex: the password does not match), call Abort to ensure the remaining handlers
 // for this request are not called.
 func (c *Context) Abort() {
+	logritelog.Default().Printf("[ERROR] >>> Entering Abort()")
 	c.index = abortIndex
+	logritelog.Default().Printf("[DEBUG] Abort(): c.index → %v", c.index)
+logritelog.Default().Printf("[WARN] <<< Exiting Abort()")
 }
 
 // AbortWithStatus calls `Abort()` and writes the headers with the specified status code.
 // For example, a failed attempt to authenticate a request could use: context.AbortWithStatus(401).
 func (c *Context) AbortWithStatus(code int) {
+	logritelog.Default().Printf("[ERROR] >>> Entering AbortWithStatus(code=%v)", code)
 	c.Status(code)
 	c.Writer.WriteHeaderNow()
 	c.Abort()
+	logritelog.Default().Printf("[WARN] <<< Exiting AbortWithStatus(code=%v)", code)
 }
 
 // AbortWithStatusPureJSON calls `Abort()` and then `PureJSON` internally.
 // This method stops the chain, writes the status code and return a JSON body without escaping.
 // It also sets the Content-Type as "application/json".
 func (c *Context) AbortWithStatusPureJSON(code int, jsonObj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering AbortWithStatusPureJSON(code=%v,jsonObj=%v)", code, jsonObj)
 	c.Abort()
 	c.PureJSON(code, jsonObj)
+	logritelog.Default().Printf("[WARN] <<< Exiting AbortWithStatusPureJSON(code=%v,jsonObj=%v)", code, jsonObj)
 }
 
 // AbortWithStatusJSON calls `Abort()` and then `JSON` internally.
 // This method stops the chain, writes the status code and return a JSON body.
 // It also sets the Content-Type as "application/json".
 func (c *Context) AbortWithStatusJSON(code int, jsonObj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering AbortWithStatusJSON(code=%v,jsonObj=%v)", code, jsonObj)
 	c.Abort()
 	c.JSON(code, jsonObj)
+	logritelog.Default().Printf("[WARN] <<< Exiting AbortWithStatusJSON(code=%v,jsonObj=%v)", code, jsonObj)
 }
 
 // AbortWithError calls `AbortWithStatus()` and `Error()` internally.
 // This method stops the chain, writes the status code and pushes the specified error to `c.Errors`.
 // See Context.Error() for more details.
 func (c *Context) AbortWithError(code int, err error) *Error {
+	logritelog.Default().Printf("[ERROR] >>> Entering AbortWithError(code=%v,err=%v)", code, err)
 	c.AbortWithStatus(code)
+	logritelog.Default().Printf("[WARN] <<< Exiting AbortWithError(code=%v,err=%v)", code, err)
 	return c.Error(err)
 }
 
@@ -260,6 +299,7 @@ func (c *Context) AbortWithError(code int, err error) *Error {
 // print a log, or append it in the HTTP response.
 // Error will panic if err is nil.
 func (c *Context) Error(err error) *Error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Error(err=%v)", err)
 	if err == nil {
 		panic("err is nil")
 	}
@@ -271,6 +311,7 @@ func (c *Context) Error(err error) *Error {
 			Err:  err,
 			Type: ErrorTypePrivate,
 		}
+		logritelog.Default().Printf("[DEBUG] Error(err=%v): parsedError → %v", err, parsedError)
 	}
 
 	c.Errors = append(c.Errors, parsedError)
@@ -284,6 +325,7 @@ func (c *Context) Error(err error) *Error {
 // Set is used to store a new key/value pair exclusively for this context.
 // It also lazy initializes c.Keys if it was not used previously.
 func (c *Context) Set(key any, value any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Set(key=%v,value=%v)", key, value)
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.Keys == nil {
@@ -291,11 +333,13 @@ func (c *Context) Set(key any, value any) {
 	}
 
 	c.Keys[key] = value
+	logritelog.Default().Printf("[WARN] <<< Exiting Set(key=%v,value=%v)", key, value)
 }
 
 // Get returns the value for the given key, ie: (value, true).
 // If the value does not exist it returns (nil, false)
 func (c *Context) Get(key any) (value any, exists bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Get(key=%v)", key)
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	value, exists = c.Keys[key]
@@ -304,197 +348,236 @@ func (c *Context) Get(key any) (value any, exists bool) {
 
 // MustGet returns the value for the given key if it exists, otherwise it panics.
 func (c *Context) MustGet(key any) any {
+	logritelog.Default().Printf("[ERROR] >>> Entering MustGet(key=%v)", key)
 	if value, exists := c.Get(key); exists {
 		return value
 	}
 	panic(fmt.Sprintf("key %v does not exist", key))
+	logritelog.Default().Printf("[WARN] <<< Exiting MustGet(key=%v)", key)
 }
 
 func getTyped[T any](c *Context, key any) (res T) {
 	if val, ok := c.Get(key); ok && val != nil {
 		res, _ = val.(T)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting getTyped(c=%v,key=%v)", c, key)
 	return
 }
 
 // GetString returns the value associated with the key as a string.
 func (c *Context) GetString(key any) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetString(key=%v)", key)
 	return getTyped[string](c, key)
 }
 
 // GetBool returns the value associated with the key as a boolean.
 func (c *Context) GetBool(key any) bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetBool(key=%v)", key)
 	return getTyped[bool](c, key)
 }
 
 // GetInt returns the value associated with the key as an integer.
 func (c *Context) GetInt(key any) int {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt(key=%v)", key)
 	return getTyped[int](c, key)
 }
 
 // GetInt8 returns the value associated with the key as an integer 8.
 func (c *Context) GetInt8(key any) int8 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt8(key=%v)", key)
 	return getTyped[int8](c, key)
 }
 
 // GetInt16 returns the value associated with the key as an integer 16.
 func (c *Context) GetInt16(key any) int16 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt16(key=%v)", key)
 	return getTyped[int16](c, key)
 }
 
 // GetInt32 returns the value associated with the key as an integer 32.
 func (c *Context) GetInt32(key any) int32 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt32(key=%v)", key)
 	return getTyped[int32](c, key)
 }
 
 // GetInt64 returns the value associated with the key as an integer 64.
 func (c *Context) GetInt64(key any) int64 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt64(key=%v)", key)
 	return getTyped[int64](c, key)
 }
 
 // GetUint returns the value associated with the key as an unsigned integer.
 func (c *Context) GetUint(key any) uint {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint(key=%v)", key)
 	return getTyped[uint](c, key)
 }
 
 // GetUint8 returns the value associated with the key as an unsigned integer 8.
 func (c *Context) GetUint8(key any) uint8 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint8(key=%v)", key)
 	return getTyped[uint8](c, key)
 }
 
 // GetUint16 returns the value associated with the key as an unsigned integer 16.
 func (c *Context) GetUint16(key any) uint16 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint16(key=%v)", key)
 	return getTyped[uint16](c, key)
 }
 
 // GetUint32 returns the value associated with the key as an unsigned integer 32.
 func (c *Context) GetUint32(key any) uint32 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint32(key=%v)", key)
 	return getTyped[uint32](c, key)
 }
 
 // GetUint64 returns the value associated with the key as an unsigned integer 64.
 func (c *Context) GetUint64(key any) uint64 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint64(key=%v)", key)
 	return getTyped[uint64](c, key)
 }
 
 // GetFloat32 returns the value associated with the key as a float32.
 func (c *Context) GetFloat32(key any) float32 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetFloat32(key=%v)", key)
 	return getTyped[float32](c, key)
 }
 
 // GetFloat64 returns the value associated with the key as a float64.
 func (c *Context) GetFloat64(key any) float64 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetFloat64(key=%v)", key)
 	return getTyped[float64](c, key)
 }
 
 // GetTime returns the value associated with the key as time.
 func (c *Context) GetTime(key any) time.Time {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetTime(key=%v)", key)
 	return getTyped[time.Time](c, key)
 }
 
 // GetDuration returns the value associated with the key as a duration.
 func (c *Context) GetDuration(key any) time.Duration {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetDuration(key=%v)", key)
 	return getTyped[time.Duration](c, key)
 }
 
 // GetError returns the value associated with the key as an error.
 func (c *Context) GetError(key any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetError(key=%v)", key)
 	return getTyped[error](c, key)
 }
 
 // GetIntSlice returns the value associated with the key as a slice of integers.
 func (c *Context) GetIntSlice(key any) []int {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetIntSlice(key=%v)", key)
 	return getTyped[[]int](c, key)
 }
 
 // GetInt8Slice returns the value associated with the key as a slice of int8 integers.
 func (c *Context) GetInt8Slice(key any) []int8 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt8Slice(key=%v)", key)
 	return getTyped[[]int8](c, key)
 }
 
 // GetInt16Slice returns the value associated with the key as a slice of int16 integers.
 func (c *Context) GetInt16Slice(key any) []int16 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt16Slice(key=%v)", key)
 	return getTyped[[]int16](c, key)
 }
 
 // GetInt32Slice returns the value associated with the key as a slice of int32 integers.
 func (c *Context) GetInt32Slice(key any) []int32 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt32Slice(key=%v)", key)
 	return getTyped[[]int32](c, key)
 }
 
 // GetInt64Slice returns the value associated with the key as a slice of int64 integers.
 func (c *Context) GetInt64Slice(key any) []int64 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetInt64Slice(key=%v)", key)
 	return getTyped[[]int64](c, key)
 }
 
 // GetUintSlice returns the value associated with the key as a slice of unsigned integers.
 func (c *Context) GetUintSlice(key any) []uint {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUintSlice(key=%v)", key)
 	return getTyped[[]uint](c, key)
 }
 
 // GetUint8Slice returns the value associated with the key as a slice of uint8 integers.
 func (c *Context) GetUint8Slice(key any) []uint8 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint8Slice(key=%v)", key)
 	return getTyped[[]uint8](c, key)
 }
 
 // GetUint16Slice returns the value associated with the key as a slice of uint16 integers.
 func (c *Context) GetUint16Slice(key any) []uint16 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint16Slice(key=%v)", key)
 	return getTyped[[]uint16](c, key)
 }
 
 // GetUint32Slice returns the value associated with the key as a slice of uint32 integers.
 func (c *Context) GetUint32Slice(key any) []uint32 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint32Slice(key=%v)", key)
 	return getTyped[[]uint32](c, key)
 }
 
 // GetUint64Slice returns the value associated with the key as a slice of uint64 integers.
 func (c *Context) GetUint64Slice(key any) []uint64 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetUint64Slice(key=%v)", key)
 	return getTyped[[]uint64](c, key)
 }
 
 // GetFloat32Slice returns the value associated with the key as a slice of float32 numbers.
 func (c *Context) GetFloat32Slice(key any) []float32 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetFloat32Slice(key=%v)", key)
 	return getTyped[[]float32](c, key)
 }
 
 // GetFloat64Slice returns the value associated with the key as a slice of float64 numbers.
 func (c *Context) GetFloat64Slice(key any) []float64 {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetFloat64Slice(key=%v)", key)
 	return getTyped[[]float64](c, key)
 }
 
 // GetStringSlice returns the value associated with the key as a slice of strings.
 func (c *Context) GetStringSlice(key any) []string {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetStringSlice(key=%v)", key)
 	return getTyped[[]string](c, key)
 }
 
 // GetErrorSlice returns the value associated with the key as a slice of errors.
 func (c *Context) GetErrorSlice(key any) []error {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetErrorSlice(key=%v)", key)
 	return getTyped[[]error](c, key)
 }
 
 // GetStringMap returns the value associated with the key as a map of interfaces.
 func (c *Context) GetStringMap(key any) map[string]any {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetStringMap(key=%v)", key)
 	return getTyped[map[string]any](c, key)
 }
 
 // GetStringMapString returns the value associated with the key as a map of strings.
 func (c *Context) GetStringMapString(key any) map[string]string {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetStringMapString(key=%v)", key)
 	return getTyped[map[string]string](c, key)
 }
 
 // GetStringMapStringSlice returns the value associated with the key as a map to a slice of strings.
 func (c *Context) GetStringMapStringSlice(key any) map[string][]string {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetStringMapStringSlice(key=%v)", key)
 	return getTyped[map[string][]string](c, key)
 }
 
 // Delete deletes the key from the Context's Key map, if it exists.
 // This operation is safe to be used by concurrent go-routines
 func (c *Context) Delete(key any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Delete(key=%v)", key)
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.Keys != nil {
 		delete(c.Keys, key)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Delete(key=%v)", key)
 }
 
 /************************************/
@@ -511,6 +594,7 @@ func (c *Context) Delete(key any) {
 //	    id := c.Param("id") // id == "/john/"
 //	})
 func (c *Context) Param(key string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering Param(key=%v)", key)
 	return c.Params.ByName(key)
 }
 
@@ -520,7 +604,9 @@ func (c *Context) Param(key string) string {
 // AddParam("id", 1)
 // Result: "/user/1"
 func (c *Context) AddParam(key, value string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering AddParam(key=%v,value=%v)", key, value)
 	c.Params = append(c.Params, Param{Key: key, Value: value})
+	logritelog.Default().Printf("[WARN] <<< Exiting AddParam(key=%v,value=%v)", key, value)
 }
 
 // Query returns the keyed url query value if it exists,
@@ -533,7 +619,9 @@ func (c *Context) AddParam(key, value string) {
 //		   c.Query("value") == ""
 //		   c.Query("wtf") == ""
 func (c *Context) Query(key string) (value string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Query(key=%v)", key)
 	value, _ = c.GetQuery(key)
+	logritelog.Default().Printf("[WARN] <<< Exiting Query(key=%v)", key)
 	return
 }
 
@@ -546,9 +634,11 @@ func (c *Context) Query(key string) (value string) {
 //	c.DefaultQuery("id", "none") == "none"
 //	c.DefaultQuery("lastname", "none") == ""
 func (c *Context) DefaultQuery(key, defaultValue string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering DefaultQuery(key=%v,defaultValue=%v)", key, defaultValue)
 	if value, ok := c.GetQuery(key); ok {
 		return value
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting DefaultQuery(key=%v,defaultValue=%v)", key, defaultValue)
 	return defaultValue
 }
 
@@ -562,32 +652,40 @@ func (c *Context) DefaultQuery(key, defaultValue string) string {
 //	("", false) == c.GetQuery("id")
 //	("", true) == c.GetQuery("lastname")
 func (c *Context) GetQuery(key string) (string, bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetQuery(key=%v)", key)
 	if values, ok := c.GetQueryArray(key); ok {
 		return values[0], ok
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting GetQuery(key=%v)", key)
 	return "", false
 }
 
 // QueryArray returns a slice of strings for a given query key.
 // The length of the slice depends on the number of params with the given key.
 func (c *Context) QueryArray(key string) (values []string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering QueryArray(key=%v)", key)
 	values, _ = c.GetQueryArray(key)
+	logritelog.Default().Printf("[WARN] <<< Exiting QueryArray(key=%v)", key)
 	return
 }
 
 func (c *Context) initQueryCache() {
+	logritelog.Default().Printf("[ERROR] >>> Entering initQueryCache()")
 	if c.queryCache == nil {
 		if c.Request != nil && c.Request.URL != nil {
 			c.queryCache = c.Request.URL.Query()
 		} else {
 			c.queryCache = url.Values{}
+			logritelog.Default().Printf("[DEBUG] initQueryCache(): c.queryCache → %v", c.queryCache)
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting initQueryCache()")
 }
 
 // GetQueryArray returns a slice of strings for a given query key, plus
 // a boolean value whether at least one value exists for the given key.
 func (c *Context) GetQueryArray(key string) (values []string, ok bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetQueryArray(key=%v)", key)
 	c.initQueryCache()
 	values, ok = c.queryCache[key]
 	return
@@ -595,6 +693,7 @@ func (c *Context) GetQueryArray(key string) (values []string, ok bool) {
 
 // QueryMap returns a map for a given query key.
 func (c *Context) QueryMap(key string) (dicts map[string]string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering QueryMap(key=%v)", key)
 	dicts, _ = c.GetQueryMap(key)
 	return
 }
@@ -602,6 +701,7 @@ func (c *Context) QueryMap(key string) (dicts map[string]string) {
 // GetQueryMap returns a map for a given query key, plus a boolean value
 // whether at least one value exists for the given key.
 func (c *Context) GetQueryMap(key string) (map[string]string, bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetQueryMap(key=%v)", key)
 	c.initQueryCache()
 	return getMapFromFormData(c.queryCache, key)
 }
@@ -609,6 +709,7 @@ func (c *Context) GetQueryMap(key string) (map[string]string, bool) {
 // PostForm returns the specified key from a POST urlencoded form or multipart form
 // when it exists, otherwise it returns an empty string `("")`.
 func (c *Context) PostForm(key string) (value string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering PostForm(key=%v)", key)
 	value, _ = c.GetPostForm(key)
 	return
 }
@@ -617,6 +718,7 @@ func (c *Context) PostForm(key string) (value string) {
 // when it exists, otherwise it returns the specified defaultValue string.
 // See: PostForm() and GetPostForm() for further information.
 func (c *Context) DefaultPostForm(key, defaultValue string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering DefaultPostForm(key=%v,defaultValue=%v)", key, defaultValue)
 	if value, ok := c.GetPostForm(key); ok {
 		return value
 	}
@@ -632,6 +734,7 @@ func (c *Context) DefaultPostForm(key, defaultValue string) string {
 //		email=                  -->  ("", true) := GetPostForm("email")                 // set email to ""
 //	                            -->  ("", false) := GetPostForm("email")                // do nothing with email
 func (c *Context) GetPostForm(key string) (string, bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetPostForm(key=%v)", key)
 	if values, ok := c.GetPostFormArray(key); ok {
 		return values[0], ok
 	}
@@ -641,11 +744,13 @@ func (c *Context) GetPostForm(key string) (string, bool) {
 // PostFormArray returns a slice of strings for a given form key.
 // The length of the slice depends on the number of params with the given key.
 func (c *Context) PostFormArray(key string) (values []string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering PostFormArray(key=%v)", key)
 	values, _ = c.GetPostFormArray(key)
 	return
 }
 
 func (c *Context) initFormCache() {
+	logritelog.Default().Printf("[ERROR] >>> Entering initFormCache()")
 	if c.formCache == nil {
 		c.formCache = make(url.Values)
 		req := c.Request
@@ -655,12 +760,15 @@ func (c *Context) initFormCache() {
 			}
 		}
 		c.formCache = req.PostForm
+		logritelog.Default().Printf("[DEBUG] initFormCache(): c.formCache → %v", c.formCache)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting initFormCache()")
 }
 
 // GetPostFormArray returns a slice of strings for a given form key, plus
 // a boolean value whether at least one value exists for the given key.
 func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetPostFormArray(key=%v)", key)
 	c.initFormCache()
 	values, ok = c.formCache[key]
 	return
@@ -668,6 +776,7 @@ func (c *Context) GetPostFormArray(key string) (values []string, ok bool) {
 
 // PostFormMap returns a map for a given form key.
 func (c *Context) PostFormMap(key string) (dicts map[string]string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering PostFormMap(key=%v)", key)
 	dicts, _ = c.GetPostFormMap(key)
 	return
 }
@@ -675,6 +784,7 @@ func (c *Context) PostFormMap(key string) (dicts map[string]string) {
 // GetPostFormMap returns a map for a given form key, plus a boolean value
 // whether at least one value exists for the given key.
 func (c *Context) GetPostFormMap(key string) (map[string]string, bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetPostFormMap(key=%v)", key)
 	c.initFormCache()
 	return getMapFromFormData(c.formCache, key)
 }
@@ -682,6 +792,7 @@ func (c *Context) GetPostFormMap(key string) (map[string]string, bool) {
 // getMapFromFormData return a map which satisfies conditions.
 // It parses from data with bracket notation like "key[subkey]=value" into a map.
 func getMapFromFormData(m map[string][]string, key string) (map[string]string, bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering getMapFromFormData(m=%v,key=%v)", m, key)
 	d := make(map[string]string)
 	found := false
 	keyLen := len(key)
@@ -697,15 +808,18 @@ func getMapFromFormData(m map[string][]string, key string) (map[string]string, b
 
 		if j := strings.IndexByte(k[keyLen+1:], ']'); j > 0 {
 			found = true
+			logritelog.Default().Printf("[DEBUG] getMapFromFormData(m=%v,key=%v): found → %v", m, key, found)
 			d[k[keyLen+1:keyLen+1+j]] = v[0]
 		}
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting getMapFromFormData(m=%v,key=%v)", m, key)
 	return d, found
 }
 
 // FormFile returns the first file for the provided form key.
 func (c *Context) FormFile(name string) (*multipart.FileHeader, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering FormFile(name=%v)", name)
 	if c.Request.MultipartForm == nil {
 		if err := c.Request.ParseMultipartForm(c.engine.MaxMultipartMemory); err != nil {
 			return nil, err
@@ -716,12 +830,15 @@ func (c *Context) FormFile(name string) (*multipart.FileHeader, error) {
 		return nil, err
 	}
 	f.Close()
+	logritelog.Default().Printf("[WARN] <<< Exiting FormFile(name=%v)", name)
 	return fh, err
 }
 
 // MultipartForm is the parsed multipart form, including file uploads.
 func (c *Context) MultipartForm() (*multipart.Form, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering MultipartForm()")
 	err := c.Request.ParseMultipartForm(c.engine.MaxMultipartMemory)
+	logritelog.Default().Printf("[WARN] <<< Exiting MultipartForm()")
 	return c.Request.MultipartForm, err
 }
 
@@ -732,6 +849,7 @@ func (c *Context) MultipartForm() (*multipart.Form, error) {
 // newly created by this call; pre-existing directories (e.g. /tmp) are not
 // modified.
 func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string, perm ...fs.FileMode) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering SaveUploadedFile(file=%v,dst=%v,perm=%v)", file, dst, perm)
 	src, err := file.Open()
 	if err != nil {
 		return err
@@ -741,6 +859,7 @@ func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string, perm 
 	var mode os.FileMode = 0o750
 	if len(perm) > 0 {
 		mode = perm[0]
+		logritelog.Default().Printf("[DEBUG] SaveUploadedFile(file=%v,dst=%v,perm=%v): mode → %v", file, dst, perm, mode)
 	}
 	dir := filepath.Dir(dst)
 	// Record whether the destination directory exists before MkdirAll, so we
@@ -750,10 +869,14 @@ func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string, perm 
 	// surface the underlying failure.
 	_, statErr := os.Stat(dir)
 	if err = os.MkdirAll(dir, mode); err != nil {
+		logritelog.Default().Printf("[ERROR] Exception in SaveUploadedFile(file=%v,dst=%v,perm=%v): %v", file, dst, perm, err)
+		logritelog.Default().Printf("[ERROR] SaveUploadedFile(file=%v,dst=%v,perm=%v): err → %v", file, dst, perm, err)
 		return err
 	}
 	if errors.Is(statErr, os.ErrNotExist) {
 		if err = os.Chmod(dir, mode); err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in SaveUploadedFile(file=%v,dst=%v,perm=%v): %v", file, dst, perm, err)
+			logritelog.Default().Printf("[ERROR] SaveUploadedFile(file=%v,dst=%v,perm=%v): err → %v", file, dst, perm, err)
 			return err
 		}
 	}
@@ -765,6 +888,7 @@ func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string, perm 
 	defer out.Close()
 
 	_, err = io.Copy(out, src)
+	logritelog.Default().Printf("[WARN] <<< Exiting SaveUploadedFile(file=%v,dst=%v,perm=%v)", file, dst, perm)
 	return err
 }
 
@@ -778,52 +902,63 @@ func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string, perm 
 // It decodes the payload into the struct specified as a pointer.
 // It writes a 400 error and sets Content-Type header "text/plain" in the response if input is not valid.
 func (c *Context) Bind(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Bind(obj=%v)", obj)
 	b := binding.Default(c.Request.Method, c.ContentType())
+	logritelog.Default().Printf("[WARN] <<< Exiting Bind(obj=%v)", obj)
 	return c.MustBindWith(obj, b)
 }
 
 // BindJSON is a shortcut for c.MustBindWith(obj, binding.JSON).
 func (c *Context) BindJSON(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindJSON(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.JSON)
 }
 
 // BindXML is a shortcut for c.MustBindWith(obj, binding.XML).
 func (c *Context) BindXML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindXML(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.XML)
 }
 
 // BindQuery is a shortcut for c.MustBindWith(obj, binding.Query).
 func (c *Context) BindQuery(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindQuery(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.Query)
 }
 
 // BindYAML is a shortcut for c.MustBindWith(obj, binding.YAML).
 func (c *Context) BindYAML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindYAML(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.YAML)
 }
 
 // BindTOML is a shortcut for c.MustBindWith(obj, binding.TOML).
 func (c *Context) BindTOML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindTOML(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.TOML)
 }
 
 // BindPlain is a shortcut for c.MustBindWith(obj, binding.Plain).
 func (c *Context) BindPlain(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindPlain(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.Plain)
 }
 
 // BindHeader is a shortcut for c.MustBindWith(obj, binding.Header).
 func (c *Context) BindHeader(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindHeader(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.Header)
 }
 
 // BindUri binds the passed struct pointer using binding.Uri.
 // It will abort the request with HTTP 400 if any error occurs.
 func (c *Context) BindUri(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering BindUri(obj=%v)", obj)
 	if err := c.ShouldBindUri(obj); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err).SetType(ErrorTypeBind) //nolint: errcheck
 		return err
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting BindUri(obj=%v)", obj)
 	return nil
 }
 
@@ -831,6 +966,7 @@ func (c *Context) BindUri(obj any) error {
 // It will abort the request with HTTP 400 if any error occurs.
 // See the binding package.
 func (c *Context) MustBindWith(obj any, b binding.Binding) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering MustBindWith(obj=%v,b=%v)", obj, b)
 	err := c.ShouldBindWith(obj, b)
 	if err != nil {
 		var maxBytesErr *http.MaxBytesError
@@ -844,8 +980,10 @@ func (c *Context) MustBindWith(obj any, b binding.Binding) error {
 		default:
 			c.AbortWithError(http.StatusBadRequest, err).SetType(ErrorTypeBind) //nolint: errcheck
 		}
+		logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindWith(obj=%v,b=%v)", obj, b)
 		return err
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting MustBindWith(obj=%v,b=%v)", obj, b)
 	return nil
 }
 
@@ -859,7 +997,9 @@ func (c *Context) MustBindWith(obj any, b binding.Binding) error {
 // It decodes the payload into the struct specified as a pointer.
 // Like c.Bind() but this method does not set the response status code to 400 or abort if input is not valid.
 func (c *Context) ShouldBind(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBind(obj=%v)", obj)
 	b := binding.Default(c.Request.Method, c.ContentType())
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBind(obj=%v)", obj)
 	return c.ShouldBindWith(obj, b)
 }
 
@@ -888,52 +1028,61 @@ func (c *Context) ShouldBind(obj any) error {
 //	}
 //	c.JSON(http.StatusOK, user)
 func (c *Context) ShouldBindJSON(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindJSON(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.JSON)
 }
 
 // ShouldBindXML is a shortcut for c.ShouldBindWith(obj, binding.XML).
 // It works like ShouldBindJSON but binds the request body as XML data.
 func (c *Context) ShouldBindXML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindXML(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.XML)
 }
 
 // ShouldBindQuery is a shortcut for c.ShouldBindWith(obj, binding.Query).
 // It works like ShouldBindJSON but binds query parameters from the URL.
 func (c *Context) ShouldBindQuery(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindQuery(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.Query)
 }
 
 // ShouldBindYAML is a shortcut for c.ShouldBindWith(obj, binding.YAML).
 // It works like ShouldBindJSON but binds the request body as YAML data.
 func (c *Context) ShouldBindYAML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindYAML(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.YAML)
 }
 
 // ShouldBindTOML is a shortcut for c.ShouldBindWith(obj, binding.TOML).
 // It works like ShouldBindJSON but binds the request body as TOML data.
 func (c *Context) ShouldBindTOML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindTOML(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.TOML)
 }
 
 // ShouldBindPlain is a shortcut for c.ShouldBindWith(obj, binding.Plain).
 // It works like ShouldBindJSON but binds plain text data from the request body.
 func (c *Context) ShouldBindPlain(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindPlain(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.Plain)
 }
 
 // ShouldBindHeader is a shortcut for c.ShouldBindWith(obj, binding.Header).
 // It works like ShouldBindJSON but binds values from HTTP headers.
 func (c *Context) ShouldBindHeader(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindHeader(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.Header)
 }
 
 // ShouldBindUri binds the passed struct pointer using the specified binding engine.
 // It works like ShouldBindJSON but binds parameters from the URI.
 func (c *Context) ShouldBindUri(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindUri(obj=%v)", obj)
 	m := make(map[string][]string, len(c.Params))
 	for _, v := range c.Params {
 		m[v.Key] = []string{v.Value}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindUri(obj=%v)", obj)
 	return binding.Uri.BindUri(m, obj)
 }
 
@@ -949,6 +1098,7 @@ func (c *Context) ShouldBindWith(obj any, b binding.Binding) error {
 // NOTE: This method reads the body before binding. So you should use
 // ShouldBindWith for better performance if you need to call only once.
 func (c *Context) ShouldBindBodyWith(obj any, bb binding.BindingBody) (err error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWith(obj=%v,bb=%v)", obj, bb)
 	var body []byte
 	if cb, ok := c.Get(BodyBytesKey); ok {
 		if cbb, ok := cb.([]byte); ok {
@@ -958,35 +1108,42 @@ func (c *Context) ShouldBindBodyWith(obj any, bb binding.BindingBody) (err error
 	if body == nil {
 		body, err = io.ReadAll(c.Request.Body)
 		if err != nil {
+			logritelog.Default().Printf("[ERROR] Exception in ShouldBindBodyWith(obj=%v,bb=%v): %v", obj, bb, err)
 			return err
 		}
 		c.Set(BodyBytesKey, body)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindBodyWith(obj=%v,bb=%v)", obj, bb)
 	return bb.BindBody(body, obj)
 }
 
 // ShouldBindBodyWithJSON is a shortcut for c.ShouldBindBodyWith(obj, binding.JSON).
 func (c *Context) ShouldBindBodyWithJSON(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithJSON(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.JSON)
 }
 
 // ShouldBindBodyWithXML is a shortcut for c.ShouldBindBodyWith(obj, binding.XML).
 func (c *Context) ShouldBindBodyWithXML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithXML(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.XML)
 }
 
 // ShouldBindBodyWithYAML is a shortcut for c.ShouldBindBodyWith(obj, binding.YAML).
 func (c *Context) ShouldBindBodyWithYAML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithYAML(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.YAML)
 }
 
 // ShouldBindBodyWithTOML is a shortcut for c.ShouldBindBodyWith(obj, binding.TOML).
 func (c *Context) ShouldBindBodyWithTOML(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithTOML(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.TOML)
 }
 
 // ShouldBindBodyWithPlain is a shortcut for c.ShouldBindBodyWith(obj, binding.Plain).
 func (c *Context) ShouldBindBodyWithPlain(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithPlain(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.Plain)
 }
 
@@ -996,6 +1153,7 @@ func (c *Context) ShouldBindBodyWithPlain(obj any) error {
 // If the headers are not syntactically valid OR the remote IP does not correspond to a trusted proxy,
 // the remote IP (coming from Request.RemoteAddr) is returned.
 func (c *Context) ClientIP() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering ClientIP()")
 	// Check if we're running on a trusted platform, continue running backwards if error
 	if c.engine.TrustedPlatform != "" {
 		// Developers can define their own header of Trusted Platform or use predefined constants
@@ -1020,6 +1178,7 @@ func (c *Context) ClientIP() string {
 	localAddr, ok := c.Request.Context().Value(http.LocalAddrContextKey).(net.Addr)
 	if ok && strings.HasPrefix(localAddr.Network(), "unix") {
 		trusted = true
+		logritelog.Default().Printf("[DEBUG] ClientIP(): trusted → %v", trusted)
 	}
 
 	// Fallback
@@ -1029,6 +1188,8 @@ func (c *Context) ClientIP() string {
 		// defined by Engine.SetTrustedProxies()
 		remoteIP = net.ParseIP(c.RemoteIP())
 		if remoteIP == nil {
+			logritelog.Default().Printf("[ERROR] >>> Entering RemoteIP()")
+			logritelog.Default().Printf("[WARN] <<< Exiting RemoteIP()")
 			return ""
 		}
 		trusted = c.engine.isTrustedProxy(remoteIP)
@@ -1043,6 +1204,7 @@ func (c *Context) ClientIP() string {
 			}
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting ClientIP()")
 	return remoteIP.String()
 }
 
@@ -1057,14 +1219,17 @@ func (c *Context) RemoteIP() string {
 
 // ContentType returns the Content-Type header of the request.
 func (c *Context) ContentType() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering ContentType()")
 	return filterFlags(c.requestHeader("Content-Type"))
 }
 
 // IsWebsocket returns true if the request headers indicate that a websocket
 // handshake is being initiated by the client.
 func (c *Context) IsWebsocket() bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering IsWebsocket()")
 	if strings.Contains(strings.ToLower(c.requestHeader("Connection")), "upgrade") &&
 		strings.EqualFold(c.requestHeader("Upgrade"), "websocket") {
+	logritelog.Default().Printf("[WARN] <<< Exiting IsWebsocket()")
 		return true
 	}
 	return false
@@ -1076,6 +1241,7 @@ func (c *Context) IsWebsocket() bool {
 // Reference:
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Forwarded-Proto
 func (c *Context) Scheme() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering Scheme()")
 	if c.Request.TLS != nil {
 		return "https"
 	}
@@ -1094,6 +1260,7 @@ func (c *Context) Scheme() string {
 	if scheme := c.Request.URL.Scheme; scheme != "" {
 		return scheme
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Scheme()")
 	return "http"
 }
 
@@ -1108,12 +1275,14 @@ func (c *Context) requestHeader(key string) string {
 // bodyAllowedForStatus is a copy of http.bodyAllowedForStatus non-exported function.
 // Uses http.StatusContinue constant for better code clarity.
 func bodyAllowedForStatus(status int) bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering bodyAllowedForStatus(status=%v)", status)
 	switch {
 	case status >= http.StatusContinue && status < http.StatusOK:
 		return false
 	case status == http.StatusNoContent:
 		return false
 	case status == http.StatusNotModified:
+	logritelog.Default().Printf("[WARN] <<< Exiting bodyAllowedForStatus(status=%v)", status)
 		return false
 	}
 	return true
@@ -1121,7 +1290,9 @@ func bodyAllowedForStatus(status int) bool {
 
 // Status sets the HTTP response code.
 func (c *Context) Status(code int) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Status(code=%v)", code)
 	c.Writer.WriteHeader(code)
+	logritelog.Default().Printf("[WARN] <<< Exiting Status(code=%v)", code)
 }
 
 // Header is an intelligent shortcut for c.Writer.Header().Set(key, value).
@@ -1137,26 +1308,33 @@ func (c *Context) Header(key, value string) {
 
 // GetHeader returns value from request headers.
 func (c *Context) GetHeader(key string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetHeader(key=%v)", key)
 	return c.requestHeader(key)
 }
 
 // GetRawData returns stream data.
 func (c *Context) GetRawData() ([]byte, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering GetRawData()")
 	if c.Request.Body == nil {
 		return nil, errors.New("cannot read nil body")
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting GetRawData()")
 	return io.ReadAll(c.Request.Body)
 }
 
 // SetSameSite with cookie
 func (c *Context) SetSameSite(samesite http.SameSite) {
+	logritelog.Default().Printf("[ERROR] >>> Entering SetSameSite(samesite=%v)", samesite)
 	c.sameSite = samesite
+	logritelog.Default().Printf("[DEBUG] SetSameSite(samesite=%v): c.sameSite → %v", samesite, c.sameSite)
+logritelog.Default().Printf("[WARN] <<< Exiting SetSameSite(samesite=%v)", samesite)
 }
 
 // SetCookie adds a Set-Cookie header to the ResponseWriter's headers.
 // The provided cookie must have a valid Name. Invalid cookies may be
 // silently dropped.
 func (c *Context) SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering SetCookie(name=%v,value=<redacted>,maxAge=%v,path=%v,domain=%v,secure=%v,httpOnly=%v)", name, maxAge, path, domain, secure, httpOnly)
 	if path == "" {
 		path = "/"
 	}
@@ -1170,19 +1348,24 @@ func (c *Context) SetCookie(name, value string, maxAge int, path, domain string,
 		Secure:   secure,
 		HttpOnly: httpOnly,
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting SetCookie(name=%v,value=<redacted>,maxAge=%v,path=%v,domain=%v,secure=%v,httpOnly=%v)", name, maxAge, path, domain, secure, httpOnly)
 }
 
 // SetCookieData adds a Set-Cookie header to the ResponseWriter's headers.
 // It accepts a pointer to http.Cookie structure for more flexibility in setting cookie attributes.
 // The provided cookie must have a valid Name. Invalid cookies may be silently dropped.
 func (c *Context) SetCookieData(cookie *http.Cookie) {
+	logritelog.Default().Printf("[ERROR] >>> Entering SetCookieData(cookie=<redacted>)")
 	if cookie.Path == "" {
 		cookie.Path = "/"
 	}
+	logritelog.Default().Printf("[DEBUG] SetCookieData(cookie=<redacted>): cookie.Path → %v", cookie.Path)
 	if cookie.SameSite == http.SameSiteDefaultMode {
 		cookie.SameSite = c.sameSite
+		logritelog.Default().Printf("[DEBUG] SetCookieData(cookie=<redacted>): cookie.SameSite → %v", cookie.SameSite)
 	}
 	http.SetCookie(c.Writer, cookie)
+	logritelog.Default().Printf("[WARN] <<< Exiting SetCookieData(cookie=<redacted>)")
 }
 
 // Cookie returns the named cookie provided in the request or
@@ -1190,16 +1373,19 @@ func (c *Context) SetCookieData(cookie *http.Cookie) {
 // If multiple cookies match the given name, only one cookie will
 // be returned.
 func (c *Context) Cookie(name string) (string, error) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Cookie(name=%v)", name)
 	cookie, err := c.Request.Cookie(name)
 	if err != nil {
 		return "", err
 	}
 	val, _ := url.QueryUnescape(cookie.Value)
+	logritelog.Default().Printf("[WARN] <<< Exiting Cookie(name=%v)", name)
 	return val, nil
 }
 
 // Render writes the response headers and calls render.Render to render data.
 func (c *Context) Render(code int, r render.Render) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Render(code=%v,r=%v)", code, r)
 	c.Status(code)
 
 	if !bodyAllowedForStatus(code) {
@@ -1213,14 +1399,17 @@ func (c *Context) Render(code int, r render.Render) {
 		_ = c.Error(err)
 		c.Abort()
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Render(code=%v,r=%v)", code, r)
 }
 
 // HTML renders the HTTP template specified by its file name.
 // It also updates the HTTP code and sets the Content-Type as "text/html".
 // See http://golang.org/doc/articles/wiki/
 func (c *Context) HTML(code int, name string, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering HTML(code=%v,name=%v,obj=%v)", code, name, obj)
 	instance := c.engine.HTMLRender.Instance(name, obj)
 	c.Render(code, instance)
+	logritelog.Default().Printf("[WARN] <<< Exiting HTML(code=%v,name=%v,obj=%v)", code, name, obj)
 }
 
 // IndentedJSON serializes the given struct as pretty JSON (indented + endlines) into the response body.
@@ -1228,44 +1417,56 @@ func (c *Context) HTML(code int, name string, obj any) {
 // WARNING: we recommend using this only for development purposes since printing pretty JSON is
 // more CPU and bandwidth consuming. Use Context.JSON() instead.
 func (c *Context) IndentedJSON(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering IndentedJSON(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.IndentedJSON{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting IndentedJSON(code=%v,obj=%v)", code, obj)
 }
 
 // SecureJSON serializes the given struct as Secure JSON into the response body.
 // Default prepends "while(1)," to response body if the given struct is array values.
 // It also sets the Content-Type as "application/json".
 func (c *Context) SecureJSON(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering SecureJSON(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.SecureJSON{Prefix: c.engine.secureJSONPrefix, Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting SecureJSON(code=%v,obj=%v)", code, obj)
 }
 
 // JSONP serializes the given struct as JSON into the response body.
 // It adds padding to response body to request data from a server residing in a different domain than the client.
 // It also sets the Content-Type as "application/javascript".
 func (c *Context) JSONP(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering JSONP(code=%v,obj=%v)", code, obj)
 	callback := c.DefaultQuery("callback", "")
 	if callback == "" {
 		c.Render(code, render.JSON{Data: obj})
 		return
 	}
 	c.Render(code, render.JsonpJSON{Callback: callback, Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting JSONP(code=%v,obj=%v)", code, obj)
 }
 
 // JSON serializes the given struct as JSON into the response body.
 // It also sets the Content-Type as "application/json".
 func (c *Context) JSON(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering JSON(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.JSON{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting JSON(code=%v,obj=%v)", code, obj)
 }
 
 // AsciiJSON serializes the given struct as JSON into the response body with unicode to ASCII string.
 // It also sets the Content-Type as "application/json".
 func (c *Context) AsciiJSON(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering AsciiJSON(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.AsciiJSON{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting AsciiJSON(code=%v,obj=%v)", code, obj)
 }
 
 // PureJSON serializes the given struct as JSON into the response body.
 // PureJSON, unlike JSON, does not replace special html characters with their unicode entities.
 func (c *Context) PureJSON(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering PureJSON(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.PureJSON{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting PureJSON(code=%v,obj=%v)", code, obj)
 }
 
 // XML serializes the given struct as XML into the response body.
@@ -1277,7 +1478,9 @@ func (c *Context) XML(code int, obj any) {
 // PDF writes the given PDF binary data into the response body.
 // It also sets the Content-Type as "application/pdf".
 func (c *Context) PDF(code int, data []byte) {
+	logritelog.Default().Printf("[ERROR] >>> Entering PDF(code=%v,data=%v)", code, data)
 	c.Render(code, render.PDF{Data: data})
+	logritelog.Default().Printf("[WARN] <<< Exiting PDF(code=%v,data=%v)", code, data)
 }
 
 // YAML serializes the given struct as YAML into the response body.
@@ -1292,12 +1495,16 @@ func (c *Context) TOML(code int, obj any) {
 
 // ProtoBuf serializes the given struct as ProtoBuf into the response body.
 func (c *Context) ProtoBuf(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering ProtoBuf(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.ProtoBuf{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting ProtoBuf(code=%v,obj=%v)", code, obj)
 }
 
 // BSON serializes the given struct as BSON into the response body.
 func (c *Context) BSON(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering BSON(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.BSON{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting BSON(code=%v,obj=%v)", code, obj)
 }
 
 // String writes the given string into the response body.
@@ -1307,11 +1514,13 @@ func (c *Context) String(code int, format string, values ...any) {
 
 // Redirect returns an HTTP redirect to the specific location.
 func (c *Context) Redirect(code int, location string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Redirect(code=%v,location=%v)", code, location)
 	c.Render(-1, render.Redirect{
 		Code:     code,
 		Location: location,
 		Request:  c.Request,
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting Redirect(code=%v,location=%v)", code, location)
 }
 
 // Data writes some data into the body stream and updates the HTTP code.
@@ -1324,17 +1533,21 @@ func (c *Context) Data(code int, contentType string, data []byte) {
 
 // DataFromReader writes the specified reader into the body stream and updates the HTTP code.
 func (c *Context) DataFromReader(code int, contentLength int64, contentType string, reader io.Reader, extraHeaders map[string]string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering DataFromReader(code=%v,contentLength=%v,contentType=%v,reader=%v,extraHeaders=%v)", code, contentLength, contentType, reader, extraHeaders)
 	c.Render(code, render.Reader{
 		Headers:       extraHeaders,
 		ContentType:   contentType,
 		ContentLength: contentLength,
 		Reader:        reader,
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting DataFromReader(code=%v,contentLength=%v,contentType=%v,reader=%v,extraHeaders=%v)", code, contentLength, contentType, reader, extraHeaders)
 }
 
 // File writes the specified file into the body stream in an efficient way.
 func (c *Context) File(filepath string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering File(filepath=%v)", filepath)
 	http.ServeFile(c.Writer, c.Request, filepath)
+	logritelog.Default().Printf("[WARN] <<< Exiting File(filepath=%v)", filepath)
 }
 
 // FileFromFS writes the specified file from http.FileSystem into the body stream in an efficient way.
@@ -1351,6 +1564,7 @@ func (c *Context) FileFromFS(filepath string, fs http.FileSystem) {
 var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
 
 func escapeQuotes(s string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering escapeQuotes(s=%v)", s)
 	return quoteEscaper.Replace(s)
 }
 
@@ -1367,15 +1581,18 @@ func (c *Context) FileAttachment(filepath, filename string) {
 
 // SSEvent writes a Server-Sent Event into the body stream.
 func (c *Context) SSEvent(name string, message any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering SSEvent(name=%v,message=%v)", name, message)
 	c.Render(-1, sse.Event{
 		Event: name,
 		Data:  message,
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting SSEvent(name=%v,message=%v)", name, message)
 }
 
 // Stream sends a streaming response and returns a boolean
 // indicates "Is client disconnected in middle of stream"
 func (c *Context) Stream(step func(w io.Writer) bool) bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering Stream(step=%v)", step)
 	w := c.Writer
 	clientGone := w.CloseNotify()
 	for {
@@ -1386,6 +1603,7 @@ func (c *Context) Stream(step func(w io.Writer) bool) bool {
 			keepOpen := step(w)
 			w.Flush()
 			if !keepOpen {
+				logritelog.Default().Printf("[WARN] <<< Exiting Stream(step=%v)", step)
 				return false
 			}
 		}
@@ -1412,6 +1630,7 @@ type Negotiate struct {
 
 // Negotiate calls different Render according to acceptable Accept format.
 func (c *Context) Negotiate(code int, config Negotiate) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Negotiate(code=%v,config=%v)", code, config)
 	switch c.NegotiateFormat(config.Offered...) {
 	case binding.MIMEJSON:
 		data := chooseData(config.JSONData, config.Data)
@@ -1444,10 +1663,12 @@ func (c *Context) Negotiate(code int, config Negotiate) {
 	default:
 		c.AbortWithError(http.StatusNotAcceptable, errors.New("the accepted formats are not offered by the server")) //nolint: errcheck
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Negotiate(code=%v,config=%v)", code, config)
 }
 
 // NegotiateFormat returns an acceptable Accept format.
 func (c *Context) NegotiateFormat(offered ...string) string {
+	logritelog.Default().Printf("[ERROR] >>> Entering NegotiateFormat(offered=%v)", offered)
 	assert1(len(offered) > 0, "you must provide at least one offer")
 
 	if c.Accepted == nil {
@@ -1474,12 +1695,16 @@ func (c *Context) NegotiateFormat(offered ...string) string {
 			}
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting NegotiateFormat(offered=%v)", offered)
 	return ""
 }
 
 // SetAccepted sets Accept header data.
 func (c *Context) SetAccepted(formats ...string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering SetAccepted(formats=%v)", formats)
 	c.Accepted = formats
+	logritelog.Default().Printf("[DEBUG] SetAccepted(formats=%v): c.Accepted → %v", formats, c.Accepted)
+logritelog.Default().Printf("[WARN] <<< Exiting SetAccepted(formats=%v)", formats)
 }
 
 /************************************/
@@ -1488,32 +1713,40 @@ func (c *Context) SetAccepted(formats ...string) {
 
 // hasRequestContext returns whether c.Request has Context and fallback.
 func (c *Context) hasRequestContext() bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering hasRequestContext()")
 	hasFallback := c.engine != nil && c.engine.ContextWithFallback
 	hasRequestContext := c.Request != nil && c.Request.Context() != nil
+	logritelog.Default().Printf("[WARN] <<< Exiting hasRequestContext()")
 	return hasFallback && hasRequestContext
 }
 
 // Deadline returns that there is no deadline (ok==false) when c.Request has no Context.
 func (c *Context) Deadline() (deadline time.Time, ok bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Deadline()")
 	if !c.hasRequestContext() {
 		return
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Deadline()")
 	return c.Request.Context().Deadline()
 }
 
 // Done returns nil (chan which will wait forever) when c.Request has no Context.
 func (c *Context) Done() <-chan struct{} {
+	logritelog.Default().Printf("[ERROR] >>> Entering Done()")
 	if !c.hasRequestContext() {
 		return nil
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Done()")
 	return c.Request.Context().Done()
 }
 
 // Err returns nil when c.Request has no Context.
 func (c *Context) Err() error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Err()")
 	if !c.hasRequestContext() {
 		return nil
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Err()")
 	return c.Request.Context().Err()
 }
 
@@ -1521,6 +1754,7 @@ func (c *Context) Err() error {
 // if no value is associated with key. Successive calls to Value with
 // the same key returns the same result.
 func (c *Context) Value(key any) any {
+	logritelog.Default().Printf("[ERROR] >>> Entering Value(key=%v)", key)
 	if key == ContextRequestKey {
 		return c.Request
 	}
@@ -1535,5 +1769,6 @@ func (c *Context) Value(key any) any {
 	if !c.hasRequestContext() {
 		return nil
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Value(key=%v)", key)
 	return c.Request.Context().Value(key)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -92,6 +93,7 @@ type LogFormatterParams struct {
 
 // StatusCodeColor is the ANSI color for appropriately logging http status code to a terminal.
 func (p *LogFormatterParams) StatusCodeColor() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering StatusCodeColor()")
 	code := p.StatusCode
 
 	switch {
@@ -104,12 +106,14 @@ func (p *LogFormatterParams) StatusCodeColor() string {
 	case code >= http.StatusBadRequest && code < http.StatusInternalServerError:
 		return yellow
 	default:
+		logritelog.Default().Printf("[WARN] <<< Exiting StatusCodeColor()")
 		return red
 	}
 }
 
 // LatencyColor is the ANSI color for latency
 func (p *LogFormatterParams) LatencyColor() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering LatencyColor()")
 	latency := p.Latency
 	switch {
 	case latency < time.Millisecond*100:
@@ -125,12 +129,14 @@ func (p *LogFormatterParams) LatencyColor() string {
 	case latency < time.Second*2:
 		return magenta
 	default:
+		logritelog.Default().Printf("[WARN] <<< Exiting LatencyColor()")
 		return red
 	}
 }
 
 // MethodColor is the ANSI color for appropriately logging http method to a terminal.
 func (p *LogFormatterParams) MethodColor() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering MethodColor()")
 	method := p.Method
 
 	switch method {
@@ -149,17 +155,20 @@ func (p *LogFormatterParams) MethodColor() string {
 	case http.MethodOptions:
 		return white
 	default:
+		logritelog.Default().Printf("[WARN] <<< Exiting MethodColor()")
 		return reset
 	}
 }
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering ResetColor()")
 	return reset
 }
 
 // IsOutputColor indicates whether can colors be outputted to the log.
 func (p *LogFormatterParams) IsOutputColor() bool {
+	logritelog.Default().Printf("[ERROR] >>> Entering IsOutputColor()")
 	return consoleColorMode == forceColor || (consoleColorMode == autoColor && p.isTerm)
 }
 
@@ -195,21 +204,30 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 
 // DisableConsoleColor disables color output in the console.
 func DisableConsoleColor() {
+	logritelog.Default().Printf("[ERROR] >>> Entering DisableConsoleColor()")
 	consoleColorMode = disableColor
+	logritelog.Default().Printf("[DEBUG] DisableConsoleColor(): consoleColorMode → %v", consoleColorMode)
+logritelog.Default().Printf("[WARN] <<< Exiting DisableConsoleColor()")
 }
 
 // ForceConsoleColor force color output in the console.
 func ForceConsoleColor() {
+	logritelog.Default().Printf("[ERROR] >>> Entering ForceConsoleColor()")
 	consoleColorMode = forceColor
+	logritelog.Default().Printf("[DEBUG] ForceConsoleColor(): consoleColorMode → %v", consoleColorMode)
+logritelog.Default().Printf("[WARN] <<< Exiting ForceConsoleColor()")
 }
 
 // ErrorLogger returns a HandlerFunc for any error type.
 func ErrorLogger() HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering ErrorLogger()")
+	logritelog.Default().Printf("[ERROR] >>> Entering Logger()")
 	return ErrorLoggerT(ErrorTypeAny)
 }
 
 // ErrorLoggerT returns a HandlerFunc for a given error type.
 func ErrorLoggerT(typ ErrorType) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering ErrorLoggerT(typ=%v)", typ)
 	return func(c *Context) {
 		c.Next()
 		errors := c.Errors.ByType(typ)
@@ -227,6 +245,7 @@ func Logger() HandlerFunc {
 
 // LoggerWithFormatter instance a Logger middleware with the specified log format function.
 func LoggerWithFormatter(f LogFormatter) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering LoggerWithFormatter(f=%v)", f)
 	return LoggerWithConfig(LoggerConfig{
 		Formatter: f,
 	})
@@ -235,6 +254,7 @@ func LoggerWithFormatter(f LogFormatter) HandlerFunc {
 // LoggerWithWriter instance a Logger middleware with the specified writer buffer.
 // Example: os.Stdout, a file opened in write mode, a socket...
 func LoggerWithWriter(out io.Writer, notlogged ...string) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering LoggerWithWriter(out=%v,notlogged=%v)", out, notlogged)
 	return LoggerWithConfig(LoggerConfig{
 		Output:    out,
 		SkipPaths: notlogged,
@@ -243,6 +263,7 @@ func LoggerWithWriter(out io.Writer, notlogged ...string) HandlerFunc {
 
 // LoggerWithConfig instance a Logger middleware with config.
 func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
+	logritelog.Default().Printf("[ERROR] >>> Entering LoggerWithConfig(conf=%v)", conf)
 	formatter := conf.Formatter
 	if formatter == nil {
 		formatter = defaultLogFormatter
@@ -260,6 +281,7 @@ func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
 	if w, ok := out.(*os.File); !ok || os.Getenv("TERM") == "dumb" ||
 		(!isatty.IsTerminal(w.Fd()) && !isatty.IsCygwinTerminal(w.Fd())) {
 		isTerm = false
+		logritelog.Default().Printf("[DEBUG] LoggerWithConfig(conf=%v): isTerm → %v", conf, isTerm)
 	}
 
 	var skip map[string]struct{}
@@ -267,11 +289,13 @@ func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
 	if length := len(notlogged); length > 0 {
 		skip = make(map[string]struct{}, length)
 
+		logritelog.Default().Printf("[DEBUG] LoggerWithConfig(conf=%v): skip → %v", conf, skip)
 		for _, path := range notlogged {
 			skip[path] = struct{}{}
 		}
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting LoggerWithConfig(conf=%v)", conf)
 	return func(c *Context) {
 		// Start timer
 		start := time.Now()
@@ -298,6 +322,7 @@ func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
 
 		param.ClientIP = c.ClientIP()
 		param.Method = c.Request.Method
+		logritelog.Default().Printf("[DEBUG] LoggerWithConfig(conf=%v): param.Method → %v", conf, param.Method)
 		param.StatusCode = c.Writer.Status()
 		param.ErrorMessage = c.Errors.ByType(ErrorTypePrivate).String()
 
@@ -305,9 +330,11 @@ func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
 
 		if raw != "" && !conf.SkipQueryString {
 			path = path + "?" + raw
+			logritelog.Default().Printf("[DEBUG] LoggerWithConfig(conf=%v): path → %v", conf, path)
 		}
 
 		param.Path = path
+		logritelog.Default().Printf("[DEBUG] LoggerWithConfig(conf=%v): param.Path → %v", conf, param.Path)
 
 		fmt.Fprint(out, formatter(param))
 	}

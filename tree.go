@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"net/url"
@@ -27,18 +28,22 @@ type Params []Param
 // Get returns the value of the first Param which key matches the given name and a boolean true.
 // If no matching Param is found, an empty string is returned and a boolean false .
 func (ps Params) Get(name string) (string, bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Get(name=%v)", name)
 	for _, entry := range ps {
 		if entry.Key == name {
 			return entry.Value, true
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Get(name=%v)", name)
 	return "", false
 }
 
 // ByName returns the value of the first Param which key matches the given name.
 // If no matching Param is found, an empty string is returned.
 func (ps Params) ByName(name string) (va string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering ByName(name=%v)", name)
 	va, _ = ps.Get(name)
+	logritelog.Default().Printf("[WARN] <<< Exiting ByName(name=%v)", name)
 	return
 }
 
@@ -50,40 +55,48 @@ type methodTree struct {
 type methodTrees []methodTree
 
 func (trees methodTrees) get(method string) *node {
+	logritelog.Default().Printf("[ERROR] >>> Entering get(method=%v)", method)
 	for _, tree := range trees {
 		if tree.method == method {
 			return tree.root
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting get(method=%v)", method)
 	return nil
 }
 
 func longestCommonPrefix(a, b string) int {
+	logritelog.Default().Printf("[ERROR] >>> Entering longestCommonPrefix(a=%v,b=%v)", a, b)
 	i := 0
 	max_ := min(len(a), len(b))
 	for i < max_ && a[i] == b[i] {
 		i++
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting longestCommonPrefix(a=%v,b=%v)", a, b)
 	return i
 }
 
 // addChild will add a child node, keeping wildcardChild at the end
 func (n *node) addChild(child *node) {
+	logritelog.Default().Printf("[ERROR] >>> Entering addChild(child=%v)", child)
 	if n.wildChild && len(n.children) > 0 {
 		wildcardChild := n.children[len(n.children)-1]
 		n.children = append(n.children[:len(n.children)-1], child, wildcardChild)
 	} else {
 		n.children = append(n.children, child)
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting addChild(child=%v)", child)
 }
 
 func countParams(path string) uint16 {
+	logritelog.Default().Printf("[ERROR] >>> Entering countParams(path=%v)", path)
 	colons := strings.Count(path, ":")
 	stars := strings.Count(path, "*")
 	return safeUint16(colons + stars)
 }
 
 func countSections(path string) uint16 {
+	logritelog.Default().Printf("[ERROR] >>> Entering countSections(path=%v)", path)
 	return safeUint16(strings.Count(path, "/"))
 }
 
@@ -109,6 +122,7 @@ type node struct {
 
 // Increments priority of the given child and reorders if necessary
 func (n *node) incrementChildPrio(pos int) int {
+	logritelog.Default().Printf("[ERROR] >>> Entering incrementChildPrio(pos=%v)", pos)
 	cs := n.children
 	cs[pos].priority++
 	prio := cs[pos].priority
@@ -123,16 +137,19 @@ func (n *node) incrementChildPrio(pos int) int {
 	// Build new index char string
 	if newPos != pos {
 		n.indices = n.indices[:newPos] + // Unchanged prefix, might be empty
+			logritelog.Default().Printf("[DEBUG] incrementChildPrio(pos=%v): n.indices → %v", pos, n.indices)
 			n.indices[pos:pos+1] + // The index char we move
 			n.indices[newPos:pos] + n.indices[pos+1:] // Rest without char at 'pos'
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting incrementChildPrio(pos=%v)", pos)
 	return newPos
 }
 
 // addRoute adds a node with the given handle to the path.
 // Not concurrency-safe!
 func (n *node) addRoute(path string, handlers HandlersChain) {
+	logritelog.Default().Printf("[ERROR] >>> Entering addRoute(path=%v,handlers=%v)", path, handlers)
 	fullPath := path
 	n.priority++
 
@@ -140,9 +157,11 @@ func (n *node) addRoute(path string, handlers HandlersChain) {
 	if len(n.path) == 0 && len(n.children) == 0 {
 		n.insertChild(path, fullPath, handlers)
 		n.nType = root
+		logritelog.Default().Printf("[DEBUG] addRoute(path=%v,handlers=%v): n.nType → %v", path, handlers, n.nType)
 		return
 	}
 
+	logritelog.Default().Printf("[WARN] <<< Exiting addRoute(path=%v,handlers=%v)", path, handlers)
 	parentFullPathIndex := 0
 
 walk:
@@ -166,12 +185,17 @@ walk:
 			}
 
 			n.children = []*node{&child}
+			logritelog.Default().Printf("[DEBUG] addRoute(path=%v,handlers=%v): n.children → %v", path, handlers, n.children)
 			// []byte for proper unicode char conversion, see #65
 			n.indices = bytesconv.BytesToString([]byte{n.path[i]})
 			n.path = path[:i]
+			logritelog.Default().Printf("[DEBUG] addRoute(path=%v,handlers=%v): n.path → %v", path, handlers, n.path)
 			n.handlers = nil
+			logritelog.Default().Printf("[DEBUG] addRoute(path=%v,handlers=%v): n.handlers → %v", path, handlers, n.handlers)
 			n.wildChild = false
+			logritelog.Default().Printf("[DEBUG] addRoute(path=%v,handlers=%v): n.wildChild → %v", path, handlers, n.wildChild)
 			n.fullPath = fullPath[:parentFullPathIndex+i]
+			logritelog.Default().Printf("[DEBUG] addRoute(path=%v,handlers=%v): n.fullPath → %v", path, handlers, n.fullPath)
 		}
 
 		// Make new node a child of this node
@@ -251,11 +275,13 @@ walk:
 // Search for a wildcard segment and check the name for invalid characters.
 // Returns -1 as index, if no wildcard was found.
 func findWildcard(path string) (wildcard string, i int, valid bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering findWildcard(path=%v)", path)
 	// Find start
 	escapeColon := false
 	for start, c := range []byte(path) {
 		if escapeColon {
 			escapeColon = false
+			logritelog.Default().Printf("[DEBUG] findWildcard(path=%v): escapeColon → %v", path, escapeColon)
 			if c == ':' {
 				continue
 			}
@@ -272,6 +298,7 @@ func findWildcard(path string) (wildcard string, i int, valid bool) {
 
 		// Find end and check for invalid characters
 		valid = true
+		logritelog.Default().Printf("[DEBUG] findWildcard(path=%v): valid → %v", path, valid)
 		for end, c := range []byte(path[start+1:]) {
 			switch c {
 			case '/':
@@ -286,6 +313,7 @@ func findWildcard(path string) (wildcard string, i int, valid bool) {
 }
 
 func (n *node) insertChild(path string, fullPath string, handlers HandlersChain) {
+	logritelog.Default().Printf("[ERROR] >>> Entering insertChild(path=%v,fullPath=%v,handlers=%v)", path, fullPath, handlers)
 	for {
 		// Find prefix until first wildcard
 		wildcard, i, valid := findWildcard(path)
@@ -308,6 +336,7 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 			if i > 0 {
 				// Insert prefix before the current wildcard
 				n.path = path[:i]
+				logritelog.Default().Printf("[DEBUG] insertChild(path=%v,fullPath=%v,handlers=%v): n.path → %v", path, fullPath, handlers, n.path)
 				path = path[i:]
 			}
 
@@ -324,6 +353,7 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 			// if the path doesn't end with the wildcard, then there
 			// will be another subpath starting with '/'
 			if len(wildcard) < len(path) {
+				logritelog.Default().Printf("[DEBUG] insertChild(path=%v,fullPath=%v,handlers=%v): n.wildChild → %v", path, fullPath, handlers, n.wildChild)
 				path = path[len(wildcard):]
 
 				child := &node{
@@ -337,6 +367,7 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 
 			// Otherwise we're done. Insert the handle in the new leaf
 			n.handlers = handlers
+		logritelog.Default().Printf("[DEBUG] insertChild(path=%v,fullPath=%v,handlers=%v): n.handlers → %v", path, fullPath, handlers, n.handlers)
 			return
 		}
 
@@ -374,6 +405,7 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 
 		n.addChild(child)
 		n.indices = "/"
+		logritelog.Default().Printf("[DEBUG] insertChild(path=%v,fullPath=%v,handlers=%v): n.indices → %v", path, fullPath, handlers, n.indices)
 		n = child
 		n.priority++
 
@@ -385,7 +417,9 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 			priority: 1,
 			fullPath: fullPath,
 		}
+		logritelog.Default().Printf("[DEBUG] insertChild(path=%v,fullPath=%v,handlers=%v): child → %v", path, fullPath, handlers, child)
 		n.children = []*node{child}
+		logritelog.Default().Printf("[DEBUG] insertChild(path=%v,fullPath=%v,handlers=%v): n.children → %v", path, fullPath, handlers, n.children)
 
 		return
 	}
@@ -394,6 +428,8 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 	n.path = path
 	n.handlers = handlers
 	n.fullPath = fullPath
+	logritelog.Default().Printf("[DEBUG] insertChild(path=%v,fullPath=%v,handlers=%v): n.fullPath → %v", path, fullPath, handlers, n.fullPath)
+logritelog.Default().Printf("[WARN] <<< Exiting insertChild(path=%v,fullPath=%v,handlers=%v)", path, fullPath, handlers)
 }
 
 // nodeValue holds return values of (*Node).getValue method
@@ -416,6 +452,14 @@ type skippedNode struct {
 // made if a handle exists with an extra (without the) trailing slash for the
 // given path.
 func (n *node) getValue(path string, params *Params, skippedNodes *[]skippedNode, unescape bool) (value nodeValue) {
+	logritelog.Default().Printf("[ERROR] >>> Entering getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v)", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[DEBUG] getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v): globalParamsCount → %v", path, params, skippedNodes, unescape, globalParamsCount)
+	logritelog.Default().Printf("[DEBUG] getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v): value.params → %v", path, params, skippedNodes, unescape, value.params)
+	logritelog.Default().Printf("[DEBUG] getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v): val → %v", path, params, skippedNodes, unescape, val)
+	logritelog.Default().Printf("[DEBUG] getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v): value.fullPath → %v", path, params, skippedNodes, unescape, value.fullPath)
+	logritelog.Default().Printf("[DEBUG] getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v): value.handlers → %v", path, params, skippedNodes, unescape, value.handlers)
+	logritelog.Default().Printf("[DEBUG] getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v): value.tsr → %v", path, params, skippedNodes, unescape, value.tsr)
+	logritelog.Default().Printf("[WARN] <<< Exiting getValue(path=%v,params=%v,skippedNodes=%v,unescape=%v)", path, params, skippedNodes, unescape)
 	var globalParamsCount int16
 
 walk: // Outer loop for walking the tree
@@ -669,6 +713,7 @@ walk: // Outer loop for walking the tree
 // It returns the case-corrected path and a bool indicating whether the lookup
 // was successful.
 func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]byte, bool) {
+	logritelog.Default().Printf("[ERROR] >>> Entering findCaseInsensitivePath(path=%v,fixTrailingSlash=%v)", path, fixTrailingSlash)
 	const stackBufSize = 128
 
 	buf := make([]byte, 0, max(stackBufSize, len(path)+1))
@@ -680,11 +725,13 @@ func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]by
 		fixTrailingSlash,
 	)
 
+	logritelog.Default().Printf("[WARN] <<< Exiting findCaseInsensitivePath(path=%v,fixTrailingSlash=%v)", path, fixTrailingSlash)
 	return ciPath, ciPath != nil
 }
 
 // Shift bytes in array by n bytes left
 func shiftNRuneBytes(rb [4]byte, n int) [4]byte {
+	logritelog.Default().Printf("[ERROR] >>> Entering shiftNRuneBytes(rb=%v,n=%v)", rb, n)
 	switch n {
 	case 0:
 		return rb
@@ -701,7 +748,10 @@ func shiftNRuneBytes(rb [4]byte, n int) [4]byte {
 
 // Recursive case-insensitive lookup function used by n.findCaseInsensitivePath
 func (n *node) findCaseInsensitivePathRec(path string, ciPath []byte, rb [4]byte, fixTrailingSlash bool) []byte {
+	logritelog.Default().Printf("[ERROR] >>> Entering findCaseInsensitivePathRec(path=%v,ciPath=%v,rb=%v,fixTrailingSlash=%v)", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[WARN] <<< Exiting findCaseInsensitivePathRec(path=%v,ciPath=%v,rb=%v,fixTrailingSlash=%v)", path, ciPath, rb, fixTrailingSlash)
 	npLen := len(n.path)
+	logritelog.Default().Printf("[DEBUG] findCaseInsensitivePathRec(path=%v,ciPath=%v,rb=%v,fixTrailingSlash=%v): npLen → %v", path, ciPath, rb, fixTrailingSlash, npLen)
 
 walk: // Outer loop for walking the tree
 	for len(path) >= npLen && (npLen == 0 || strings.EqualFold(path[1:npLen], n.path[1:])) {

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"reflect"
@@ -22,6 +23,7 @@ type SliceValidationError []error
 
 // Error concatenates all error elements in SliceValidationError into a single string separated by \n.
 func (err SliceValidationError) Error() string {
+	logritelog.Default().Printf("[ERROR] >>> Entering Error()")
 	if len(err) == 0 {
 		return ""
 	}
@@ -38,6 +40,7 @@ func (err SliceValidationError) Error() string {
 			b.WriteString(err[i].Error())
 		}
 	}
+	logritelog.Default().Printf("[WARN] <<< Exiting Error()")
 	return b.String()
 }
 
@@ -45,6 +48,7 @@ var _ StructValidator = (*defaultValidator)(nil)
 
 // ValidateStruct receives any kind of type, but only performed struct or pointer to struct type.
 func (v *defaultValidator) ValidateStruct(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering ValidateStruct(obj=%v)", obj)
 	if obj == nil {
 		return nil
 	}
@@ -63,21 +67,26 @@ func (v *defaultValidator) ValidateStruct(obj any) error {
 		validateRet := make(SliceValidationError, 0)
 		for i := range count {
 			if err := v.ValidateStruct(value.Index(i).Interface()); err != nil {
+				logritelog.Default().Printf("[ERROR] Exception in ValidateStruct(obj=%v): %v", obj, err)
 				validateRet = append(validateRet, err)
 			}
+				logritelog.Default().Printf("[DEBUG] ValidateStruct(obj=%v): validateRet → %v", obj, validateRet)
 		}
 		if len(validateRet) == 0 {
 			return nil
 		}
 		return validateRet
 	default:
+		logritelog.Default().Printf("[WARN] <<< Exiting ValidateStruct(obj=%v)", obj)
 		return nil
 	}
 }
 
 // validateStruct receives struct type
 func (v *defaultValidator) validateStruct(obj any) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering validateStruct(obj=%v)", obj)
 	v.lazyinit()
+	logritelog.Default().Printf("[WARN] <<< Exiting validateStruct(obj=%v)", obj)
 	return v.validate.Struct(obj)
 }
 
@@ -86,13 +95,17 @@ func (v *defaultValidator) validateStruct(obj any) error {
 // or struct level validations. See validator GoDoc for more info -
 // https://pkg.go.dev/github.com/go-playground/validator/v10
 func (v *defaultValidator) Engine() any {
+	logritelog.Default().Printf("[ERROR] >>> Entering Engine()")
 	v.lazyinit()
+	logritelog.Default().Printf("[WARN] <<< Exiting Engine()")
 	return v.validate
 }
 
 func (v *defaultValidator) lazyinit() {
+	logritelog.Default().Printf("[ERROR] >>> Entering lazyinit()")
 	v.once.Do(func() {
 		v.validate = validator.New()
 		v.validate.SetTagName("binding")
 	})
+	logritelog.Default().Printf("[WARN] <<< Exiting lazyinit()")
 }

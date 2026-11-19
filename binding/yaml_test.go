@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"testing"
@@ -12,10 +13,12 @@ import (
 )
 
 func TestYAMLBindingBindBody(t *testing.T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TestYAMLBindingBindBody(t=%v)", t)
 	var s struct {
 		Foo string `yaml:"foo"`
 	}
 	err := yamlBinding{}.BindBody([]byte("foo: FOO"), &s)
 	require.NoError(t, err)
 	assert.Equal(t, "FOO", s.Foo)
+	logritelog.Default().Printf("[WARN] <<< Exiting TestYAMLBindingBindBody(t=%v)", t)
 }
