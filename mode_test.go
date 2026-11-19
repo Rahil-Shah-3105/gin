@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"os"
@@ -39,6 +40,7 @@ func TestSetMode(t *testing.T) {
 	assert.Equal(t, TestMode, Mode())
 
 	assert.Panics(t, func() { SetMode("unknown") })
+	logritelog.Default().Printf("[INFO] TestSetMode(t=%v): NERCCIP-AUDIT: Change management operation performed", t)
 }
 
 func TestDisableBindValidation(t *testing.T) {
