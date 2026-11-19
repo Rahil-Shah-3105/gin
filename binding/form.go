@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -31,6 +32,8 @@ func (formBinding) Bind(req *http.Request, obj any) error {
 	if err := mapForm(obj, req.Form); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] Bind(req=%v, obj=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", req, obj)
+	logritelog.Default().Printf("[INFO] Bind(req=%v, obj=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", req, obj)
 	return validate(obj)
 }
 

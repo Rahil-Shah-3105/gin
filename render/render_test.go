@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -156,22 +157,34 @@ func (w *errorWriter) WriteHeader(statusCode int) {
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): FERPA-AUDIT [34 CFR 99.37]: Directory information — State change recorded for the audit trail", statusCode)
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): FERPA-AUDIT [34 CFR 99.30]: Consent — State change recorded for the audit trail", statusCode)
+logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — State change recorded for the audit trail", statusCode)
+logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): FERPA-AUDIT: Inspect amend — State change recorded for the audit trail", statusCode)
 	w.ResponseRecorder.WriteHeader(statusCode)
 }
 
 func (w *errorWriter) Write(buf []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(buf=%v): FERPA-AUDIT: Inspect amend — State change recorded for the audit trail", buf)
 	w.writeCount++
 	if (w.bufString != "" && string(buf) == w.bufString) || (w.ErrThreshold > 0 && w.writeCount >= w.ErrThreshold) {
 		return 0, errors.New(`write error`)
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — State change recorded for the audit trail", buf)
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): FERPA-AUDIT [34 CFR 99.37]: Directory information — State change recorded for the audit trail", buf)
+	logritelog.Default().Printf("[INFO] Write(buf=%v): FERPA-AUDIT [34 CFR 99.30]: Consent — State change recorded for the audit trail", buf)
 	return w.ResponseRecorder.Write(buf)
 }
 
 func (w *errorWriter) reset() {
 	w.writeCount = 0
+	logritelog.Default().Printf("[INFO] reset(): FERPA-AUDIT [34 CFR 99.37]: Directory information — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] reset(): FERPA-AUDIT [34 CFR 99.30]: Consent — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] reset(): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] reset(): FERPA-AUDIT: Inspect amend — State change recorded for the audit trail")
 	w.ResponseRecorder = httptest.NewRecorder()
 }
 

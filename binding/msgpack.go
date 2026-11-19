@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -33,5 +34,7 @@ func decodeMsgPack(r io.Reader, obj any) error {
 	if err := codec.NewDecoder(r, cdc).Decode(&obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeMsgPack(r=%v, obj=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeMsgPack(r=%v, obj=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", r, obj)
 	return validate(obj)
 }

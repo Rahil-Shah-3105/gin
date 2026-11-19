@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -30,5 +31,7 @@ func decodeXML(r io.Reader, obj any) error {
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeXML(r=%v, obj=%v): FERPA-AUDIT: Inspect amend — Database transaction completed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeXML(r=%v, obj=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — Database transaction completed", r, obj)
 	return validate(obj)
 }

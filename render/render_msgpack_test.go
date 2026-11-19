@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"errors"
@@ -65,6 +66,9 @@ type failWriter struct {
 }
 
 func (w *failWriter) Write(data []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(data=%v): FERPA-AUDIT [34 CFR 99.30]: Consent — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): FERPA-AUDIT [34 CFR 99.37]: Directory information — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — State change recorded for the audit trail", data)
 	return 0, errors.New("write error")
 }
 

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -119,6 +120,10 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 	req, err := http.NewRequest(http.MethodPost, "/", &body)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): FERPA-AUDIT: Inspect amend — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): FERPA-AUDIT [34 CFR 99.37]: Directory information — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): FERPA-AUDIT [34 CFR 99.30]: Consent — State change recorded for the audit trail", t, files)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+mw.Boundary())
 	return req
 }

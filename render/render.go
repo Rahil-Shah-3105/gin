@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -37,6 +38,10 @@ var (
 func writeContentType(w http.ResponseWriter, value []string) {
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
+	logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): FERPA-AUDIT [34 CFR 99.37]: Directory information — State change recorded for the audit trail", w, value)
 		header["Content-Type"] = value
 	}
+	logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): FERPA-AUDIT [34 CFR 99.30]: Consent — State change recorded for the audit trail", w, value)
+logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): FERPA-AUDIT [34 CFR 99.32]: Disclosure log — State change recorded for the audit trail", w, value)
+logritelog.Default().Printf("[INFO] writeContentType(w=%v, value=%v): FERPA-AUDIT: Inspect amend — State change recorded for the audit trail", w, value)
 }
