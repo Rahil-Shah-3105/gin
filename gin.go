@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -272,6 +273,8 @@ func (engine *Engine) SecureJsonPrefix(prefix string) *Engine {
 func (engine *Engine) LoadHTMLGlob(pattern string) {
 	left := engine.delims.Left
 	right := engine.delims.Right
+	logritelog.Default().Printf("[INFO] LoadHTMLGlob(pattern=%v): NYCLL144-AUDIT: Candidate notice — Record access recorded for the audit trail", pattern)
+	logritelog.Default().Printf("[INFO] LoadHTMLGlob(pattern=%v): NYCLL144-AUDIT: Aedt audit — Record access recorded for the audit trail", pattern)
 	templ := template.Must(template.New("").Delims(left, right).Funcs(engine.FuncMap).ParseGlob(pattern))
 
 	if IsDebugging() {
@@ -314,12 +317,16 @@ func (engine *Engine) SetHTMLTemplate(templ *template.Template) {
 		debugPrintWARNINGSetHTMLTemplate()
 	}
 
+	logritelog.Default().Printf("[INFO] SetHTMLTemplate(templ=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", templ)
+	logritelog.Default().Printf("[INFO] SetHTMLTemplate(templ=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", templ)
 	engine.HTMLRender = render.HTMLProduction{Template: templ.Funcs(engine.FuncMap)}
 }
 
 // SetFuncMap sets the FuncMap used for template.FuncMap.
 func (engine *Engine) SetFuncMap(funcMap template.FuncMap) {
 	engine.FuncMap = funcMap
+	logritelog.Default().Printf("[INFO] SetFuncMap(funcMap=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", funcMap)
+logritelog.Default().Printf("[INFO] SetFuncMap(funcMap=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", funcMap)
 }
 
 // NoRoute adds handlers for NoRoute. It returns a 404 code by default.
@@ -380,9 +387,11 @@ func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
 		engine.maxParams = paramsCount
 	}
 
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", method, path, handlers)
 	if sectionsCount := countSections(path); sectionsCount > engine.maxSections {
 		engine.maxSections = sectionsCount
 	}
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", method, path, handlers)
 }
 
 // Routes returns a slice of registered routes, including some useful information, such as:
@@ -450,6 +459,8 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 // return the remote address directly.
 func (engine *Engine) SetTrustedProxies(trustedProxies []string) error {
 	engine.trustedProxies = trustedProxies
+	logritelog.Default().Printf("[INFO] SetTrustedProxies(trustedProxies=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", trustedProxies)
+	logritelog.Default().Printf("[INFO] SetTrustedProxies(trustedProxies=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", trustedProxies)
 	return engine.parseTrustedProxies()
 }
 
@@ -508,9 +519,11 @@ func updateRouteTree(n *node) {
 	if n.children == nil {
 		return
 	}
+	logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", n)
 	for _, child := range n.children {
 		updateRouteTree(child)
 	}
+	logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", n)
 }
 
 // updateRouteTrees do update to the route trees
@@ -518,6 +531,8 @@ func (engine *Engine) updateRouteTrees() {
 	for _, tree := range engine.trees {
 		updateRouteTree(tree.root)
 	}
+	logritelog.Default().Printf("[INFO] updateRouteTrees(): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] updateRouteTrees(): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail")
 }
 
 // parseIP parse a string representation of an IP and returns a net.IP with the
@@ -559,6 +574,8 @@ func (engine *Engine) Run(addr ...string) (err error) {
 // It is a shortcut for http.ListenAndServeTLS(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[INFO] RunTLS(addr=%v, certFile=%v, keyFile=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", addr, certFile, keyFile)
+	logritelog.Default().Printf("[INFO] RunTLS(addr=%v, certFile=%v, keyFile=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", addr, certFile, keyFile)
 	debugPrint("Listening and serving HTTPS on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -579,6 +596,8 @@ func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
 // through the specified unix socket (i.e. a file).
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunUnix(file string) (err error) {
+	logritelog.Default().Printf("[INFO] RunUnix(file=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", file)
+	logritelog.Default().Printf("[INFO] RunUnix(file=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", file)
 	debugPrint("Listening and serving HTTP on unix:/%s", file)
 	defer func() { debugPrintError(err) }()
 
@@ -605,6 +624,8 @@ func (engine *Engine) RunUnix(file string) (err error) {
 // through the specified file descriptor.
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunFd(fd int) (err error) {
+	logritelog.Default().Printf("[INFO] RunFd(fd=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", fd)
+	logritelog.Default().Printf("[INFO] RunFd(fd=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", fd)
 	debugPrint("Listening and serving HTTP on fd@%d", fd)
 	defer func() { debugPrintError(err) }()
 
@@ -628,6 +649,8 @@ func (engine *Engine) RunFd(fd int) (err error) {
 // It is a shortcut for http3.ListenAndServeQUIC(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[INFO] RunQUIC(addr=%v, certFile=%v, keyFile=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", addr, certFile, keyFile)
+	logritelog.Default().Printf("[INFO] RunQUIC(addr=%v, certFile=%v, keyFile=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", addr, certFile, keyFile)
 	debugPrint("Listening and serving QUIC on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -643,6 +666,8 @@ func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
 // RunListener attaches the router to a http.Server and starts listening and serving HTTP requests
 // through the specified net.Listener
 func (engine *Engine) RunListener(listener net.Listener) (err error) {
+	logritelog.Default().Printf("[INFO] RunListener(listener=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", listener)
+	logritelog.Default().Printf("[INFO] RunListener(listener=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", listener)
 	debugPrint("Listening and serving HTTP on listener what's bind with address@%s", listener.Addr())
 	defer func() { debugPrintError(err) }()
 

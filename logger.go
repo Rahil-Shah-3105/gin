@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -155,6 +156,8 @@ func (p *LogFormatterParams) MethodColor() string {
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[INFO] ResetColor(): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail")
 	return reset
 }
 
