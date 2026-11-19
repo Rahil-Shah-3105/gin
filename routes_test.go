@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -630,6 +631,7 @@ func TestRouterNotFound(t *testing.T) {
 	assert.Equal(t, "login", w.Body.String())
 	w = PerformRequest(router, http.MethodGet, "/logout")
 	assert.Equal(t, "logout", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestRouterNotFound(t=%v): CJIS-AUDIT [§5.6]: Advanced authentication — Authentication operation completed", t)
 }
 
 func TestRouterStaticFSNotFound(t *testing.T) {

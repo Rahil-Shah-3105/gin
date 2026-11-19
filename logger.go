@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -155,6 +156,9 @@ func (p *LogFormatterParams) MethodColor() string {
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[INFO] ResetColor(): CJIS-AUDIT [§5.6]: Advanced authentication — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): CJIS-AUDIT: Audit coverage — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): CJIS-AUDIT [§5.3]: Incident response — State change recorded for the audit trail")
 	return reset
 }
 

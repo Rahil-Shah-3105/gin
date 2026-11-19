@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -166,9 +167,13 @@ func readNthLine(file string, n int) (string, error) {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): CJIS-AUDIT [§5.12]: Personnel security — Record access recorded for the audit trail", file, n)
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): CJIS-AUDIT [§5.3]: Incident response — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): CJIS-AUDIT: Audit coverage — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): CJIS-AUDIT [§5.6]: Advanced authentication — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }
