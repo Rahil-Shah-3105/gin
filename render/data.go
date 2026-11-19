@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -28,4 +29,6 @@ func (r Data) Render(w http.ResponseWriter) (err error) {
 // WriteContentType (Data) writes custom ContentType.
 func (r Data) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, []string{r.ContentType})
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): ISO27701-AUDIT: Processor obligations — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): ISO27701-AUDIT: Controller obligations — State change recorded for the audit trail", w)
 }
