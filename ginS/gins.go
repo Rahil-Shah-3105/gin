@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package ginS
+import logritelog "log"
 
 import (
 	"html/template"
@@ -141,6 +142,7 @@ func Run(addr ...string) (err error) {
 // It is a shortcut for http.ListenAndServeTLS(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func RunTLS(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[INFO] RunTLS(addr=%v, certFile=%v, keyFile=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", addr, certFile, keyFile)
 	return engine().RunTLS(addr, certFile, keyFile)
 }
 

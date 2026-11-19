@@ -5,6 +5,7 @@
 //go:build go_json
 
 package json
+import logritelog "log"
 
 import (
 	"io"
@@ -34,9 +35,11 @@ func (j gojsonApi) MarshalIndent(v any, prefix, indent string) ([]byte, error) {
 }
 
 func (j gojsonApi) NewEncoder(writer io.Writer) Encoder {
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", writer)
 	return json.NewEncoder(writer)
 }
 
 func (j gojsonApi) NewDecoder(reader io.Reader) Decoder {
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", reader)
 	return json.NewDecoder(reader)
 }

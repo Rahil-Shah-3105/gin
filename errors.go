@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -42,12 +43,20 @@ var _ error = (*Error)(nil)
 // SetType sets the error's type.
 func (msg *Error) SetType(flags ErrorType) *Error {
 	msg.Type = flags
+	logritelog.Default().Printf("[WARN] SetType(flags=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", flags)
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", flags)
+	logritelog.Default().Printf("[INFO] SetType(flags=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", flags)
+	logritelog.Default().Printf("[WARN] SetType(flags=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", flags)
 	return msg
 }
 
 // SetMeta sets the error's meta data.
 func (msg *Error) SetMeta(data any) *Error {
 	msg.Meta = data
+	logritelog.Default().Printf("[WARN] SetMeta(data=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] SetMeta(data=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[WARN] SetMeta(data=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", data)
 	return msg
 }
 

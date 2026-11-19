@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -87,4 +88,5 @@ func TestDefaultValidator(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("[WARN] TestDefaultValidator(t=%v): GDPR-AUDIT: Access, erasure, portability — Database transaction completed", t)
 }

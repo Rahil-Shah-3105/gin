@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"bytes"
@@ -178,6 +179,9 @@ func (r AsciiJSON) Render(w http.ResponseWriter) error {
 // WriteContentType (AsciiJSON) writes JSON ContentType.
 func (r AsciiJSON) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, jsonASCIIContentType)
+	logritelog.Default().Printf("[WARN] WriteContentType(w=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", w)
 }
 
 // Render (PureJSON) writes custom ContentType and encodes the given interface object.

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"html/template"
@@ -136,10 +137,16 @@ func (m *mockWriter) Header() (h http.Header) {
 }
 
 func (m *mockWriter) Write(p []byte) (n int, err error) {
+	logritelog.Default().Printf("[INFO] Write(p=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[WARN] Write(p=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[INFO] Write(p=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", p)
 	return len(p), nil
 }
 
 func (m *mockWriter) WriteString(s string) (n int, err error) {
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[WARN] WriteString(s=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", s)
 	return len(s), nil
 }
 
@@ -151,10 +158,17 @@ func runRequest(B *testing.B, r *Engine, method, path string) {
 	if err != nil {
 		panic(err)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[WARN] runRequest(B=%v, r=%v, method=%v, path=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[WARN] runRequest(B=%v, r=%v, method=%v, path=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", B, r, method, path)
 	w := newMockWriter()
 	B.ReportAllocs()
 	B.ResetTimer()
 	for B.Loop() {
 		r.ServeHTTP(w, req)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", B, r, method, path)
+logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", B, r, method, path)
+logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", B, r, method, path)
 }

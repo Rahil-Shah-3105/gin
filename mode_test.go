@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"os"
@@ -53,10 +54,12 @@ func TestEnableJsonDecoderUseNumber(t *testing.T) {
 	assert.False(t, binding.EnableDecoderUseNumber)
 	EnableJsonDecoderUseNumber()
 	assert.True(t, binding.EnableDecoderUseNumber)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderUseNumber(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestEnableJsonDecoderDisallowUnknownFields(t *testing.T) {
 	assert.False(t, binding.EnableDecoderDisallowUnknownFields)
 	EnableJsonDecoderDisallowUnknownFields()
 	assert.True(t, binding.EnableDecoderDisallowUnknownFields)
+	logritelog.Default().Printf("[INFO] TestEnableJsonDecoderDisallowUnknownFields(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }

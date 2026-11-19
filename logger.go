@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -155,6 +156,9 @@ func (p *LogFormatterParams) MethodColor() string {
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[INFO] ResetColor(): GDPR-AUDIT: Breach notification — State change recorded for the audit trail")
+	logritelog.Default().Printf("[WARN] ResetColor(): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail")
 	return reset
 }
 

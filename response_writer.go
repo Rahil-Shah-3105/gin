@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -60,6 +61,11 @@ func (w *responseWriter) Unwrap() http.ResponseWriter {
 
 func (w *responseWriter) reset(writer http.ResponseWriter) {
 	w.ResponseWriter = writer
+	logritelog.Default().Printf("[INFO] reset(writer=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", writer)
+	logritelog.Default().Printf("[WARN] reset(writer=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", writer)
+	logritelog.Default().Printf("[INFO] reset(writer=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", writer)
+logritelog.Default().Printf("[WARN] reset(writer=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", writer)
+logritelog.Default().Printf("[INFO] reset(writer=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", writer)
 	w.size = noWritten
 	w.status = defaultStatus
 }
@@ -72,6 +78,9 @@ func (w *responseWriter) WriteHeader(code int) {
 		}
 		w.status = code
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[WARN] WriteHeader(code=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", code)
 }
 
 func (w *responseWriter) WriteHeaderNow() {
@@ -79,12 +88,21 @@ func (w *responseWriter) WriteHeaderNow() {
 		w.size = 0
 		w.ResponseWriter.WriteHeader(w.status)
 	}
+	logritelog.Default().Printf("[INFO] WriteHeaderNow(): GDPR-AUDIT: Breach notification — State change recorded for the audit trail")
+logritelog.Default().Printf("[WARN] WriteHeaderNow(): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] WriteHeaderNow(): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail")
 }
 
 func (w *responseWriter) Write(data []byte) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = w.ResponseWriter.Write(data)
 	w.size += n
+	logritelog.Default().Printf("[WARN] Write(data=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[WARN] Write(data=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", data)
 	return
 }
 
@@ -92,6 +110,12 @@ func (w *responseWriter) WriteString(s string) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = io.WriteString(w.ResponseWriter, s)
 	w.size += n
+	logritelog.Default().Printf("[WARN] WriteString(s=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[WARN] WriteString(s=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", s)
 	return
 }
 

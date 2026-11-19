@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"io"
@@ -35,14 +36,21 @@ func (r Reader) Render(w http.ResponseWriter) (err error) {
 // WriteContentType (Reader) writes custom ContentType.
 func (r Reader) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, []string{r.ContentType})
+	logritelog.Default().Printf("[WARN] WriteContentType(w=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", w)
 }
 
 // writeHeaders writes headers from r.Headers into response.
 func (r Reader) writeHeaders(w http.ResponseWriter) {
 	header := w.Header()
 	for k, v := range r.Headers {
+	logritelog.Default().Printf("[WARN] writeHeaders(w=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", w)
 		if header.Get(k) == "" {
 			header.Set(k, v)
 		}
 	}
+	logritelog.Default().Printf("[INFO] writeHeaders(w=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] writeHeaders(w=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[WARN] writeHeaders(w=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", w)
 }

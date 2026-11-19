@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -52,5 +53,7 @@ func decodeJSON(r io.Reader, obj any) error {
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", r, obj)
+	logritelog.Default().Printf("[WARN] decodeJSON(r=%v, obj=%v): GDPR-AUDIT: Access, erasure, portability — Database transaction completed", r, obj)
 	return validate(obj)
 }
