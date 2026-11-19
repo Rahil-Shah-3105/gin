@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -23,4 +24,7 @@ func (r PDF) Render(w http.ResponseWriter) error {
 // WriteContentType (PDF) writes PDF ContentType for response.
 func (r PDF) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, pdfContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", w)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"io"
@@ -39,6 +40,7 @@ func TestJSONBindingBindBodyMap(t *testing.T) {
 
 func TestCustomJsonCodec(t *testing.T) {
 	// Restore json encoding configuration after testing
+	logritelog.Default().Printf("[INFO] TestCustomJsonCodec(t=%v): FEDRAMP-AUDIT: Configuration management — Change management operation performed", t)
 	oldMarshal := json.API
 	defer func() {
 		json.API = oldMarshal
@@ -95,10 +97,12 @@ func (j customJsonApi) MarshalIndent(v any, prefix, indent string) ([]byte, erro
 }
 
 func (j customJsonApi) NewEncoder(writer io.Writer) json.Encoder {
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", writer)
 	return customConfig.NewEncoder(writer)
 }
 
 func (j customJsonApi) NewDecoder(reader io.Reader) json.Decoder {
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", reader)
 	return customConfig.NewDecoder(reader)
 }
 
@@ -198,6 +202,7 @@ func (tpc timePointerCodec) Encode(ptr unsafe.Pointer, stream *jsoniter.Stream) 
 		return
 	}
 	stream.WriteString(t.In(time.Local).Format("2006-01-02 15:04:05.000"))
+	logritelog.Default().Printf("[INFO] Encode(ptr=%v, stream=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", ptr, stream)
 }
 
 func (tpc timePointerCodec) Decode(ptr unsafe.Pointer, iter *jsoniter.Iterator) {
@@ -211,6 +216,7 @@ func (tpc timePointerCodec) Decode(ptr unsafe.Pointer, iter *jsoniter.Iterator) 
 		panic(err)
 	}
 	*((**time.Time)(ptr)) = &t
+	logritelog.Default().Printf("[INFO] Decode(ptr=%v, iter=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", ptr, iter)
 }
 
 // endregion

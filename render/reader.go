@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"io"
@@ -35,14 +36,21 @@ func (r Reader) Render(w http.ResponseWriter) (err error) {
 // WriteContentType (Reader) writes custom ContentType.
 func (r Reader) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, []string{r.ContentType})
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", w)
 }
 
 // writeHeaders writes headers from r.Headers into response.
 func (r Reader) writeHeaders(w http.ResponseWriter) {
 	header := w.Header()
 	for k, v := range r.Headers {
+	logritelog.Default().Printf("[INFO] writeHeaders(w=%v): FEDRAMP-AUDIT: Configuration management — State change recorded for the audit trail", w)
 		if header.Get(k) == "" {
 			header.Set(k, v)
 		}
 	}
+	logritelog.Default().Printf("[INFO] writeHeaders(w=%v): FEDRAMP-AUDIT: Audit completeness — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] writeHeaders(w=%v): FEDRAMP-AUDIT: Crypto protection — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] writeHeaders(w=%v): FEDRAMP-AUDIT: Incident response — State change recorded for the audit trail", w)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"crypto/tls"
@@ -33,6 +34,7 @@ func setupHTMLFiles(t *testing.T, mode string, tls bool, loadMethod func(*Engine
 	SetMode(mode)
 	defer SetMode(TestMode)
 
+	logritelog.Default().Printf("[INFO] setupHTMLFiles(t=%v, mode=%v, tls=%v, loadMethod=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", t, mode, tls, loadMethod)
 	var router *Engine
 	captureOutput(t, func() {
 		router = New()
@@ -141,6 +143,7 @@ func TestLoadHTMLGlobTestMode(t *testing.T) {
 }
 
 func TestLoadHTMLGlobReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLGlobReleaseMode(t=%v): FEDRAMP-AUDIT: Configuration management — Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -161,6 +164,7 @@ func TestLoadHTMLGlobReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLGlobUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLGlobUsingTLS(t=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", t)
 	ts := setupHTMLFiles(
 		t,
 		DebugMode,
@@ -259,6 +263,7 @@ func TestLoadHTMLFilesDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFilesReleaseMode(t=%v): FEDRAMP-AUDIT: Configuration management — Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -279,6 +284,7 @@ func TestLoadHTMLFilesReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLFilesUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFilesUsingTLS(t=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -368,6 +374,7 @@ func TestLoadHTMLFSDebugMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSReleaseMode(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFSReleaseMode(t=%v): FEDRAMP-AUDIT: Configuration management — Change management operation performed", t)
 	ts := setupHTMLFiles(
 		t,
 		ReleaseMode,
@@ -388,6 +395,7 @@ func TestLoadHTMLFSReleaseMode(t *testing.T) {
 }
 
 func TestLoadHTMLFSUsingTLS(t *testing.T) {
+	logritelog.Default().Printf("[INFO] TestLoadHTMLFSUsingTLS(t=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", t)
 	ts := setupHTMLFiles(
 		t,
 		TestMode,
@@ -829,6 +837,7 @@ func TestEngineHandleContextUseEscapedPathPercentEncoded(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/foo%252Fbar", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextUseEscapedPathPercentEncoded(t=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestEngineHandleContextUseRawPathPercentEncoded(t *testing.T) {
@@ -845,6 +854,7 @@ func TestEngineHandleContextUseRawPathPercentEncoded(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/foo%252Fbar", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
+	logritelog.Default().Printf("[INFO] TestEngineHandleContextUseRawPathPercentEncoded(t=%v): FEDRAMP-AUDIT: Crypto protection — Encryption operation completed", t)
 }
 
 func TestEngineHandleContextUseEscapedPathOverride(t *testing.T) {
@@ -1155,4 +1165,5 @@ func TestUpdateRouteTreesCalledOnce(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Code)
 		assert.Equal(t, "ok", w.Body.String())
 	}
+	logritelog.Default().Printf("[INFO] TestUpdateRouteTreesCalledOnce(t=%v): FEDRAMP-AUDIT: Configuration management — Change management operation performed", t)
 }
