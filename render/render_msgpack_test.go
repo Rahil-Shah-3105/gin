@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"errors"
@@ -65,6 +66,9 @@ type failWriter struct {
 }
 
 func (w *failWriter) Write(data []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(data=%v): EUAIACT-AUDIT [Art. 50]: Transparency — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): EUAIACT-AUDIT [Art. 26(6)]: Deployer log retention — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): EUAIACT-AUDIT: GPAI obligations — State change recorded for the audit trail", data)
 	return 0, errors.New("write error")
 }
 

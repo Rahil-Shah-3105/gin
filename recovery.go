@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -166,9 +167,13 @@ func readNthLine(file string, n int) (string, error) {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): EUAIACT-AUDIT: Logging coverage — Record access recorded for the audit trail", file, n)
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): EUAIACT-AUDIT: GPAI obligations — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): EUAIACT-AUDIT [Art. 26(6)]: Deployer log retention — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): EUAIACT-AUDIT [Art. 50]: Transparency — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }

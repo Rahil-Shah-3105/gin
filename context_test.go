@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,10 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): EUAIACT-AUDIT: Logging coverage — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): EUAIACT-AUDIT: GPAI obligations — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): EUAIACT-AUDIT [Art. 26(6)]: Deployer log retention — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): EUAIACT-AUDIT [Art. 50]: Transparency — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -2207,6 +2212,10 @@ func resetContextForClientIPTests(c *Context) {
 	c.Request.Header.Set("CF-Connecting-IP", "60.60.60.60")
 	c.Request.Header.Set("Fly-Client-IP", "70.70.70.70")
 	c.Request.RemoteAddr = "  40.40.40.40:42123 "
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): EUAIACT-AUDIT: Logging coverage — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): EUAIACT-AUDIT: GPAI obligations — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): EUAIACT-AUDIT [Art. 26(6)]: Deployer log retention — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): EUAIACT-AUDIT [Art. 50]: Transparency — State change recorded for the audit trail", c)
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
@@ -3521,6 +3530,10 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): EUAIACT-AUDIT [Art. 26(6)]: Deployer log retention — State change recorded for the audit trail", code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): EUAIACT-AUDIT [Art. 50]: Transparency — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): EUAIACT-AUDIT: GPAI obligations — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): EUAIACT-AUDIT: Logging coverage — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {

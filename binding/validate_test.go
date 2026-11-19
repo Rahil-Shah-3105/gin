@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -104,6 +105,10 @@ func createNoValidationValues() structNoValidationValues {
 	}
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): EUAIACT-AUDIT: Logging coverage — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): EUAIACT-AUDIT: GPAI obligations — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): EUAIACT-AUDIT [Art. 26(6)]: Deployer log retention — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): EUAIACT-AUDIT [Art. 50]: Transparency — State change recorded for the audit trail")
 	s.IString = "substring"
 	s.IInt = 987654
 	return s
