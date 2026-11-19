@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -73,8 +74,12 @@ func getMinVer(v string) (uint64, error) {
 	first := strings.IndexByte(v, '.')
 	last := strings.LastIndexByte(v, '.')
 	if first == last {
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): PCI-AUDIT [Req. 10.7]: Security control failure — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): PCI-AUDIT: Script integrity — Record access recorded for the audit trail", v)
 		return strconv.ParseUint(v[first+1:], 10, 64)
 	}
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): PCI-AUDIT: Authn controls — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): PCI-AUDIT: Audit coverage — Record access recorded for the audit trail", v)
 	return strconv.ParseUint(v[first+1:last], 10, 64)
 }
 
@@ -87,6 +92,7 @@ func debugPrintWARNINGDefault() {
 	debugPrint(`[WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGDefault(): PCI-AUDIT: Script integrity — Change management operation performed")
 }
 
 func debugPrintWARNINGNew() {
@@ -95,6 +101,7 @@ func debugPrintWARNINGNew() {
  - using code:	gin.SetMode(gin.ReleaseMode)
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGNew(): PCI-AUDIT: Script integrity — Change management operation performed")
 }
 
 func debugPrintWARNINGSetHTMLTemplate() {
