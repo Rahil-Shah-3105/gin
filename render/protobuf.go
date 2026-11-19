@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -33,4 +34,7 @@ func (r ProtoBuf) Render(w http.ResponseWriter) error {
 // WriteContentType (ProtoBuf) writes ProtoBuf ContentType.
 func (r ProtoBuf) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, protobufContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): BIPA-AUDIT: Informed consent — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): BIPA-AUDIT: Disclosure profit — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): BIPA-AUDIT: Retention destruction — State change recorded for the audit trail", w)
 }
