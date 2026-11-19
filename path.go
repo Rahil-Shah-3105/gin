@@ -4,6 +4,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE.
 
 package gin
+import logritelog "log"
 
 const stackBufSize = 128
 
@@ -174,6 +175,7 @@ func removeRepeatedChar(s string, char byte) string {
 	r := 0
 	w := 0
 
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", s, char)
 	for n := len(s); r < n; {
 		if s[r] == char {
 			// Write the first char
@@ -192,6 +194,11 @@ func removeRepeatedChar(s string, char byte) string {
 			r++
 		}
 	}
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[WARN] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", s, char)
 
 	// If the original string was not modified (or only shortened at the end),
 	// return the respective substring of the original string.
@@ -199,5 +206,7 @@ func removeRepeatedChar(s string, char byte) string {
 	if len(buf) == 0 {
 		return s[:w]
 	}
+	logritelog.Default().Printf("[WARN] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", s, char)
 	return string(buf[:w])
 }

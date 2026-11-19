@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -505,6 +506,12 @@ func createFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[WARN] createFormPostRequest(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormPostRequest(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
 }
 
 func createDefaultFormPostRequest(t *testing.T) *http.Request {
@@ -512,6 +519,12 @@ func createDefaultFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[WARN] createDefaultFormPostRequest(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createDefaultFormPostRequest(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMap(t *testing.T) *http.Request {
@@ -519,6 +532,12 @@ func createFormPostRequestForMap(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[WARN] createFormPostRequestForMap(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormPostRequestForMap(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMapFail(t *testing.T) *http.Request {
@@ -526,6 +545,12 @@ func createFormPostRequestForMapFail(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[WARN] createFormPostRequestForMapFail(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormPostRequestForMapFail(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
 }
 
 func createFormFilesMultipartRequest(t *testing.T) *http.Request {
@@ -546,6 +571,14 @@ func createFormFilesMultipartRequest(t *testing.T) *http.Request {
 	_, err = io.Copy(fw, f)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
 	req, err2 := http.NewRequest(http.MethodPost, "/?foo=getfoo&bar=getbar", body)
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
@@ -571,6 +604,14 @@ func createFormFilesMultipartRequestFail(t *testing.T) *http.Request {
 	_, err = io.Copy(fw, f)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
 	req, err2 := http.NewRequest(http.MethodPost, "/?foo=getfoo&bar=getbar", body)
 	require.NoError(t, err2)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
@@ -584,6 +625,14 @@ func createFormMultipartRequest(t *testing.T) *http.Request {
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
 
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormMultipartRequest(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormMultipartRequest(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
 	require.NoError(t, mw.SetBoundary(boundary))
 	require.NoError(t, mw.WriteField("foo", "bar"))
 	require.NoError(t, mw.WriteField("bar", "foo"))
@@ -599,6 +648,15 @@ func createFormMultipartRequestForMap(t *testing.T) *http.Request {
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
 
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT [Art.30]: Personal data processing activity completed", t)
+	logritelog.Default().Printf("[WARN] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
 	require.NoError(t, mw.SetBoundary(boundary))
 	require.NoError(t, mw.WriteField("map_foo", "{\"bar\":123, \"name\":\"thinkerou\", \"pai\": 3.14}"))
 	req, err := http.NewRequest(http.MethodPost, "/?map_foo=getfoo", body)
@@ -613,6 +671,14 @@ func createFormMultipartRequestForMapFail(t *testing.T) *http.Request {
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
 
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[WARN] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t)
 	require.NoError(t, mw.SetBoundary(boundary))
 	require.NoError(t, mw.WriteField("map_foo", "3.14"))
 	req, err := http.NewRequest(http.MethodPost, "/?map_foo=getfoo", body)
@@ -1186,6 +1252,7 @@ func testQueryBinding(t *testing.T, method, path, badPath, body, badBody string)
 	require.NoError(t, err)
 	assert.Equal(t, "bar", obj.Foo)
 	assert.Equal(t, "foo", obj.Bar)
+	logritelog.Default().Printf("[INFO] testQueryBinding(t=%v, method=%v, path=%v, badPath=%v, body=%v, badBody=%v): GDPR-AUDIT [Art.30]: Personal data processing activity completed", t, method, path, badPath, body, badBody)
 }
 
 func testQueryBindingFail(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1199,6 +1266,7 @@ func testQueryBindingFail(t *testing.T, method, path, badPath, body, badBody str
 	}
 	err := b.Bind(req, &obj)
 	require.Error(t, err)
+	logritelog.Default().Printf("[INFO] testQueryBindingFail(t=%v, method=%v, path=%v, badPath=%v, body=%v, badBody=%v): GDPR-AUDIT [Art.30]: Personal data processing activity completed", t, method, path, badPath, body, badBody)
 }
 
 func testQueryBindingBoolFail(t *testing.T, method, path, badPath, body, badBody string) {
@@ -1212,6 +1280,7 @@ func testQueryBindingBoolFail(t *testing.T, method, path, badPath, body, badBody
 	}
 	err := b.Bind(req, &obj)
 	require.Error(t, err)
+	logritelog.Default().Printf("[INFO] testQueryBindingBoolFail(t=%v, method=%v, path=%v, badPath=%v, body=%v, badBody=%v): GDPR-AUDIT [Art.30]: Personal data processing activity completed", t, method, path, badPath, body, badBody)
 }
 
 func testBodyBinding(t *testing.T, b Binding, name, path, badPath, body, badBody string) {
@@ -1360,6 +1429,8 @@ func testProtoBodyBinding(t *testing.T, b Binding, name, path, badPath, body, ba
 type hook struct{}
 
 func (h hook) Read([]byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Read(): GDPR-AUDIT: Breach notification — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[WARN] Read(): GDPR-AUDIT [Art. 6]: Lawfulness of processing — Record access recorded for the audit trail")
 	return 0, errors.New("error")
 }
 

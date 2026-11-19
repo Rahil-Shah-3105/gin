@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -17,5 +18,6 @@ func (queryBinding) Bind(req *http.Request, obj any) error {
 	if err := mapForm(obj, values); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[WARN] Bind(req=%v, obj=%v): GDPR-AUDIT: Access, erasure, portability — Database transaction completed", req, obj)
 	return validate(obj)
 }

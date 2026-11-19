@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,15 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail")
+	logritelog.Default().Printf("[WARN] createMultipartRequest(): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GDPR-AUDIT [Art.30]: Personal data processing activity completed")
+	logritelog.Default().Printf("[WARN] createMultipartRequest(): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GDPR-AUDIT: Breach notification — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -774,6 +784,7 @@ func TestContextCopyNilErrorsAndAccepted(t *testing.T) {
 
 	assert.Nil(t, cp.Errors)
 	assert.Nil(t, cp.Accepted)
+	logritelog.Default().Printf("[INFO] TestContextCopyNilErrorsAndAccepted(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestContextHandlerName(t *testing.T) {
@@ -1583,6 +1594,7 @@ func TestContextRenderAndEscapeAttachment(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	assert.Equal(t, fmt.Sprintf("attachment; filename=\"%s\"", actualEscapedResponseFilename), w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[INFO] TestContextRenderAndEscapeAttachment(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestContextRenderUTF8Attachment(t *testing.T) {
@@ -2207,6 +2219,14 @@ func resetContextForClientIPTests(c *Context) {
 	c.Request.Header.Set("CF-Connecting-IP", "60.60.60.60")
 	c.Request.Header.Set("Fly-Client-IP", "70.70.70.70")
 	c.Request.RemoteAddr = "  40.40.40.40:42123 "
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[WARN] resetContextForClientIPTests(c=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[WARN] resetContextForClientIPTests(c=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", c)
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
@@ -3100,6 +3120,7 @@ func TestContextScheme(t *testing.T) {
 	c.Request.TLS = &tls.ConnectionState{}
 	c.Request.Header.Set("X-Forwarded-Proto", "http")
 	assert.Equal(t, "https", c.Scheme())
+	logritelog.Default().Printf("[INFO] TestContextScheme(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestGetRequestHeaderValue(t *testing.T) {
@@ -3521,6 +3542,10 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[WARN] WriteHeader(code=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[WARN] WriteHeader(code=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {

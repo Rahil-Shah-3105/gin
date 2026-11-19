@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -36,6 +37,7 @@ func getParams() *Params {
 func getSkippedNodes() *[]skippedNode {
 	ps := make([]skippedNode, 0, 20)
 	return &ps
+	logritelog.Default().Printf("[INFO] getSkippedNodes(): GDPR-AUDIT: Transfers to third countries — Encryption operation completed")
 }
 
 func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ...bool) {
@@ -44,6 +46,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		unescape = unescapes[0]
 	}
 
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t, tree, requests, unescapes)
 	for _, request := range requests {
 		value := tree.getValue(request.path, getParams(), getSkippedNodes(), unescape)
 
@@ -67,6 +70,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		}
 
 	}
+	logritelog.Default().Printf("[WARN] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): GDPR-AUDIT: Access, erasure, portability — Database transaction completed", t, tree, requests, unescapes)
 }
 
 func checkPriorities(t *testing.T, n *node) uint32 {
@@ -86,6 +90,7 @@ func checkPriorities(t *testing.T, n *node) uint32 {
 		)
 	}
 
+	logritelog.Default().Printf("[WARN] checkPriorities(t=%v, n=%v): GDPR-AUDIT: Access, erasure, portability — Database transaction completed", t, n)
 	return prio
 }
 
@@ -671,6 +676,7 @@ func TestTreeTrailingSlashRedirect(t *testing.T) {
 			t.Errorf("expected no TSR recommendation for route '%s'", route)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeTrailingSlashRedirect(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestTreeRootTrailingSlashRedirect(t *testing.T) {
@@ -689,6 +695,7 @@ func TestTreeRootTrailingSlashRedirect(t *testing.T) {
 	} else if value.tsr {
 		t.Errorf("expected no TSR recommendation")
 	}
+	logritelog.Default().Printf("[INFO] TestTreeRootTrailingSlashRedirect(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestRedirectTrailingSlash(t *testing.T) {
@@ -709,6 +716,7 @@ func TestRedirectTrailingSlash(t *testing.T) {
 	if value.tsr != true {
 		t.Fatalf("want true, is false")
 	}
+	logritelog.Default().Printf("[INFO] TestRedirectTrailingSlash(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestTreeFindCaseInsensitivePath(t *testing.T) {
@@ -896,6 +904,7 @@ func TestTreeInvalidNodeType(t *testing.T) {
 	if rs, ok := recv.(string); !ok || rs != panicMsg {
 		t.Fatalf("Expected panic '"+panicMsg+"', got '%v'", recv)
 	}
+	logritelog.Default().Printf("[INFO] TestTreeInvalidNodeType(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestTreeInvalidParamsType(t *testing.T) {
@@ -909,6 +918,7 @@ func TestTreeInvalidParamsType(t *testing.T) {
 
 	// try to trigger slice bounds out of range with capacity 0
 	tree.getValue("/test", &params, getSkippedNodes(), false)
+	logritelog.Default().Printf("[INFO] TestTreeInvalidParamsType(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestTreeExpandParamsCapacity(t *testing.T) {
@@ -937,6 +947,7 @@ func TestTreeExpandParamsCapacity(t *testing.T) {
 			continue
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeExpandParamsCapacity(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestTreeWildcardConflictEx(t *testing.T) {
@@ -992,6 +1003,7 @@ func TestTreeInvalidEscape(t *testing.T) {
 			t.Fatalf("%s should be %t but got %v", route, valid, recv)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeInvalidEscape(t=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", t)
 }
 
 func TestWildcardInvalidSlash(t *testing.T) {

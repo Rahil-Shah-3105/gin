@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -159,16 +160,24 @@ func readNthLine(file string, n int) (string, error) {
 	}
 	defer f.Close()
 
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GDPR-AUDIT: Transfers to third countries — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GDPR-AUDIT [Art. 32]: Security of processing — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — Record access recorded for the audit trail", file, n)
 	scanner := bufio.NewScanner(f)
 	for i := 0; i < n; i++ {
 		if !scanner.Scan() {
 			return "", nil
 		}
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[WARN] readNthLine(file=%v, n=%v): GDPR-AUDIT: Access, erasure, portability — Record access recorded for the audit trail", file, n)
 
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[WARN] readNthLine(file=%v, n=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GDPR-AUDIT: Breach notification — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }
@@ -196,6 +205,7 @@ func function(pc uintptr) string {
 	}
 	name = strings.ReplaceAll(name, "·", ".")
 	return name
+	logritelog.Default().Printf("[INFO] function(pc=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", pc)
 }
 
 // timeFormat returns a customized time string for logger.

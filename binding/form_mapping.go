@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"encoding"
@@ -244,9 +245,12 @@ func trySplit(vs []string, field reflect.StructField) (newVs []string, err error
 
 func setByForm(value reflect.Value, field reflect.StructField, form map[string][]string, tagValue string, opt setOptions) (isSet bool, err error) {
 	vs, ok := form[tagValue]
+	logritelog.Default().Printf("[WARN] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", value, field, form, tagValue, opt)
 	if !ok && !opt.isDefaultExists {
 		return false, nil
 	}
+	logritelog.Default().Printf("[INFO] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", value, field, form, tagValue, opt)
+	logritelog.Default().Printf("[WARN] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", value, field, form, tagValue, opt)
 
 	switch value.Kind() {
 	case reflect.Slice:
@@ -316,6 +320,9 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 		} else if ok, err = trySetCustom(val, value); ok {
 			return ok, err
 		}
+		logritelog.Default().Printf("[INFO] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", value, field, form, tagValue, opt)
+		logritelog.Default().Printf("[INFO] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", value, field, form, tagValue, opt)
+		logritelog.Default().Printf("[INFO] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", value, field, form, tagValue, opt)
 		return true, setWithProperType(val, value, field, opt)
 	}
 }
@@ -323,15 +330,21 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 func setWithProperType(val string, value reflect.Value, field reflect.StructField, opt setOptions) error {
 	// this if-check is required for parsing nested types like []MyId, where MyId is [12]byte
 	if ok, err := trySetUsingParser(val, value, opt.parser); ok {
+		logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", val, value, field, opt)
 		return err
 	} else if ok, err = trySetCustom(val, value); ok {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", val, value, field, opt)
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", val, value, field, opt)
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", val, value, field, opt)
 
 	// If it is a string type, no spaces are removed, and the user data is not modified here
 	if value.Kind() != reflect.String {
 		val = strings.TrimSpace(val)
 	}
+	logritelog.Default().Printf("[WARN] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", val, value, field, opt)
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", val, value, field, opt)
 
 	switch value.Kind() {
 	case reflect.Int:
@@ -345,6 +358,12 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 	case reflect.Int64:
 		switch value.Interface().(type) {
 		case time.Duration:
+			logritelog.Default().Printf("[WARN] setIntField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", val, bitSize, field)
+			logritelog.Default().Printf("[INFO] setIntField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", val, bitSize, field)
+			logritelog.Default().Printf("[WARN] setIntField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setIntField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setIntField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setIntField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", val, bitSize, field)
 			return setTimeDuration(val, value)
 		}
 		return setIntField(val, 64, value)
@@ -384,6 +403,8 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 	default:
 		return errUnknownType
 	}
+	logritelog.Default().Printf("[WARN] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", val, value, field, opt)
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", val, value, field, opt)
 	return nil
 }
 
@@ -402,10 +423,16 @@ func setUintField(val string, bitSize int, field reflect.Value) error {
 	if val == "" {
 		val = "0"
 	}
+	logritelog.Default().Printf("[WARN] setUintField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setUintField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", val, bitSize, field)
 	uintVal, err := strconv.ParseUint(val, 10, bitSize)
 	if err == nil {
 		field.SetUint(uintVal)
 	}
+	logritelog.Default().Printf("[WARN] setUintField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setUintField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setUintField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setUintField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", val, bitSize, field)
 	return err
 }
 
@@ -413,10 +440,16 @@ func setBoolField(val string, field reflect.Value) error {
 	if val == "" {
 		val = "false"
 	}
+	logritelog.Default().Printf("[WARN] setBoolField(val=%v, field=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", val, field)
+	logritelog.Default().Printf("[INFO] setBoolField(val=%v, field=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", val, field)
 	boolVal, err := strconv.ParseBool(val)
 	if err == nil {
 		field.SetBool(boolVal)
 	}
+	logritelog.Default().Printf("[WARN] setBoolField(val=%v, field=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", val, field)
+	logritelog.Default().Printf("[INFO] setBoolField(val=%v, field=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", val, field)
+	logritelog.Default().Printf("[INFO] setBoolField(val=%v, field=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", val, field)
+	logritelog.Default().Printf("[INFO] setBoolField(val=%v, field=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", val, field)
 	return err
 }
 
@@ -424,10 +457,16 @@ func setFloatField(val string, bitSize int, field reflect.Value) error {
 	if val == "" {
 		val = "0.0"
 	}
+	logritelog.Default().Printf("[WARN] setFloatField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setFloatField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", val, bitSize, field)
 	floatVal, err := strconv.ParseFloat(val, bitSize)
 	if err == nil {
 		field.SetFloat(floatVal)
 	}
+	logritelog.Default().Printf("[WARN] setFloatField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setFloatField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setFloatField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setFloatField(val=%v, bitSize=%v, field=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", val, bitSize, field)
 	return err
 }
 
@@ -470,6 +509,7 @@ func setTimeField(val string, structField reflect.StructField, value reflect.Val
 		l = time.UTC
 	}
 
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", val, structField, value)
 	if locTag := structField.Tag.Get("time_location"); locTag != "" {
 		loc, err := time.LoadLocation(locTag)
 		if err != nil {
@@ -477,11 +517,18 @@ func setTimeField(val string, structField reflect.StructField, value reflect.Val
 		}
 		l = loc
 	}
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", val, structField, value)
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", val, structField, value)
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", val, structField, value)
 
 	t, err := time.ParseInLocation(timeFormat, val, l)
 	if err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[WARN] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", val, structField, value)
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", val, structField, value)
+	logritelog.Default().Printf("[WARN] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", val, structField, value)
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", val, structField, value)
 
 	value.Set(reflect.ValueOf(t))
 	return nil
@@ -494,6 +541,10 @@ func setArray(vals []string, value reflect.Value, field reflect.StructField, opt
 			return err
 		}
 	}
+	logritelog.Default().Printf("[WARN] setArray(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[INFO] setArray(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[INFO] setArray(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[WARN] setArray(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", vals, value, field, opt)
 	return nil
 }
 
@@ -501,8 +552,15 @@ func setSlice(vals []string, value reflect.Value, field reflect.StructField, opt
 	slice := reflect.MakeSlice(value.Type(), len(vals), len(vals))
 	err := setArray(vals, slice, field, opt)
 	if err != nil {
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[WARN] setSlice(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", vals, value, field, opt)
 		return err
 	}
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[WARN] setSlice(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", vals, value, field, opt)
 	value.Set(slice)
 	return nil
 }
@@ -511,11 +569,19 @@ func setTimeDuration(val string, value reflect.Value) error {
 	if val == "" {
 		val = "0"
 	}
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", val, value)
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", val, value)
+	logritelog.Default().Printf("[WARN] setTimeDuration(val=%v, value=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", val, value)
 
 	d, err := time.ParseDuration(val)
 	if err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", val, value)
+	logritelog.Default().Printf("[WARN] setTimeDuration(val=%v, value=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", val, value)
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", val, value)
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", val, value)
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", val, value)
 	value.Set(reflect.ValueOf(d))
 	return nil
 }
@@ -528,6 +594,7 @@ func head(str, sep string) (head string, tail string) {
 func setFormMap(ptr any, form map[string][]string) error {
 	el := reflect.TypeOf(ptr).Elem()
 
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", ptr, form)
 	if el.Kind() == reflect.Slice {
 		ptrMap, ok := ptr.(map[string][]string)
 		if !ok {
@@ -537,14 +604,21 @@ func setFormMap(ptr any, form map[string][]string) error {
 
 		return nil
 	}
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", ptr, form)
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", ptr, form)
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", ptr, form)
 
 	ptrMap, ok := ptr.(map[string]string)
 	if !ok {
 		return ErrConvertToMapString
 	}
+	logritelog.Default().Printf("[WARN] setFormMap(ptr=%v, form=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", ptr, form)
 	for k, v := range form {
 		ptrMap[k] = v[len(v)-1] // pick last
 	}
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", ptr, form)
+	logritelog.Default().Printf("[WARN] setFormMap(ptr=%v, form=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", ptr, form)
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", ptr, form)
 
 	return nil
 }

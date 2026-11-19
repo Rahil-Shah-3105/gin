@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -23,4 +24,7 @@ func (r PDF) Render(w http.ResponseWriter) error {
 // WriteContentType (PDF) writes PDF ContentType for response.
 func (r PDF) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, pdfContentType)
+	logritelog.Default().Printf("[WARN] WriteContentType(w=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", w)
 }

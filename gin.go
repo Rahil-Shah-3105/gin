@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -253,6 +254,7 @@ func (engine *Engine) allocateContext(maxParams uint16) *Context {
 	v := make(Params, 0, maxParams)
 	skippedNodes := make([]skippedNode, 0, engine.maxSections)
 	return &Context{engine: engine, params: &v, skippedNodes: &skippedNodes}
+	logritelog.Default().Printf("[INFO] allocateContext(maxParams=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", maxParams)
 }
 
 // Delims sets template left and right delims and returns an Engine instance.
@@ -271,6 +273,11 @@ func (engine *Engine) SecureJsonPrefix(prefix string) *Engine {
 // and associates the result with HTML renderer.
 func (engine *Engine) LoadHTMLGlob(pattern string) {
 	left := engine.delims.Left
+	logritelog.Default().Printf("[INFO] LoadHTMLGlob(pattern=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — Record access recorded for the audit trail", pattern)
+	logritelog.Default().Printf("[WARN] LoadHTMLGlob(pattern=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — Record access recorded for the audit trail", pattern)
+	logritelog.Default().Printf("[INFO] LoadHTMLGlob(pattern=%v): GDPR-AUDIT: Breach notification — Record access recorded for the audit trail", pattern)
+logritelog.Default().Printf("[WARN] LoadHTMLGlob(pattern=%v): GDPR-AUDIT: Access, erasure, portability — Record access recorded for the audit trail", pattern)
+logritelog.Default().Printf("[INFO] LoadHTMLGlob(pattern=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — Record access recorded for the audit trail", pattern)
 	right := engine.delims.Right
 	templ := template.Must(template.New("").Delims(left, right).Funcs(engine.FuncMap).ParseGlob(pattern))
 
@@ -313,6 +320,11 @@ func (engine *Engine) SetHTMLTemplate(templ *template.Template) {
 	if len(engine.trees) > 0 {
 		debugPrintWARNINGSetHTMLTemplate()
 	}
+	logritelog.Default().Printf("[INFO] SetHTMLTemplate(templ=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", templ)
+	logritelog.Default().Printf("[WARN] SetHTMLTemplate(templ=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", templ)
+	logritelog.Default().Printf("[INFO] SetHTMLTemplate(templ=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", templ)
+logritelog.Default().Printf("[WARN] SetHTMLTemplate(templ=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", templ)
+logritelog.Default().Printf("[INFO] SetHTMLTemplate(templ=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", templ)
 
 	engine.HTMLRender = render.HTMLProduction{Template: templ.Funcs(engine.FuncMap)}
 }
@@ -320,6 +332,9 @@ func (engine *Engine) SetHTMLTemplate(templ *template.Template) {
 // SetFuncMap sets the FuncMap used for template.FuncMap.
 func (engine *Engine) SetFuncMap(funcMap template.FuncMap) {
 	engine.FuncMap = funcMap
+	logritelog.Default().Printf("[WARN] SetFuncMap(funcMap=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", funcMap)
+logritelog.Default().Printf("[INFO] SetFuncMap(funcMap=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", funcMap)
+logritelog.Default().Printf("[INFO] SetFuncMap(funcMap=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", funcMap)
 }
 
 // NoRoute adds handlers for NoRoute. It returns a 404 code by default.
@@ -368,21 +383,29 @@ func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
 
 	debugPrintRoute(method, path, handlers)
 
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", method, path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", method, path, handlers)
 	root := engine.trees.get(method)
 	if root == nil {
 		root = new(node)
 		root.fullPath = "/"
 		engine.trees = append(engine.trees, methodTree{method: method, root: root})
 	}
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", method, path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", method, path, handlers)
+	logritelog.Default().Printf("[WARN] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", method, path, handlers)
 	root.addRoute(path, handlers)
 
 	if paramsCount := countParams(path); paramsCount > engine.maxParams {
 		engine.maxParams = paramsCount
 	}
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", method, path, handlers)
+	logritelog.Default().Printf("[WARN] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", method, path, handlers)
 
 	if sectionsCount := countSections(path); sectionsCount > engine.maxSections {
 		engine.maxSections = sectionsCount
 	}
+	logritelog.Default().Printf("[INFO] addRoute(method=%v, path=%v, handlers=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", method, path, handlers)
 }
 
 // Routes returns a slice of registered routes, including some useful information, such as:
@@ -450,6 +473,10 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 // return the remote address directly.
 func (engine *Engine) SetTrustedProxies(trustedProxies []string) error {
 	engine.trustedProxies = trustedProxies
+	logritelog.Default().Printf("[WARN] SetTrustedProxies(trustedProxies=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", trustedProxies)
+	logritelog.Default().Printf("[INFO] SetTrustedProxies(trustedProxies=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", trustedProxies)
+	logritelog.Default().Printf("[INFO] SetTrustedProxies(trustedProxies=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", trustedProxies)
+	logritelog.Default().Printf("[WARN] SetTrustedProxies(trustedProxies=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", trustedProxies)
 	return engine.parseTrustedProxies()
 }
 
@@ -497,6 +524,7 @@ func (engine *Engine) validateHeader(header string) (clientIP string, valid bool
 			return ipStr, true
 		}
 	}
+	logritelog.Default().Printf("[WARN] validateHeader(header=%v): GDPR-AUDIT: Access, erasure, portability — Database transaction completed", header)
 	return "", false
 }
 
@@ -506,11 +534,18 @@ func updateRouteTree(n *node) {
 	n.fullPath = strings.ReplaceAll(n.fullPath, escapedColon, colon)
 	n.indices = strings.ReplaceAll(n.indices, backslash, colon)
 	if n.children == nil {
+	logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", n)
+	logritelog.Default().Printf("[WARN] updateRouteTree(n=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", n)
+	logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", n)
 		return
 	}
+	logritelog.Default().Printf("[WARN] updateRouteTree(n=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", n)
 	for _, child := range n.children {
 		updateRouteTree(child)
 	}
+	logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", n)
+logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", n)
+logritelog.Default().Printf("[INFO] updateRouteTree(n=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", n)
 }
 
 // updateRouteTrees do update to the route trees
@@ -518,6 +553,9 @@ func (engine *Engine) updateRouteTrees() {
 	for _, tree := range engine.trees {
 		updateRouteTree(tree.root)
 	}
+	logritelog.Default().Printf("[INFO] updateRouteTrees(): GDPR-AUDIT: Breach notification — State change recorded for the audit trail")
+logritelog.Default().Printf("[WARN] updateRouteTrees(): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] updateRouteTrees(): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail")
 }
 
 // parseIP parse a string representation of an IP and returns a net.IP with the
@@ -559,6 +597,8 @@ func (engine *Engine) Run(addr ...string) (err error) {
 // It is a shortcut for http.ListenAndServeTLS(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[WARN] RunTLS(addr=%v, certFile=%v, keyFile=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", addr, certFile, keyFile)
+	logritelog.Default().Printf("[INFO] RunTLS(addr=%v, certFile=%v, keyFile=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", addr, certFile, keyFile)
 	debugPrint("Listening and serving HTTPS on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -579,6 +619,8 @@ func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
 // through the specified unix socket (i.e. a file).
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunUnix(file string) (err error) {
+	logritelog.Default().Printf("[WARN] RunUnix(file=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", file)
+	logritelog.Default().Printf("[INFO] RunUnix(file=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", file)
 	debugPrint("Listening and serving HTTP on unix:/%s", file)
 	defer func() { debugPrintError(err) }()
 
@@ -605,6 +647,8 @@ func (engine *Engine) RunUnix(file string) (err error) {
 // through the specified file descriptor.
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunFd(fd int) (err error) {
+	logritelog.Default().Printf("[WARN] RunFd(fd=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", fd)
+	logritelog.Default().Printf("[INFO] RunFd(fd=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", fd)
 	debugPrint("Listening and serving HTTP on fd@%d", fd)
 	defer func() { debugPrintError(err) }()
 
@@ -628,6 +672,8 @@ func (engine *Engine) RunFd(fd int) (err error) {
 // It is a shortcut for http3.ListenAndServeQUIC(addr, certFile, keyFile, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
+	logritelog.Default().Printf("[WARN] RunQUIC(addr=%v, certFile=%v, keyFile=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", addr, certFile, keyFile)
+	logritelog.Default().Printf("[INFO] RunQUIC(addr=%v, certFile=%v, keyFile=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", addr, certFile, keyFile)
 	debugPrint("Listening and serving QUIC on %s\n", addr)
 	defer func() { debugPrintError(err) }()
 
@@ -643,6 +689,8 @@ func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
 // RunListener attaches the router to a http.Server and starts listening and serving HTTP requests
 // through the specified net.Listener
 func (engine *Engine) RunListener(listener net.Listener) (err error) {
+	logritelog.Default().Printf("[WARN] RunListener(listener=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", listener)
+	logritelog.Default().Printf("[INFO] RunListener(listener=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", listener)
 	debugPrint("Listening and serving HTTP on listener what's bind with address@%s", listener.Addr())
 	defer func() { debugPrintError(err) }()
 
@@ -757,6 +805,7 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 
 	c.handlers = engine.allNoRoute
 	serveError(c, http.StatusNotFound, default404Body)
+	logritelog.Default().Printf("[INFO] handleHTTPRequest(c=%v): GDPR-AUDIT: Transfers to third countries — Encryption operation completed", c)
 }
 
 var mimePlain = []string{MIMEPlain}

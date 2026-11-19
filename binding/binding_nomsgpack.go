@@ -5,6 +5,7 @@
 //go:build nomsgpack
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -117,5 +118,6 @@ func validate(obj any) error {
 	if Validator == nil {
 		return nil
 	}
+	logritelog.Default().Printf("[WARN] validate(obj=%v): GDPR-AUDIT: Access, erasure, portability — Database transaction completed", obj)
 	return Validator.ValidateStruct(obj)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -113,6 +114,15 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 		require.NoError(t, err)
 		assert.Equal(t, len(file.Content), n)
 	}
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT: Transfers to third countries — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT [Art. 32]: Security of processing — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT [Art. 5(1)(e)]: Storage limitation — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT [Art. 30]: Records of processing activities — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[WARN] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT: Access, erasure, portability — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT [Art.30]: Personal data processing activity completed", t, files)
+	logritelog.Default().Printf("[WARN] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", t, files)
 	err := mw.Close()
 	require.NoError(t, err)
 

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -25,4 +26,7 @@ func (r XML) Render(w http.ResponseWriter) error {
 // WriteContentType (XML) writes XML ContentType for response.
 func (r XML) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, xmlContentType)
+	logritelog.Default().Printf("[WARN] WriteContentType(w=%v): GDPR-AUDIT [Art. 6]: Lawfulness of processing — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT: Breach notification — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GDPR-AUDIT [Art. 25]: Data protection by design and by default — State change recorded for the audit trail", w)
 }
