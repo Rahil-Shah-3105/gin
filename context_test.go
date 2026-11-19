@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,9 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -2208,6 +2212,9 @@ func resetContextForClientIPTests(c *Context) {
 	c.Request.Header.Set("Fly-Client-IP", "70.70.70.70")
 	c.Request.RemoteAddr = "  40.40.40.40:42123 "
 	c.engine.TrustedPlatform = ""
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", c)
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
 }
@@ -3521,6 +3528,9 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {

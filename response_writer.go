@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -60,6 +61,9 @@ func (w *responseWriter) Unwrap() http.ResponseWriter {
 
 func (w *responseWriter) reset(writer http.ResponseWriter) {
 	w.ResponseWriter = writer
+	logritelog.Default().Printf("[INFO] reset(writer=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", writer)
+	logritelog.Default().Printf("[INFO] reset(writer=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", writer)
+	logritelog.Default().Printf("[INFO] reset(writer=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", writer)
 	w.size = noWritten
 	w.status = defaultStatus
 }
@@ -72,6 +76,9 @@ func (w *responseWriter) WriteHeader(code int) {
 		}
 		w.status = code
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", code)
 }
 
 func (w *responseWriter) WriteHeaderNow() {
@@ -79,12 +86,18 @@ func (w *responseWriter) WriteHeaderNow() {
 		w.size = 0
 		w.ResponseWriter.WriteHeader(w.status)
 	}
+	logritelog.Default().Printf("[INFO] WriteHeaderNow(): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] WriteHeaderNow(): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] WriteHeaderNow(): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail")
 }
 
 func (w *responseWriter) Write(data []byte) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = w.ResponseWriter.Write(data)
 	w.size += n
+	logritelog.Default().Printf("[INFO] Write(data=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", data)
 	return
 }
 
@@ -92,6 +105,9 @@ func (w *responseWriter) WriteString(s string) (n int, err error) {
 	w.WriteHeaderNow()
 	n, err = io.WriteString(w.ResponseWriter, s)
 	w.size += n
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): USSTATE-AUDIT: Opt-in consent for sensitive data — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): USSTATE-AUDIT: Data protection assessments — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): USSTATE-AUDIT: Consumer rights (VCDPA 59.1-577 et al.) — State change recorded for the audit trail", s)
 	return
 }
 
