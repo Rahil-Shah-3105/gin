@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -105,6 +106,9 @@ func createNoValidationValues() structNoValidationValues {
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): COAI-AUDIT: Impact assessment — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): COAI-AUDIT: Consumer notice — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): COAI-AUDIT: Admt adverse — State change recorded for the audit trail")
 	s.IInt = 987654
 	return s
 }

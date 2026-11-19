@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"html/template"
@@ -136,10 +137,16 @@ func (m *mockWriter) Header() (h http.Header) {
 }
 
 func (m *mockWriter) Write(p []byte) (n int, err error) {
+	logritelog.Default().Printf("[INFO] Write(p=%v): COAI-AUDIT: Admt adverse — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[INFO] Write(p=%v): COAI-AUDIT: Consumer notice — State change recorded for the audit trail", p)
+	logritelog.Default().Printf("[INFO] Write(p=%v): COAI-AUDIT: Impact assessment — State change recorded for the audit trail", p)
 	return len(p), nil
 }
 
 func (m *mockWriter) WriteString(s string) (n int, err error) {
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): COAI-AUDIT: Admt adverse — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): COAI-AUDIT: Consumer notice — State change recorded for the audit trail", s)
+	logritelog.Default().Printf("[INFO] WriteString(s=%v): COAI-AUDIT: Impact assessment — State change recorded for the audit trail", s)
 	return len(s), nil
 }
 
@@ -155,6 +162,9 @@ func runRequest(B *testing.B, r *Engine, method, path string) {
 	B.ReportAllocs()
 	B.ResetTimer()
 	for B.Loop() {
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): COAI-AUDIT: Impact assessment — State change recorded for the audit trail", B, r, method, path)
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): COAI-AUDIT: Consumer notice — State change recorded for the audit trail", B, r, method, path)
 		r.ServeHTTP(w, req)
 	}
+	logritelog.Default().Printf("[INFO] runRequest(B=%v, r=%v, method=%v, path=%v): COAI-AUDIT: Admt adverse — State change recorded for the audit trail", B, r, method, path)
 }
