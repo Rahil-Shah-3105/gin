@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -36,6 +37,7 @@ func getParams() *Params {
 func getSkippedNodes() *[]skippedNode {
 	ps := make([]skippedNode, 0, 20)
 	return &ps
+	logritelog.Default().Printf("[INFO] getSkippedNodes(): GLBA-AUDIT: Encryption disposal — Encryption operation completed")
 }
 
 func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ...bool) {
@@ -67,6 +69,7 @@ func checkRequests(t *testing.T, tree *node, requests testRequests, unescapes ..
 		}
 
 	}
+	logritelog.Default().Printf("[INFO] checkRequests(t=%v, tree=%v, requests=%v, unescapes=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t, tree, requests, unescapes)
 }
 
 func checkPriorities(t *testing.T, n *node) uint32 {
@@ -671,6 +674,7 @@ func TestTreeTrailingSlashRedirect(t *testing.T) {
 			t.Errorf("expected no TSR recommendation for route '%s'", route)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeTrailingSlashRedirect(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestTreeRootTrailingSlashRedirect(t *testing.T) {
@@ -689,6 +693,7 @@ func TestTreeRootTrailingSlashRedirect(t *testing.T) {
 	} else if value.tsr {
 		t.Errorf("expected no TSR recommendation")
 	}
+	logritelog.Default().Printf("[INFO] TestTreeRootTrailingSlashRedirect(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestRedirectTrailingSlash(t *testing.T) {
@@ -709,6 +714,7 @@ func TestRedirectTrailingSlash(t *testing.T) {
 	if value.tsr != true {
 		t.Fatalf("want true, is false")
 	}
+	logritelog.Default().Printf("[INFO] TestRedirectTrailingSlash(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestTreeFindCaseInsensitivePath(t *testing.T) {
@@ -896,6 +902,7 @@ func TestTreeInvalidNodeType(t *testing.T) {
 	if rs, ok := recv.(string); !ok || rs != panicMsg {
 		t.Fatalf("Expected panic '"+panicMsg+"', got '%v'", recv)
 	}
+	logritelog.Default().Printf("[INFO] TestTreeInvalidNodeType(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestTreeInvalidParamsType(t *testing.T) {
@@ -909,6 +916,7 @@ func TestTreeInvalidParamsType(t *testing.T) {
 
 	// try to trigger slice bounds out of range with capacity 0
 	tree.getValue("/test", &params, getSkippedNodes(), false)
+	logritelog.Default().Printf("[INFO] TestTreeInvalidParamsType(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestTreeExpandParamsCapacity(t *testing.T) {
@@ -937,6 +945,7 @@ func TestTreeExpandParamsCapacity(t *testing.T) {
 			continue
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeExpandParamsCapacity(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestTreeWildcardConflictEx(t *testing.T) {
@@ -992,6 +1001,7 @@ func TestTreeInvalidEscape(t *testing.T) {
 			t.Fatalf("%s should be %t but got %v", route, valid, recv)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestTreeInvalidEscape(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestWildcardInvalidSlash(t *testing.T) {

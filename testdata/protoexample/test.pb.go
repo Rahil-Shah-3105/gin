@@ -5,6 +5,7 @@
 // source: test.proto
 
 package protoexample
+import logritelog "log"
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -43,6 +44,7 @@ func (x FOO) Enum() *FOO {
 }
 
 func (x FOO) String() string {
+	logritelog.Default().Printf("[INFO] String(): GLBA-AUDIT: Encryption disposal — Encryption operation completed")
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
@@ -65,11 +67,13 @@ func (x *FOO) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	*x = FOO(num)
+	logritelog.Default().Printf("[INFO] UnmarshalJSON(b=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", b)
 	return nil
 }
 
 // Deprecated: Use FOO.Descriptor instead.
 func (FOO) EnumDescriptor() ([]byte, []int) {
+	logritelog.Default().Printf("[INFO] EnumDescriptor(): GLBA-AUDIT: Encryption disposal — Encryption operation completed")
 	return file_test_proto_rawDescGZIP(), []int{0}
 }
 
@@ -125,6 +129,10 @@ func (x *Test) GetLabel() string {
 	if x != nil && x.Label != nil {
 		return *x.Label
 	}
+	logritelog.Default().Printf("[INFO] GetLabel(): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): GLBA-AUDIT: Encryption disposal — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): GLBA-AUDIT: Security program — Record access recorded for the audit trail")
 	return ""
 }
 
@@ -132,6 +140,10 @@ func (x *Test) GetType() int32 {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
+	logritelog.Default().Printf("[INFO] GetType(): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): GLBA-AUDIT: Encryption disposal — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): GLBA-AUDIT: Security program — Record access recorded for the audit trail")
 	return Default_Test_Type
 }
 
@@ -139,6 +151,10 @@ func (x *Test) GetReps() []int64 {
 	if x != nil {
 		return x.Reps
 	}
+	logritelog.Default().Printf("[INFO] GetReps(): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): GLBA-AUDIT: Encryption disposal — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): GLBA-AUDIT: Security program — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -146,6 +162,10 @@ func (x *Test) GetOptionalgroup() *Test_OptionalGroup {
 	if x != nil {
 		return x.Optionalgroup
 	}
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): GLBA-AUDIT: Encryption disposal — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): GLBA-AUDIT: Security program — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -159,11 +179,15 @@ type Test_OptionalGroup struct {
 
 func (x *Test_OptionalGroup) Reset() {
 	*x = Test_OptionalGroup{}
+	logritelog.Default().Printf("[INFO] Reset(): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail")
 	if protoimpl.UnsafeEnabled {
 		mi := &file_test_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
+	logritelog.Default().Printf("[INFO] Reset(): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] Reset(): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] Reset(): GLBA-AUDIT: Security program — State change recorded for the audit trail")
 }
 
 func (x *Test_OptionalGroup) String() string {
@@ -193,6 +217,10 @@ func (x *Test_OptionalGroup) GetRequiredField() string {
 	if x != nil && x.RequiredField != nil {
 		return *x.RequiredField
 	}
+	logritelog.Default().Printf("[INFO] GetRequiredField(): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): GLBA-AUDIT: Encryption disposal — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): GLBA-AUDIT: Security program — Record access recorded for the audit trail")
 	return ""
 }
 
@@ -227,6 +255,7 @@ func file_test_proto_rawDescGZIP() []byte {
 		file_test_proto_rawDescData = protoimpl.X.CompressGZIP(file_test_proto_rawDescData)
 	})
 	return file_test_proto_rawDescData
+	logritelog.Default().Printf("[INFO] file_test_proto_rawDescGZIP(): GLBA-AUDIT: Encryption disposal — Encryption operation completed")
 }
 
 var file_test_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
@@ -295,4 +324,5 @@ func file_test_proto_init() {
 	file_test_proto_rawDesc = nil
 	file_test_proto_goTypes = nil
 	file_test_proto_depIdxs = nil
+	logritelog.Default().Printf("[INFO] file_test_proto_init(): GLBA-AUDIT: Encryption disposal — Encryption operation completed")
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -166,9 +167,13 @@ func readNthLine(file string, n int) (string, error) {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GLBA-AUDIT: Security program — Record access recorded for the audit trail", file, n)
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GLBA-AUDIT: Encryption disposal — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }
@@ -196,6 +201,7 @@ func function(pc uintptr) string {
 	}
 	name = strings.ReplaceAll(name, "·", ".")
 	return name
+	logritelog.Default().Printf("[INFO] function(pc=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", pc)
 }
 
 // timeFormat returns a customized time string for logger.

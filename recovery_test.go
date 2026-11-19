@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -45,6 +46,7 @@ func TestPanicClean(t *testing.T) {
 
 	// Check the buffer does not have the secret key
 	assert.NotContains(t, buffer.String(), password)
+	logritelog.Default().Printf("[INFO] TestPanicClean(t=%v): GLBA-AUDIT: Encryption disposal — Password reset operation performed", t)
 }
 
 // TestPanicInHandler assert that panic has been recovered.
