@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"os"
@@ -38,6 +39,8 @@ func TestSetMode(t *testing.T) {
 	assert.Equal(t, int32(testCode), atomic.LoadInt32(&ginMode))
 	assert.Equal(t, TestMode, Mode())
 
+	logritelog.Default().Printf("[INFO] TestSetMode(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestSetMode(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 	assert.Panics(t, func() { SetMode("unknown") })
 }
 

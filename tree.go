@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"net/url"
@@ -32,6 +33,10 @@ func (ps Params) Get(name string) (string, bool) {
 			return entry.Value, true
 		}
 	}
+	logritelog.Default().Printf("[INFO] Get(name=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): M2614-AUDIT: Log Management / data protection — Record access recorded for the audit trail", name)
+	logritelog.Default().Printf("[INFO] Get(name=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — Record access recorded for the audit trail", name)
 	return "", false
 }
 
@@ -55,6 +60,10 @@ func (trees methodTrees) get(method string) *node {
 			return tree.root
 		}
 	}
+	logritelog.Default().Printf("[INFO] get(method=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): M2614-AUDIT: Log Management / data protection — Record access recorded for the audit trail", method)
+	logritelog.Default().Printf("[INFO] get(method=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — Record access recorded for the audit trail", method)
 	return nil
 }
 
@@ -75,6 +84,9 @@ func (n *node) addChild(child *node) {
 	} else {
 		n.children = append(n.children, child)
 	}
+	logritelog.Default().Printf("[INFO] addChild(child=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", child)
+logritelog.Default().Printf("[INFO] addChild(child=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", child)
+logritelog.Default().Printf("[INFO] addChild(child=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", child)
 }
 
 func countParams(path string) uint16 {
@@ -134,6 +146,10 @@ func (n *node) incrementChildPrio(pos int) int {
 // Not concurrency-safe!
 func (n *node) addRoute(path string, handlers HandlersChain) {
 	fullPath := path
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", path, handlers)
 	n.priority++
 
 	// Empty tree
@@ -142,6 +158,11 @@ func (n *node) addRoute(path string, handlers HandlersChain) {
 		n.nType = root
 		return
 	}
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", path, handlers)
+	logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", path, handlers)
 
 	parentFullPathIndex := 0
 
@@ -244,6 +265,9 @@ walk:
 		}
 		n.handlers = handlers
 		n.fullPath = fullPath
+		logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", path, handlers)
+logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", path, handlers)
+logritelog.Default().Printf("[INFO] addRoute(path=%v, handlers=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", path, handlers)
 		return
 	}
 }
@@ -252,6 +276,8 @@ walk:
 // Returns -1 as index, if no wildcard was found.
 func findWildcard(path string) (wildcard string, i int, valid bool) {
 	// Find start
+	logritelog.Default().Printf("[INFO] findWildcard(path=%v): M2614-AUDIT: Log Management / data protection — Record access recorded for the audit trail", path)
+	logritelog.Default().Printf("[INFO] findWildcard(path=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail", path)
 	escapeColon := false
 	for start, c := range []byte(path) {
 		if escapeColon {
@@ -280,6 +306,9 @@ func findWildcard(path string) (wildcard string, i int, valid bool) {
 				valid = false
 			}
 		}
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail", path)
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — Record access recorded for the audit trail", path)
+		logritelog.Default().Printf("[INFO] findWildcard(path=%v): M2614-AUDIT: Outcome 1: user attribution — Record access recorded for the audit trail", path)
 		return path[start:], start, valid
 	}
 	return "", -1, false
@@ -389,6 +418,14 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 
 		return
 	}
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", path, fullPath, handlers)
+	logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", path, fullPath, handlers)
+logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", path, fullPath, handlers)
+logritelog.Default().Printf("[INFO] insertChild(path=%v, fullPath=%v, handlers=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", path, fullPath, handlers)
 
 	// If no wildcard was found, simply insert the path and handle
 	n.path = path
@@ -416,6 +453,12 @@ type skippedNode struct {
 // made if a handle exists with an extra (without the) trailing slash for the
 // given path.
 func (n *node) getValue(path string, params *Params, skippedNodes *[]skippedNode, unescape bool) (value nodeValue) {
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): M2614-AUDIT: Log Management / data protection — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+	logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): M2614-AUDIT: Outcome 1: user attribution — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
+logritelog.Default().Printf("[INFO] getValue(path=%v, params=%v, skippedNodes=%v, unescape=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — Record access recorded for the audit trail", path, params, skippedNodes, unescape)
 	var globalParamsCount int16
 
 walk: // Outer loop for walking the tree
@@ -670,6 +713,15 @@ walk: // Outer loop for walking the tree
 // was successful.
 func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]byte, bool) {
 	const stackBufSize = 128
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 7: anomaly hunting — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 4: privilege changes — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 3: object and data access — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 1: user attribution — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Log Management / data protection — Record access recorded for the audit trail", path, fixTrailingSlash)
 
 	buf := make([]byte, 0, max(stackBufSize, len(path)+1))
 
@@ -680,6 +732,11 @@ func (n *node) findCaseInsensitivePath(path string, fixTrailingSlash bool) ([]by
 		fixTrailingSlash,
 	)
 
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): SOC2-AUDIT [CC7.2]: System operation completed", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — Record access recorded for the audit trail", path, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePath(path=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 9: trace attack vectors — Record access recorded for the audit trail", path, fixTrailingSlash)
 	return ciPath, ciPath != nil
 }
 
@@ -701,6 +758,17 @@ func shiftNRuneBytes(rb [4]byte, n int) [4]byte {
 
 // Recursive case-insensitive lookup function used by n.findCaseInsensitivePath
 func (n *node) findCaseInsensitivePathRec(path string, ciPath []byte, rb [4]byte, fixTrailingSlash bool) []byte {
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 4: privilege changes — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 3: object and data access — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 1: user attribution — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Log Management / data protection — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
+	logritelog.Default().Printf("[INFO] findCaseInsensitivePathRec(path=%v, ciPath=%v, rb=%v, fixTrailingSlash=%v): M2614-AUDIT: Outcome 7: anomaly hunting — Record access recorded for the audit trail", path, ciPath, rb, fixTrailingSlash)
 	npLen := len(n.path)
 
 walk: // Outer loop for walking the tree

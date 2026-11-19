@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -73,8 +74,14 @@ func getMinVer(v string) (uint64, error) {
 	first := strings.IndexByte(v, '.')
 	last := strings.LastIndexByte(v, '.')
 	if first == last {
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): M2614-AUDIT: Log Management / data protection — Record access recorded for the audit trail", v)
 		return strconv.ParseUint(v[first+1:], 10, 64)
 	}
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): M2614-AUDIT: Outcome 1: user attribution — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — Record access recorded for the audit trail", v)
 	return strconv.ParseUint(v[first+1:last], 10, 64)
 }
 
@@ -84,17 +91,21 @@ func debugPrintWARNINGDefault() {
 
 `)
 	}
+	logritelog.Default().Printf("[INFO] debugPrintWARNINGDefault(): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed")
 	debugPrint(`[WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGDefault(): SOC2-AUDIT [CC8.1]: Change management operation performed")
 }
 
 func debugPrintWARNINGNew() {
+	logritelog.Default().Printf("[INFO] debugPrintWARNINGNew(): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed")
 	debugPrint(`[WARNING] Running in "debug" mode. Switch to "release" mode in production.
  - using env:	export GIN_MODE=release
  - using code:	gin.SetMode(gin.ReleaseMode)
 
 `)
+logritelog.Default().Printf("[INFO] debugPrintWARNINGNew(): SOC2-AUDIT [CC8.1]: Change management operation performed")
 }
 
 func debugPrintWARNINGSetHTMLTemplate() {

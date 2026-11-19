@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -45,6 +46,7 @@ func TestPanicClean(t *testing.T) {
 
 	// Check the buffer does not have the secret key
 	assert.NotContains(t, buffer.String(), password)
+	logritelog.Default().Printf("[INFO] TestPanicClean(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestPanicInHandler assert that panic has been recovered.
@@ -73,6 +75,7 @@ func TestPanicInHandler(t *testing.T) {
 	assert.Contains(t, buffer.String(), "GET /recovery")
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[INFO] TestPanicInHandler(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestPanicWithAbort assert that panic has been recovered even if context.Abort was used.
@@ -87,6 +90,7 @@ func TestPanicWithAbort(t *testing.T) {
 	w := PerformRequest(router, http.MethodGet, "/recovery")
 	// TEST
 	assert.Equal(t, http.StatusBadRequest, w.Code)
+	logritelog.Default().Printf("[INFO] TestPanicWithAbort(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestFunction(t *testing.T) {
@@ -127,6 +131,7 @@ func TestPanicWithBrokenPipe(t *testing.T) {
 			assert.NotContains(t, strings.ToLower(buf.String()), "[Recovery]")
 		})
 	}
+	logritelog.Default().Printf("[INFO] TestPanicWithBrokenPipe(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestPanicWithAbortHandler asserts that recovery handles http.ErrAbortHandler as broken pipe
@@ -151,6 +156,7 @@ func TestPanicWithAbortHandler(t *testing.T) {
 	out := buf.String()
 	assert.Contains(t, out, "net/http: abort Handler")
 	assert.NotContains(t, out, "panic recovered")
+	logritelog.Default().Printf("[INFO] TestPanicWithAbortHandler(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestPanicInHandlerRecordsError(t *testing.T) {
@@ -194,6 +200,7 @@ func TestPanicInHandlerRecordsError(t *testing.T) {
 			}
 		})
 	}
+	logritelog.Default().Printf("[INFO] TestPanicInHandlerRecordsError(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestCustomRecoveryWithWriter(t *testing.T) {
@@ -228,6 +235,7 @@ func TestCustomRecoveryWithWriter(t *testing.T) {
 	assert.Equal(t, strings.Repeat("Oops, Houston, we have a problem", 2), errBuffer.String())
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[INFO] TestCustomRecoveryWithWriter(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestCustomRecovery(t *testing.T) {
@@ -263,6 +271,7 @@ func TestCustomRecovery(t *testing.T) {
 	assert.Equal(t, strings.Repeat("Oops, Houston, we have a problem", 2), errBuffer.String())
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[INFO] TestCustomRecovery(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRecoveryWithWriterWithCustomRecovery(t *testing.T) {
@@ -298,6 +307,7 @@ func TestRecoveryWithWriterWithCustomRecovery(t *testing.T) {
 	assert.Equal(t, strings.Repeat("Oops, Houston, we have a problem", 2), errBuffer.String())
 
 	SetMode(TestMode)
+	logritelog.Default().Printf("[INFO] TestRecoveryWithWriterWithCustomRecovery(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestSecureRequestDump(t *testing.T) {

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,22 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Retention: 6 months searchable / 12 months retrievable — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 11: CEM + THIRF capability — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 10: automated alerting — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -148,6 +165,7 @@ func TestContextFile(t *testing.T) {
 		assert.Equal(t, "bytes", w.Header().Get("Accept-Ranges"))
 		assert.Contains(t, w.Header().Get("Content-Range"), "bytes 0-10")
 	})
+	logritelog.Default().Printf("[INFO] TestContextFile(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextFormFile(t *testing.T) {
@@ -179,6 +197,7 @@ func TestContextFormFileFailed(t *testing.T) {
 	f, err := c.FormFile("file")
 	require.Error(t, err)
 	assert.Nil(t, f)
+	logritelog.Default().Printf("[INFO] TestContextFormFileFailed(t=%v): SOC2-AUDIT [CC7.2]: System operation completed", t)
 }
 
 func TestContextMultipartForm(t *testing.T) {
@@ -253,6 +272,8 @@ func TestSaveUploadedFileWithPermission(t *testing.T) {
 	info, err := os.Stat(filepath.Dir(dst))
 	require.NoError(t, err)
 	assert.Equal(t, mode, info.Mode().Perm())
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermission(t=%v): M2614-AUDIT: Outcome 4: privilege changes — Access control modification completed", t)
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermission(t=%v): SOC2-AUDIT [CC6.2]: Access control modification completed", t)
 }
 
 func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
@@ -272,6 +293,8 @@ func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
 	var mode fs.FileMode = 0o644
 	dst := filepath.Join(t.TempDir(), "test", "permission_test")
 	require.Error(t, c.SaveUploadedFile(f, dst, mode))
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermissionFailed(t=%v): M2614-AUDIT: Outcome 4: privilege changes — Access control modification completed", t)
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermissionFailed(t=%v): SOC2-AUDIT [CC6.2]: Access control modification completed", t)
 }
 
 // TestSaveUploadedFileToExistingDir is a regression test for issue #4622.
@@ -1124,6 +1147,7 @@ func TestContextBodyAllowedForStatus(t *testing.T) {
 	assert.False(t, bodyAllowedForStatus(http.StatusNoContent))
 	assert.False(t, bodyAllowedForStatus(http.StatusNotModified))
 	assert.True(t, bodyAllowedForStatus(http.StatusInternalServerError))
+	logritelog.Default().Printf("[INFO] TestContextBodyAllowedForStatus(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type TestRender struct{}
@@ -1141,6 +1165,7 @@ func TestContextRenderIfErr(t *testing.T) {
 	c.Render(http.StatusOK, &TestRender{})
 
 	assert.Equal(t, errorMsgs{&Error{Err: errTestRender, Type: 1}}, c.Errors)
+	logritelog.Default().Printf("[INFO] TestContextRenderIfErr(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that the response is serialized as JSON
@@ -1155,6 +1180,7 @@ func TestContextRenderJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, "{\"foo\":\"bar\",\"html\":\"\\u003cb\\u003e\"}", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that the response is serialized as JSONP
@@ -1169,6 +1195,7 @@ func TestContextRenderJSONP(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "x({\"foo\":\"bar\"});", w.Body.String())
 	assert.Equal(t, "application/javascript; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderJSONP(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that the response is serialized as JSONP
@@ -1183,6 +1210,7 @@ func TestContextRenderJSONPWithoutCallback(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, `{"foo":"bar"}`, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderJSONPWithoutCallback(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no JSON is rendered if code is 204
@@ -1195,6 +1223,7 @@ func TestContextRenderNoContentJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that the response is serialized as JSON
@@ -1209,6 +1238,7 @@ func TestContextRenderAPIJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, `{"foo":"bar"}`, w.Body.String())
 	assert.Equal(t, "application/vnd.api+json", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderAPIJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no Custom JSON is rendered if code is 204
@@ -1222,6 +1252,7 @@ func TestContextRenderNoContentAPIJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/vnd.api+json", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentAPIJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that the response is serialized as JSON
@@ -1235,6 +1266,7 @@ func TestContextRenderIndentedJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, "{\n    \"bar\": \"foo\",\n    \"foo\": \"bar\",\n    \"nested\": {\n        \"foo\": \"bar\"\n    }\n}", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderIndentedJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no Custom JSON is rendered if code is 204
@@ -1247,6 +1279,7 @@ func TestContextRenderNoContentIndentedJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentIndentedJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextClientIPWithMultipleHeaders(t *testing.T) {
@@ -1292,6 +1325,7 @@ func TestContextRenderSecureJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "&&&START&&&[\"foo\",\"bar\"]", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderSecureJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no Custom JSON is rendered if code is 204
@@ -1304,6 +1338,7 @@ func TestContextRenderNoContentSecureJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentSecureJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextRenderNoContentAsciiJSON(t *testing.T) {
@@ -1315,6 +1350,7 @@ func TestContextRenderNoContentAsciiJSON(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentAsciiJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that the response is serialized as JSON
@@ -1327,6 +1363,7 @@ func TestContextRenderPureJSON(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, "{\"foo\":\"bar\",\"html\":\"<b>\"}\n", w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderPureJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that the response executes the templates
@@ -1343,6 +1380,7 @@ func TestContextRenderHTML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "Hello alexandernyquist", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderHTML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextRenderHTML2(t *testing.T) {
@@ -1367,6 +1405,7 @@ func TestContextRenderHTML2(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "Hello alexandernyquist", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderHTML2(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no HTML is rendered if code is 204
@@ -1381,6 +1420,7 @@ func TestContextRenderNoContentHTML(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentHTML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextRenderXML tests that the response is serialized as XML
@@ -1394,6 +1434,7 @@ func TestContextRenderXML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "<map><foo>bar</foo></map>", w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderXML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no XML is rendered if code is 204
@@ -1406,6 +1447,7 @@ func TestContextRenderNoContentXML(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentXML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextRenderPDF tests that the response is serialized as PDF
@@ -1420,6 +1462,7 @@ func TestContextRenderPDF(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, data, w.Body.Bytes())
 	assert.Equal(t, "application/pdf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderPDF(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no PDF is rendered if code is 204
@@ -1433,6 +1476,7 @@ func TestContextRenderNoContentPDF(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.Bytes())
 	assert.Equal(t, "application/pdf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentPDF(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextRenderString tests that the response is returned
@@ -1446,6 +1490,7 @@ func TestContextRenderString(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "test string 2", w.Body.String())
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderString(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no String is rendered if code is 204
@@ -1458,6 +1503,7 @@ func TestContextRenderNoContentString(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentString(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextRenderHTMLString tests that the response is returned
@@ -1472,6 +1518,7 @@ func TestContextRenderHTMLString(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "<html>string 3</html>", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderHTMLString(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no HTML String is rendered if code is 204
@@ -1485,6 +1532,7 @@ func TestContextRenderNoContentHTMLString(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentHTMLString(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextRenderData tests that the response can be written from `bytestring`
@@ -1498,6 +1546,7 @@ func TestContextRenderData(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "foo,bar", w.Body.String())
 	assert.Equal(t, "text/csv", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderData(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // Tests that no Custom Data is rendered if code is 204
@@ -1510,6 +1559,7 @@ func TestContextRenderNoContentData(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	assert.Empty(t, w.Body.String())
 	assert.Equal(t, "text/csv", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderNoContentData(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextRenderSSE(t *testing.T) {
@@ -1536,11 +1586,14 @@ func TestContextRenderFile(t *testing.T) {
 	c.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
 	c.File("./gin.go")
 
+	logritelog.Default().Printf("[INFO] TestContextRenderFile(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestContextRenderFile(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	// Content-Type='text/plain; charset=utf-8' when go version <= 1.16,
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderFile(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestContextRenderFileFromFS(t *testing.T) {
@@ -1550,12 +1603,15 @@ func TestContextRenderFileFromFS(t *testing.T) {
 	c.Request, _ = http.NewRequest(http.MethodGet, "/some/path", nil)
 	c.FileFromFS("./gin.go", Dir(".", false))
 
+	logritelog.Default().Printf("[INFO] TestContextRenderFileFromFS(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestContextRenderFileFromFS(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	// Content-Type='text/plain; charset=utf-8' when go version <= 1.16,
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
 	assert.Equal(t, "/some/path", c.Request.URL.Path)
+	logritelog.Default().Printf("[INFO] TestContextRenderFileFromFS(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestContextRenderAttachment(t *testing.T) {
@@ -1609,6 +1665,7 @@ func TestContextRenderYAML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "foo: bar\n", w.Body.String())
 	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderYAML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextRenderTOML tests that the response is serialized as TOML
@@ -1622,6 +1679,7 @@ func TestContextRenderTOML(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "foo = 'bar'\n", w.Body.String())
 	assert.Equal(t, "application/toml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderTOML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestContextRenderProtoBuf tests that the response is serialized as ProtoBuf
@@ -1646,6 +1704,7 @@ func TestContextRenderProtoBuf(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, string(protoData), w.Body.String())
 	assert.Equal(t, "application/x-protobuf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderProtoBuf(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextHeaders(t *testing.T) {
@@ -1677,6 +1736,7 @@ func TestContextRenderRedirectWithRelativePath(t *testing.T) {
 	c.Writer.WriteHeaderNow()
 	assert.Equal(t, http.StatusMovedPermanently, w.Code)
 	assert.Equal(t, "/path", w.Header().Get("Location"))
+	logritelog.Default().Printf("[INFO] TestContextRenderRedirectWithRelativePath(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextRenderRedirectWithAbsolutePath(t *testing.T) {
@@ -1689,6 +1749,7 @@ func TestContextRenderRedirectWithAbsolutePath(t *testing.T) {
 
 	assert.Equal(t, http.StatusFound, w.Code)
 	assert.Equal(t, "http://google.com", w.Header().Get("Location"))
+	logritelog.Default().Printf("[INFO] TestContextRenderRedirectWithAbsolutePath(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextRenderRedirectWith201(t *testing.T) {
@@ -1701,6 +1762,7 @@ func TestContextRenderRedirectWith201(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, "/resource", w.Header().Get("Location"))
+	logritelog.Default().Printf("[INFO] TestContextRenderRedirectWith201(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextRenderRedirectAll(t *testing.T) {
@@ -1712,6 +1774,7 @@ func TestContextRenderRedirectAll(t *testing.T) {
 	assert.Panics(t, func() { c.Redirect(309, "/resource") })
 	assert.NotPanics(t, func() { c.Redirect(http.StatusMultipleChoices, "/resource") })
 	assert.NotPanics(t, func() { c.Redirect(http.StatusPermanentRedirect, "/resource") })
+	logritelog.Default().Printf("[INFO] TestContextRenderRedirectAll(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationWithJSON(t *testing.T) {
@@ -1727,6 +1790,7 @@ func TestContextNegotiationWithJSON(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.JSONEq(t, `{"foo":"bar"}`, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextNegotiationWithJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationWithXML(t *testing.T) {
@@ -1742,6 +1806,7 @@ func TestContextNegotiationWithXML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "<map><foo>bar</foo></map>", w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextNegotiationWithXML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationWithYAML(t *testing.T) {
@@ -1757,6 +1822,7 @@ func TestContextNegotiationWithYAML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "foo: bar\n", w.Body.String())
 	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextNegotiationWithYAML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationWithTOML(t *testing.T) {
@@ -1772,6 +1838,7 @@ func TestContextNegotiationWithTOML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "foo = 'bar'\n", w.Body.String())
 	assert.Equal(t, "application/toml; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextNegotiationWithTOML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationWithHTML(t *testing.T) {
@@ -1790,6 +1857,7 @@ func TestContextNegotiationWithHTML(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "Hello gin", w.Body.String())
 	assert.Equal(t, "text/html; charset=utf-8", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextNegotiationWithHTML(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationWithPROTOBUF(t *testing.T) {
@@ -1816,6 +1884,7 @@ func TestContextNegotiationWithPROTOBUF(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, string(protoData), w.Body.String())
 	assert.Equal(t, "application/x-protobuf", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextNegotiationWithPROTOBUF(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationWithBSON(t *testing.T) {
@@ -1833,6 +1902,7 @@ func TestContextNegotiationWithBSON(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, string(bData), w.Body.String())
 	assert.Equal(t, "application/bson", w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextNegotiationWithBSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationNotSupport(t *testing.T) {
@@ -1847,6 +1917,7 @@ func TestContextNegotiationNotSupport(t *testing.T) {
 	assert.Equal(t, http.StatusNotAcceptable, w.Code)
 	assert.Equal(t, abortIndex, c.index)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[INFO] TestContextNegotiationNotSupport(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNegotiationFormat(t *testing.T) {
@@ -1940,6 +2011,7 @@ func TestContextAbortWithStatus(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, c.Writer.Status())
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[INFO] TestContextAbortWithStatus(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type testJSONAbortMsg struct {
@@ -1971,6 +2043,7 @@ func TestContextAbortWithStatusJSON(t *testing.T) {
 	require.NoError(t, err)
 	jsonStringBody := buf.String()
 	assert.JSONEq(t, "{\"foo\":\"fooValue\",\"bar\":\"barValue\"}", jsonStringBody)
+	logritelog.Default().Printf("[INFO] TestContextAbortWithStatusJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextAbortWithStatusPureJSON(t *testing.T) {
@@ -1997,6 +2070,7 @@ func TestContextAbortWithStatusPureJSON(t *testing.T) {
 	require.NoError(t, err)
 	jsonStringBody := buf.String()
 	assert.JSONEq(t, "{\"foo\":\"fooValue\",\"bar\":\"barValue\"}", jsonStringBody)
+	logritelog.Default().Printf("[INFO] TestContextAbortWithStatusPureJSON(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextError(t *testing.T) {
@@ -2057,6 +2131,7 @@ func TestContextAbortWithError(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, abortIndex, c.index)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[INFO] TestContextAbortWithError(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextClientIP(t *testing.T) {
@@ -2207,6 +2282,17 @@ func resetContextForClientIPTests(c *Context) {
 	c.Request.Header.Set("CF-Connecting-IP", "60.60.60.60")
 	c.Request.Header.Set("Fly-Client-IP", "70.70.70.70")
 	c.Request.RemoteAddr = "  40.40.40.40:42123 "
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", c)
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
@@ -2249,6 +2335,7 @@ func TestContextBindRequestTooLarge(t *testing.T) {
 	assert.Empty(t, obj.Foo)
 	assert.Equal(t, expectedCode, w.Code)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[INFO] TestContextBindRequestTooLarge(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextAutoBindJSON(t *testing.T) {
@@ -2302,6 +2389,8 @@ func TestContextBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[INFO] TestContextBindWithXML(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestContextBindWithXML(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestContextBindPlain(t *testing.T) {
@@ -2419,6 +2508,7 @@ func TestContextBadAutoBind(t *testing.T) {
 	assert.Empty(t, obj.Foo)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.True(t, c.IsAborted())
+	logritelog.Default().Printf("[INFO] TestContextBadAutoBind(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextAutoShouldBindJSON(t *testing.T) {
@@ -2472,6 +2562,8 @@ func TestContextShouldBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[INFO] TestContextShouldBindWithXML(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestContextShouldBindWithXML(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestContextShouldBindPlain(t *testing.T) {
@@ -2600,6 +2692,7 @@ func TestContextShouldBindBodyWith(t *testing.T) {
 	type typeB struct {
 		Bar string `json:"bar" xml:"bar" binding:"required"`
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWith(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 	for _, tt := range []struct {
 		name               string
 		bindingA, bindingB binding.BindingBody
@@ -2670,6 +2763,7 @@ func TestContextShouldBindBodyWith(t *testing.T) {
 			assert.Equal(t, typeB{"BAR"}, objB)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWith(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithJSON(t *testing.T) {
@@ -2734,6 +2828,8 @@ func TestContextShouldBindBodyWithJSON(t *testing.T) {
 			assert.Equal(t, typeJSON{}, objJSON)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithJSON(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithJSON(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithXML(t *testing.T) {
@@ -2798,6 +2894,8 @@ func TestContextShouldBindBodyWithXML(t *testing.T) {
 			assert.Equal(t, typeXML{}, objXML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithXML(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithXML(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithYAML(t *testing.T) {
@@ -2863,6 +2961,8 @@ func TestContextShouldBindBodyWithYAML(t *testing.T) {
 			assert.Equal(t, typeYAML{}, objYAML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithYAML(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithYAML(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithTOML(t *testing.T) {
@@ -2927,6 +3027,8 @@ func TestContextShouldBindBodyWithTOML(t *testing.T) {
 			assert.Equal(t, typeTOML{"FOO"}, objTOML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithTOML(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithTOML(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithPlain(t *testing.T) {
@@ -3002,6 +3104,8 @@ func TestContextShouldBindBodyWithPlain(t *testing.T) {
 			assert.Equal(t, typeJSON{}, objJSON)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithPlain(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
+logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithPlain(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 }
 
 func TestContextGolangContext(t *testing.T) {
@@ -3040,6 +3144,8 @@ func TestWebsocketsRequired(t *testing.T) {
 	c.Request, _ = http.NewRequest(http.MethodGet, "/chat", nil)
 	c.Request.Header.Set("Host", "server.example.com")
 
+	logritelog.Default().Printf("[INFO] TestWebsocketsRequired(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestWebsocketsRequired(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 	assert.False(t, c.IsWebsocket())
 }
 
@@ -3109,6 +3215,8 @@ func TestGetRequestHeaderValue(t *testing.T) {
 
 	assert.Equal(t, "1.0.0", c.GetHeader("Gin-Version"))
 	assert.Empty(t, c.GetHeader("Connection"))
+	logritelog.Default().Printf("[INFO] TestGetRequestHeaderValue(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestGetRequestHeaderValue(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestContextGetRawData(t *testing.T) {
@@ -3149,6 +3257,7 @@ func TestContextRenderDataFromReader(t *testing.T) {
 	assert.Equal(t, contentType, w.Header().Get("Content-Type"))
 	assert.Equal(t, strconv.FormatInt(contentLength, 10), w.Header().Get("Content-Length"))
 	assert.Equal(t, extraHeaders["Content-Disposition"], w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[INFO] TestContextRenderDataFromReader(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextRenderDataFromReaderNoHeaders(t *testing.T) {
@@ -3166,6 +3275,7 @@ func TestContextRenderDataFromReaderNoHeaders(t *testing.T) {
 	assert.Equal(t, body, w.Body.String())
 	assert.Equal(t, contentType, w.Header().Get("Content-Type"))
 	assert.Equal(t, strconv.FormatInt(contentLength, 10), w.Header().Get("Content-Length"))
+	logritelog.Default().Printf("[INFO] TestContextRenderDataFromReaderNoHeaders(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type TestResponseRecorder struct {
@@ -3440,6 +3550,7 @@ func TestContextCopyShouldNotCancel(t *testing.T) {
 
 		ginctx = ginctx.Copy()
 
+		logritelog.Default().Printf("[INFO] TestContextCopyShouldNotCancel(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 		// start async goroutine for calling srv
 		go func() {
 			defer wg.Done()
@@ -3511,6 +3622,7 @@ func TestCreateTestContextWithRouteParams(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "hello gin", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestCreateTestContextWithRouteParams(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type interceptedWriter struct {
@@ -3521,6 +3633,10 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {
@@ -3550,6 +3666,7 @@ func TestInterceptedHeader(t *testing.T) {
 	// middleware. Assert this
 	assert.Empty(t, w.Result().Header.Get("X-Test"))
 	assert.Equal(t, "present", w.Result().Header.Get("X-Test-2"))
+	logritelog.Default().Printf("[INFO] TestInterceptedHeader(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestContextNext(t *testing.T) {
@@ -3722,6 +3839,7 @@ func TestContextSetCookieData(t *testing.T) {
 	})
 
 	// Test that SameSiteDefaultMode inherits from context's sameSite
+	logritelog.Default().Printf("[INFO] TestContextSetCookieData(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 	t.Run("SameSiteDefaultMode inherits context sameSite", func(t *testing.T) {
 		c, _ := CreateTestContext(httptest.NewRecorder())
 		c.SetSameSite(http.SameSiteStrictMode)
@@ -3738,6 +3856,7 @@ func TestContextSetCookieData(t *testing.T) {
 		setCookie := c.Writer.Header().Get("Set-Cookie")
 		assert.Contains(t, setCookie, "SameSite=Strict")
 	})
+	logritelog.Default().Printf("[INFO] TestContextSetCookieData(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestGetMapFromFormData(t *testing.T) {

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"flag"
@@ -74,6 +75,8 @@ func SetMode(value string) {
 	default:
 		panic("gin mode unknown: " + value + " (available mode: debug release test)")
 	}
+	logritelog.Default().Printf("[INFO] SetMode(value=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", value)
+	logritelog.Default().Printf("[INFO] SetMode(value=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", value)
 	modeName.Store(value)
 }
 

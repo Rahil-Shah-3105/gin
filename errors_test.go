@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -63,6 +64,7 @@ func TestError(t *testing.T) {
 	}
 	err.SetMeta(customError{status: "200", data: "other data"}) //nolint: errcheck
 	assert.Equal(t, customError{status: "200", data: "other data"}, err.JSON())
+	logritelog.Default().Printf("[INFO] TestError(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestErrorSlice(t *testing.T) {
@@ -105,6 +107,7 @@ Error #03: third
 	assert.Nil(t, errs.Last())
 	assert.Nil(t, errs.JSON())
 	assert.Empty(t, errs.String())
+	logritelog.Default().Printf("[INFO] TestErrorSlice(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type TestErr string

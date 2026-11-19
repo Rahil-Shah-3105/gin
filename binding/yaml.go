@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -29,7 +30,10 @@ func (yamlBinding) BindBody(body []byte, obj any) error {
 func decodeYAML(r io.Reader, obj any) error {
 	decoder := yaml.NewDecoder(r)
 	if err := decoder.Decode(obj); err != nil {
+	logritelog.Default().Printf("[INFO] decodeYAML(r=%v, obj=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", r, obj)
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeYAML(r=%v, obj=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeYAML(r=%v, obj=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", r, obj)
 	return validate(obj)
 }

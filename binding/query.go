@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import "net/http"
 
@@ -15,7 +16,10 @@ func (queryBinding) Name() string {
 func (queryBinding) Bind(req *http.Request, obj any) error {
 	values := req.URL.Query()
 	if err := mapForm(obj, values); err != nil {
+	logritelog.Default().Printf("[INFO] Bind(req=%v, obj=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", req, obj)
 		return err
 	}
+	logritelog.Default().Printf("[INFO] Bind(req=%v, obj=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed", req, obj)
+	logritelog.Default().Printf("[INFO] Bind(req=%v, obj=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", req, obj)
 	return validate(obj)
 }

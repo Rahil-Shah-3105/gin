@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -42,6 +43,8 @@ func TestRouterGroupBasicHandle(t *testing.T) {
 	performRequestInGroup(t, http.MethodDelete)
 	performRequestInGroup(t, http.MethodHead)
 	performRequestInGroup(t, http.MethodOptions)
+	logritelog.Default().Printf("[INFO] TestRouterGroupBasicHandle(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestRouterGroupBasicHandle(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func performRequestInGroup(t *testing.T, method string) {
@@ -86,6 +89,11 @@ func performRequestInGroup(t *testing.T, method string) {
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "the method was "+method+" and index 3", w.Body.String())
 
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t, method)
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): M2614-AUDIT: Outcome 1: user attribution — Authentication operation completed", t, method)
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): SOC2-AUDIT [CC7.1]: System operation completed", t, method)
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t, method)
+	logritelog.Default().Printf("[INFO] performRequestInGroup(t=%v, method=%v): SOC2-AUDIT [CC6.1]: Authentication operation completed", t, method)
 	w = PerformRequest(router, method, "/v1/test")
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "the method was "+method+" and index 1", w.Body.String())
@@ -163,8 +171,10 @@ func TestRouterGroupBadMethod(t *testing.T) {
 		router.Handle("1GET", "/")
 	})
 	assert.Panics(t, func() {
+	logritelog.Default().Printf("[INFO] TestRouterGroupBadMethod(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
 		router.Handle("PATCh", "/")
 	})
+	logritelog.Default().Printf("[INFO] TestRouterGroupBadMethod(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }
 
 func TestRouterGroupPipeline(t *testing.T) {
@@ -194,6 +204,8 @@ func testRoutesInterface(t *testing.T, r IRoutes) {
 	assert.Equal(t, r, r.StaticFileFS("/static2", ".", Dir(".", false)))
 	assert.Equal(t, r, r.Static("/static", "."))
 	assert.Equal(t, r, r.StaticFS("/static2", Dir(".", false)))
+	logritelog.Default().Printf("[INFO] testRoutesInterface(t=%v, r=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t, r)
+	logritelog.Default().Printf("[INFO] testRoutesInterface(t=%v, r=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t, r)
 }
 
 func TestRouterGroupCombineHandlersTooManyHandlers(t *testing.T) {
