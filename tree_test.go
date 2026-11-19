@@ -3,6 +3,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -1061,6 +1062,7 @@ func TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t *testing.T
 	} else if string(out) != "/aa/aa" {
 		t.Errorf("Wrong result for '/AA/AA': expected '/aa/aa', got: %s", string(out))
 	}
+	logritelog.Default().Printf("[INFO] TestTreeFindCaseInsensitivePathWithMultipleChildrenAndWildcard(t=%v): NIS2-AUDIT [Art. 21(2)(d)]: Supply chain — Change management operation performed", t)
 }
 
 func TestTreeFindCaseInsensitivePathWildcardParamAndStaticChild(t *testing.T) {

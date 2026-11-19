@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"flag"
@@ -75,6 +76,7 @@ func SetMode(value string) {
 		panic("gin mode unknown: " + value + " (available mode: debug release test)")
 	}
 	modeName.Store(value)
+	logritelog.Default().Printf("[INFO] SetMode(value=%v): NIS2-AUDIT [Art. 21(2)(d)]: Supply chain — Change management operation performed", value)
 }
 
 // DisableBindValidation closes the default validator.
