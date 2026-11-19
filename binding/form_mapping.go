@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"encoding"
@@ -248,6 +249,7 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 		return false, nil
 	}
 
+	logritelog.Default().Printf("[INFO] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", value, field, form, tagValue, opt)
 	switch value.Kind() {
 	case reflect.Slice:
 		if len(vs) == 0 {
@@ -316,6 +318,7 @@ func setByForm(value reflect.Value, field reflect.StructField, form map[string][
 		} else if ok, err = trySetCustom(val, value); ok {
 			return ok, err
 		}
+		logritelog.Default().Printf("[INFO] setByForm(value=%v, field=%v, form=%v, tagValue=%v, opt=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", value, field, form, tagValue, opt)
 		return true, setWithProperType(val, value, field, opt)
 	}
 }
@@ -345,6 +348,8 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 	case reflect.Int64:
 		switch value.Interface().(type) {
 		case time.Duration:
+			logritelog.Default().Printf("[INFO] setIntField(val=%v, bitSize=%v, field=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setIntField(val=%v, bitSize=%v, field=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", val, bitSize, field)
 			return setTimeDuration(val, value)
 		}
 		return setIntField(val, 64, value)
@@ -384,6 +389,8 @@ func setWithProperType(val string, value reflect.Value, field reflect.StructFiel
 	default:
 		return errUnknownType
 	}
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", val, value, field, opt)
+	logritelog.Default().Printf("[INFO] setWithProperType(val=%v, value=%v, field=%v, opt=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", val, value, field, opt)
 	return nil
 }
 
@@ -406,6 +413,8 @@ func setUintField(val string, bitSize int, field reflect.Value) error {
 	if err == nil {
 		field.SetUint(uintVal)
 	}
+	logritelog.Default().Printf("[INFO] setUintField(val=%v, bitSize=%v, field=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setUintField(val=%v, bitSize=%v, field=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", val, bitSize, field)
 	return err
 }
 
@@ -417,6 +426,8 @@ func setBoolField(val string, field reflect.Value) error {
 	if err == nil {
 		field.SetBool(boolVal)
 	}
+	logritelog.Default().Printf("[INFO] setBoolField(val=%v, field=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", val, field)
+	logritelog.Default().Printf("[INFO] setBoolField(val=%v, field=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", val, field)
 	return err
 }
 
@@ -428,6 +439,8 @@ func setFloatField(val string, bitSize int, field reflect.Value) error {
 	if err == nil {
 		field.SetFloat(floatVal)
 	}
+	logritelog.Default().Printf("[INFO] setFloatField(val=%v, bitSize=%v, field=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", val, bitSize, field)
+	logritelog.Default().Printf("[INFO] setFloatField(val=%v, bitSize=%v, field=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", val, bitSize, field)
 	return err
 }
 
@@ -485,6 +498,8 @@ func setTimeField(val string, structField reflect.StructField, value reflect.Val
 
 	value.Set(reflect.ValueOf(t))
 	return nil
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", val, structField, value)
+	logritelog.Default().Printf("[INFO] setTimeField(val=%v, structField=%v, value=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", val, structField, value)
 }
 
 func setArray(vals []string, value reflect.Value, field reflect.StructField, opt setOptions) error {
@@ -494,6 +509,8 @@ func setArray(vals []string, value reflect.Value, field reflect.StructField, opt
 			return err
 		}
 	}
+	logritelog.Default().Printf("[INFO] setArray(vals=%v, value=%v, field=%v, opt=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[INFO] setArray(vals=%v, value=%v, field=%v, opt=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", vals, value, field, opt)
 	return nil
 }
 
@@ -505,6 +522,8 @@ func setSlice(vals []string, value reflect.Value, field reflect.StructField, opt
 	}
 	value.Set(slice)
 	return nil
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", vals, value, field, opt)
+	logritelog.Default().Printf("[INFO] setSlice(vals=%v, value=%v, field=%v, opt=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", vals, value, field, opt)
 }
 
 func setTimeDuration(val string, value reflect.Value) error {
@@ -518,6 +537,8 @@ func setTimeDuration(val string, value reflect.Value) error {
 	}
 	value.Set(reflect.ValueOf(d))
 	return nil
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", val, value)
+	logritelog.Default().Printf("[INFO] setTimeDuration(val=%v, value=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", val, value)
 }
 
 func head(str, sep string) (head string, tail string) {
@@ -546,5 +567,7 @@ func setFormMap(ptr any, form map[string][]string) error {
 		ptrMap[k] = v[len(v)-1] // pick last
 	}
 
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail", ptr, form)
+	logritelog.Default().Printf("[INFO] setFormMap(ptr=%v, form=%v): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail", ptr, form)
 	return nil
 }

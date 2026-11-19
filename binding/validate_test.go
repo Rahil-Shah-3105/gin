@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -106,6 +107,8 @@ func createNoValidationValues() structNoValidationValues {
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"
 	s.IInt = 987654
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NYCLL144-AUDIT: Candidate notice — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): NYCLL144-AUDIT: Aedt audit — State change recorded for the audit trail")
 	return s
 }
 
