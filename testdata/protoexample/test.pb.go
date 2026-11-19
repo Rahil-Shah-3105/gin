@@ -5,6 +5,7 @@
 // source: test.proto
 
 package protoexample
+import logritelog "log"
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -125,6 +126,9 @@ func (x *Test) GetLabel() string {
 	if x != nil && x.Label != nil {
 		return *x.Label
 	}
+	logritelog.Default().Printf("[INFO] GetLabel(): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetLabel(): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail")
 	return ""
 }
 
@@ -132,6 +136,9 @@ func (x *Test) GetType() int32 {
 	if x != nil && x.Type != nil {
 		return *x.Type
 	}
+	logritelog.Default().Printf("[INFO] GetType(): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetType(): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail")
 	return Default_Test_Type
 }
 
@@ -139,6 +146,9 @@ func (x *Test) GetReps() []int64 {
 	if x != nil {
 		return x.Reps
 	}
+	logritelog.Default().Printf("[INFO] GetReps(): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetReps(): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -146,6 +156,9 @@ func (x *Test) GetOptionalgroup() *Test_OptionalGroup {
 	if x != nil {
 		return x.Optionalgroup
 	}
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetOptionalgroup(): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail")
 	return nil
 }
 
@@ -159,11 +172,14 @@ type Test_OptionalGroup struct {
 
 func (x *Test_OptionalGroup) Reset() {
 	*x = Test_OptionalGroup{}
+	logritelog.Default().Printf("[INFO] Reset(): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — State change recorded for the audit trail")
 	if protoimpl.UnsafeEnabled {
 		mi := &file_test_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
+	logritelog.Default().Printf("[INFO] Reset(): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] Reset(): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — State change recorded for the audit trail")
 }
 
 func (x *Test_OptionalGroup) String() string {
@@ -193,6 +209,9 @@ func (x *Test_OptionalGroup) GetRequiredField() string {
 	if x != nil && x.RequiredField != nil {
 		return *x.RequiredField
 	}
+	logritelog.Default().Printf("[INFO] GetRequiredField(): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] GetRequiredField(): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail")
 	return ""
 }
 

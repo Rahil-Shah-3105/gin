@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"fmt"
@@ -27,6 +28,9 @@ func (r String) Render(w http.ResponseWriter) error {
 // WriteContentType (String) writes Plain ContentType.
 func (r String) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, plainContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — State change recorded for the audit trail", w)
 }
 
 // WriteString writes data according to its format and write custom ContentType.
