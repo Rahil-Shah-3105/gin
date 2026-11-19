@@ -938,10 +938,12 @@ func TestContextHandlerNames(t *testing.T) {
 
 func handlerNameTest(c *Context) {
 logritelog.Default().Printf("[ERROR] >>> Entering handlerNameTest(c=%v)", c)
+logritelog.Default().Printf("[WARN] <<< Exiting handlerNameTest(c=%v)", c)
 }
 
 func handlerNameTest2(c *Context) {
 logritelog.Default().Printf("[ERROR] >>> Entering handlerNameTest2(c=%v)", c)
+logritelog.Default().Printf("[WARN] <<< Exiting handlerNameTest2(c=%v)", c)
 }
 
 var handlerTest HandlerFunc = func(c *Context) {
@@ -1300,6 +1302,7 @@ type TestRender struct{}
 
 func (*TestRender) Render(http.ResponseWriter) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering Render()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Render()")
 	return errTestRender
 }
 
@@ -3609,6 +3612,7 @@ type TestResponseRecorder struct {
 
 func (r *TestResponseRecorder) CloseNotify() <-chan bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering CloseNotify()")
+	logritelog.Default().Printf("[WARN] <<< Exiting CloseNotify()")
 	return r.closeChannel
 }
 
@@ -3620,6 +3624,7 @@ func (r *TestResponseRecorder) closeClient() {
 
 func CreateTestResponseRecorder() *TestResponseRecorder {
 	logritelog.Default().Printf("[ERROR] >>> Entering CreateTestResponseRecorder()")
+	logritelog.Default().Printf("[WARN] <<< Exiting CreateTestResponseRecorder()")
 	return &TestResponseRecorder{
 		httptest.NewRecorder(),
 		make(chan bool, 1),

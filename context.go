@@ -178,6 +178,7 @@ func (c *Context) Copy() *Context {
 // this function will return "main.handleGetUsers".
 func (c *Context) HandlerName() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering HandlerName()")
+	logritelog.Default().Printf("[WARN] <<< Exiting HandlerName()")
 	return nameOfFunction(c.handlers.Last())
 }
 
@@ -199,6 +200,7 @@ func (c *Context) HandlerNames() []string {
 // Handler returns the main handler.
 func (c *Context) Handler() HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering Handler()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Handler()")
 	return c.handlers.Last()
 }
 
@@ -210,6 +212,7 @@ func (c *Context) Handler() HandlerFunc {
 //	})
 func (c *Context) FullPath() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering FullPath()")
+	logritelog.Default().Printf("[WARN] <<< Exiting FullPath()")
 	return c.fullPath
 }
 
@@ -235,6 +238,7 @@ func (c *Context) Next() {
 // IsAborted returns true if the current context was aborted.
 func (c *Context) IsAborted() bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering IsAborted()")
+	logritelog.Default().Printf("[WARN] <<< Exiting IsAborted()")
 	return c.index >= abortIndex
 }
 
@@ -315,6 +319,7 @@ func (c *Context) Error(err error) *Error {
 	}
 
 	c.Errors = append(c.Errors, parsedError)
+	logritelog.Default().Printf("[WARN] <<< Exiting Error(err=%v)", err)
 	return parsedError
 }
 
@@ -357,6 +362,7 @@ func (c *Context) MustGet(key any) any {
 }
 
 func getTyped[T any](c *Context, key any) (res T) {
+	logritelog.Default().Printf("[ERROR] >>> Entering getTyped(c=%v,key=%v)", c, key)
 	if val, ok := c.Get(key); ok && val != nil {
 		res, _ = val.(T)
 	}
@@ -367,6 +373,7 @@ func getTyped[T any](c *Context, key any) (res T) {
 // GetString returns the value associated with the key as a string.
 func (c *Context) GetString(key any) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering GetString(key=%v)", key)
+	logritelog.Default().Printf("[WARN] <<< Exiting GetString(key=%v)", key)
 	return getTyped[string](c, key)
 }
 
@@ -720,6 +727,7 @@ func (c *Context) PostForm(key string) (value string) {
 func (c *Context) DefaultPostForm(key, defaultValue string) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering DefaultPostForm(key=%v,defaultValue=%v)", key, defaultValue)
 	if value, ok := c.GetPostForm(key); ok {
+		logritelog.Default().Printf("[WARN] <<< Exiting DefaultPostForm(key=%v,defaultValue=%v)", key, defaultValue)
 		return value
 	}
 	return defaultValue
@@ -736,6 +744,7 @@ func (c *Context) DefaultPostForm(key, defaultValue string) string {
 func (c *Context) GetPostForm(key string) (string, bool) {
 	logritelog.Default().Printf("[ERROR] >>> Entering GetPostForm(key=%v)", key)
 	if values, ok := c.GetPostFormArray(key); ok {
+		logritelog.Default().Printf("[WARN] <<< Exiting GetPostForm(key=%v)", key)
 		return values[0], ok
 	}
 	return "", false
@@ -911,42 +920,49 @@ func (c *Context) Bind(obj any) error {
 // BindJSON is a shortcut for c.MustBindWith(obj, binding.JSON).
 func (c *Context) BindJSON(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindJSON(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindJSON(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.JSON)
 }
 
 // BindXML is a shortcut for c.MustBindWith(obj, binding.XML).
 func (c *Context) BindXML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindXML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindXML(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.XML)
 }
 
 // BindQuery is a shortcut for c.MustBindWith(obj, binding.Query).
 func (c *Context) BindQuery(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindQuery(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindQuery(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.Query)
 }
 
 // BindYAML is a shortcut for c.MustBindWith(obj, binding.YAML).
 func (c *Context) BindYAML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindYAML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindYAML(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.YAML)
 }
 
 // BindTOML is a shortcut for c.MustBindWith(obj, binding.TOML).
 func (c *Context) BindTOML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindTOML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindTOML(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.TOML)
 }
 
 // BindPlain is a shortcut for c.MustBindWith(obj, binding.Plain).
 func (c *Context) BindPlain(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindPlain(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindPlain(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.Plain)
 }
 
 // BindHeader is a shortcut for c.MustBindWith(obj, binding.Header).
 func (c *Context) BindHeader(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindHeader(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindHeader(obj=%v)", obj)
 	return c.MustBindWith(obj, binding.Header)
 }
 
@@ -1029,6 +1045,7 @@ func (c *Context) ShouldBind(obj any) error {
 //	c.JSON(http.StatusOK, user)
 func (c *Context) ShouldBindJSON(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindJSON(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindJSON(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.JSON)
 }
 
@@ -1036,6 +1053,7 @@ func (c *Context) ShouldBindJSON(obj any) error {
 // It works like ShouldBindJSON but binds the request body as XML data.
 func (c *Context) ShouldBindXML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindXML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindXML(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.XML)
 }
 
@@ -1043,6 +1061,7 @@ func (c *Context) ShouldBindXML(obj any) error {
 // It works like ShouldBindJSON but binds query parameters from the URL.
 func (c *Context) ShouldBindQuery(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindQuery(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindQuery(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.Query)
 }
 
@@ -1050,6 +1069,7 @@ func (c *Context) ShouldBindQuery(obj any) error {
 // It works like ShouldBindJSON but binds the request body as YAML data.
 func (c *Context) ShouldBindYAML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindYAML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindYAML(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.YAML)
 }
 
@@ -1057,6 +1077,7 @@ func (c *Context) ShouldBindYAML(obj any) error {
 // It works like ShouldBindJSON but binds the request body as TOML data.
 func (c *Context) ShouldBindTOML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindTOML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindTOML(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.TOML)
 }
 
@@ -1064,6 +1085,7 @@ func (c *Context) ShouldBindTOML(obj any) error {
 // It works like ShouldBindJSON but binds plain text data from the request body.
 func (c *Context) ShouldBindPlain(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindPlain(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindPlain(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.Plain)
 }
 
@@ -1071,6 +1093,7 @@ func (c *Context) ShouldBindPlain(obj any) error {
 // It works like ShouldBindJSON but binds values from HTTP headers.
 func (c *Context) ShouldBindHeader(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindHeader(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindHeader(obj=%v)", obj)
 	return c.ShouldBindWith(obj, binding.Header)
 }
 
@@ -1120,30 +1143,35 @@ func (c *Context) ShouldBindBodyWith(obj any, bb binding.BindingBody) (err error
 // ShouldBindBodyWithJSON is a shortcut for c.ShouldBindBodyWith(obj, binding.JSON).
 func (c *Context) ShouldBindBodyWithJSON(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithJSON(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindBodyWithJSON(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.JSON)
 }
 
 // ShouldBindBodyWithXML is a shortcut for c.ShouldBindBodyWith(obj, binding.XML).
 func (c *Context) ShouldBindBodyWithXML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithXML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindBodyWithXML(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.XML)
 }
 
 // ShouldBindBodyWithYAML is a shortcut for c.ShouldBindBodyWith(obj, binding.YAML).
 func (c *Context) ShouldBindBodyWithYAML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithYAML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindBodyWithYAML(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.YAML)
 }
 
 // ShouldBindBodyWithTOML is a shortcut for c.ShouldBindBodyWith(obj, binding.TOML).
 func (c *Context) ShouldBindBodyWithTOML(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithTOML(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindBodyWithTOML(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.TOML)
 }
 
 // ShouldBindBodyWithPlain is a shortcut for c.ShouldBindBodyWith(obj, binding.Plain).
 func (c *Context) ShouldBindBodyWithPlain(obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering ShouldBindBodyWithPlain(obj=%v)", obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting ShouldBindBodyWithPlain(obj=%v)", obj)
 	return c.ShouldBindBodyWith(obj, binding.Plain)
 }
 
@@ -1220,6 +1248,7 @@ func (c *Context) RemoteIP() string {
 // ContentType returns the Content-Type header of the request.
 func (c *Context) ContentType() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering ContentType()")
+	logritelog.Default().Printf("[WARN] <<< Exiting ContentType()")
 	return filterFlags(c.requestHeader("Content-Type"))
 }
 
@@ -1299,16 +1328,19 @@ func (c *Context) Status(code int) {
 // It writes a header in the response.
 // If value == "", this method removes the header `c.Writer.Header().Del(key)`
 func (c *Context) Header(key, value string) {
+	logritelog.Default().Printf("[ERROR] >>> Entering Header(key=%v,value=%v)", key, value)
 	if value == "" {
 		c.Writer.Header().Del(key)
 		return
 	}
 	c.Writer.Header().Set(key, value)
+	logritelog.Default().Printf("[WARN] <<< Exiting Header(key=%v,value=%v)", key, value)
 }
 
 // GetHeader returns value from request headers.
 func (c *Context) GetHeader(key string) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering GetHeader(key=%v)", key)
+	logritelog.Default().Printf("[WARN] <<< Exiting GetHeader(key=%v)", key)
 	return c.requestHeader(key)
 }
 
@@ -1472,7 +1504,9 @@ func (c *Context) PureJSON(code int, obj any) {
 // XML serializes the given struct as XML into the response body.
 // It also sets the Content-Type as "application/xml".
 func (c *Context) XML(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering XML(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.XML{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting XML(code=%v,obj=%v)", code, obj)
 }
 
 // PDF writes the given PDF binary data into the response body.
@@ -1485,12 +1519,16 @@ func (c *Context) PDF(code int, data []byte) {
 
 // YAML serializes the given struct as YAML into the response body.
 func (c *Context) YAML(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering YAML(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.YAML{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting YAML(code=%v,obj=%v)", code, obj)
 }
 
 // TOML serializes the given struct as TOML into the response body.
 func (c *Context) TOML(code int, obj any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering TOML(code=%v,obj=%v)", code, obj)
 	c.Render(code, render.TOML{Data: obj})
+	logritelog.Default().Printf("[WARN] <<< Exiting TOML(code=%v,obj=%v)", code, obj)
 }
 
 // ProtoBuf serializes the given struct as ProtoBuf into the response body.
@@ -1509,7 +1547,9 @@ func (c *Context) BSON(code int, obj any) {
 
 // String writes the given string into the response body.
 func (c *Context) String(code int, format string, values ...any) {
+	logritelog.Default().Printf("[ERROR] >>> Entering String(code=%v,format=%v,values=%v)", code, format, values)
 	c.Render(code, render.String{Format: format, Data: values})
+	logritelog.Default().Printf("[WARN] <<< Exiting String(code=%v,format=%v,values=%v)", code, format, values)
 }
 
 // Redirect returns an HTTP redirect to the specific location.
@@ -1565,6 +1605,7 @@ var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
 
 func escapeQuotes(s string) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering escapeQuotes(s=%v)", s)
+	logritelog.Default().Printf("[WARN] <<< Exiting escapeQuotes(s=%v)", s)
 	return quoteEscaper.Replace(s)
 }
 

@@ -17,16 +17,19 @@ type tomlBinding struct{}
 
 func (tomlBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "toml"
 }
 
 func (tomlBinding) Bind(req *http.Request, obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering Bind(req=%v,obj=%v)", req, obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting Bind(req=%v,obj=%v)", req, obj)
 	return decodeToml(req.Body, obj)
 }
 
 func (tomlBinding) BindBody(body []byte, obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindBody(body=%v,obj=%v)", body, obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindBody(body=%v,obj=%v)", body, obj)
 	return decodeToml(bytes.NewReader(body), obj)
 }
 

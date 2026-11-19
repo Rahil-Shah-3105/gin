@@ -14,6 +14,7 @@ type plainBinding struct{}
 
 func (plainBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "plain"
 }
 
@@ -31,6 +32,7 @@ func (plainBinding) Bind(req *http.Request, obj any) error {
 
 func (plainBinding) BindBody(body []byte, obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindBody(body=%v,obj=%v)", body, obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindBody(body=%v,obj=%v)", body, obj)
 	return decodePlain(body, obj)
 }
 

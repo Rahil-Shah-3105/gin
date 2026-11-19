@@ -35,12 +35,14 @@ type RecoveryFunc func(c *Context, err any)
 // Recovery returns a middleware that recovers from any panics and writes a 500 if there was one.
 func Recovery() HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering Recovery()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Recovery()")
 	return RecoveryWithWriter(DefaultErrorWriter)
 }
 
 // CustomRecovery returns a middleware that recovers from any panics and calls the provided handle func to handle it.
 func CustomRecovery(handle RecoveryFunc) HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering CustomRecovery(handle=%v)", handle)
+	logritelog.Default().Printf("[WARN] <<< Exiting CustomRecovery(handle=%v)", handle)
 	return RecoveryWithWriter(DefaultErrorWriter, handle)
 }
 
@@ -221,5 +223,6 @@ func function(pc uintptr) string {
 // timeFormat returns a customized time string for logger.
 func timeFormat(t time.Time) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering timeFormat(t=%v)", t)
+	logritelog.Default().Printf("[WARN] <<< Exiting timeFormat(t=%v)", t)
 	return t.Format("2006/01/02 - 15:04:05")
 }

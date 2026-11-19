@@ -47,6 +47,7 @@ func (x FOO) Enum() *FOO {
 
 func (x FOO) String() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering String()")
+	logritelog.Default().Printf("[WARN] <<< Exiting String()")
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
@@ -56,11 +57,13 @@ func (FOO) Descriptor() protoreflect.EnumDescriptor {
 
 func (FOO) Type() protoreflect.EnumType {
 	logritelog.Default().Printf("[ERROR] >>> Entering Type()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Type()")
 	return &file_test_proto_enumTypes[0]
 }
 
 func (x FOO) Number() protoreflect.EnumNumber {
 	logritelog.Default().Printf("[ERROR] >>> Entering Number()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Number()")
 	return protoreflect.EnumNumber(x)
 }
 
@@ -80,6 +83,7 @@ func (x *FOO) UnmarshalJSON(b []byte) error {
 // Deprecated: Use FOO.Descriptor instead.
 func (FOO) EnumDescriptor() ([]byte, []int) {
 	logritelog.Default().Printf("[ERROR] >>> Entering EnumDescriptor()")
+	logritelog.Default().Printf("[WARN] <<< Exiting EnumDescriptor()")
 	return file_test_proto_rawDescGZIP(), []int{0}
 }
 
@@ -123,6 +127,7 @@ func (x *Test) ProtoReflect() protoreflect.Message {
 		}
 		return ms
 	}
+	logritelog.Default().Printf("[ERROR] >>> Entering ProtoReflect()")
 	return mi.MessageOf(x)
 }
 

@@ -74,6 +74,7 @@ func (group *RouterGroup) Use(middleware ...HandlerFunc) IRoutes {
 // For example, all the routes that use a common middleware for authorization could be grouped.
 func (group *RouterGroup) Group(relativePath string, handlers ...HandlerFunc) *RouterGroup {
 	logritelog.Default().Printf("[ERROR] >>> Entering Group(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting Group(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return &RouterGroup{
 		Handlers: group.combineHandlers(handlers),
 		basePath: group.calculateAbsolutePath(relativePath),
@@ -85,6 +86,7 @@ func (group *RouterGroup) Group(relativePath string, handlers ...HandlerFunc) *R
 // For example, if v := router.Group("/rest/n/v1/api"), v.BasePath() is "/rest/n/v1/api".
 func (group *RouterGroup) BasePath() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering BasePath()")
+	logritelog.Default().Printf("[WARN] <<< Exiting BasePath()")
 	return group.basePath
 }
 
@@ -119,42 +121,49 @@ func (group *RouterGroup) Handle(httpMethod, relativePath string, handlers ...Ha
 // POST is a shortcut for router.Handle("POST", path, handlers).
 func (group *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering POST(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting POST(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodPost, relativePath, handlers)
 }
 
 // GET is a shortcut for router.Handle("GET", path, handlers).
 func (group *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering GET(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting GET(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodGet, relativePath, handlers)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handlers).
 func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering DELETE(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting DELETE(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodDelete, relativePath, handlers)
 }
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handlers).
 func (group *RouterGroup) PATCH(relativePath string, handlers ...HandlerFunc) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering PATCH(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting PATCH(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodPatch, relativePath, handlers)
 }
 
 // PUT is a shortcut for router.Handle("PUT", path, handlers).
 func (group *RouterGroup) PUT(relativePath string, handlers ...HandlerFunc) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering PUT(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting PUT(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodPut, relativePath, handlers)
 }
 
 // OPTIONS is a shortcut for router.Handle("OPTIONS", path, handlers).
 func (group *RouterGroup) OPTIONS(relativePath string, handlers ...HandlerFunc) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering OPTIONS(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting OPTIONS(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodOptions, relativePath, handlers)
 }
 
 // HEAD is a shortcut for router.Handle("HEAD", path, handlers).
 func (group *RouterGroup) HEAD(relativePath string, handlers ...HandlerFunc) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering HEAD(relativePath=%v,handlers=%v)", relativePath, handlers)
+	logritelog.Default().Printf("[WARN] <<< Exiting HEAD(relativePath=%v,handlers=%v)", relativePath, handlers)
 	return group.handle(http.MethodHead, relativePath, handlers)
 }
 
@@ -220,6 +229,7 @@ func (group *RouterGroup) staticFileHandler(relativePath string, handler Handler
 //	router.Static("/static", "/var/www")
 func (group *RouterGroup) Static(relativePath, root string) IRoutes {
 	logritelog.Default().Printf("[ERROR] >>> Entering Static(relativePath=%v,root=%v)", relativePath, root)
+	logritelog.Default().Printf("[WARN] <<< Exiting Static(relativePath=%v,root=%v)", relativePath, root)
 	return group.StaticFS(relativePath, Dir(root, false))
 }
 

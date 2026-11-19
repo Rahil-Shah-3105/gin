@@ -56,6 +56,7 @@ var (
 
 // Render (JSON) writes data with custom ContentType.
 func (r JSON) Render(w http.ResponseWriter) error {
+	logritelog.Default().Printf("[ERROR] >>> Entering Render(w=%v)", w)
 	return WriteJSON(w, r.Data)
 }
 

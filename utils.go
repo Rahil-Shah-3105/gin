@@ -49,6 +49,7 @@ func Bind(val any) HandlerFunc {
 // WrapF is a helper function for wrapping http.HandlerFunc and returns a Gin middleware.
 func WrapF(f http.HandlerFunc) HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering WrapF(f=%v)", f)
+	logritelog.Default().Printf("[WARN] <<< Exiting WrapF(f=%v)", f)
 	return func(c *Context) {
 		f(c.Writer, c.Request)
 	}
@@ -57,6 +58,7 @@ func WrapF(f http.HandlerFunc) HandlerFunc {
 // WrapH is a helper function for wrapping http.Handler and returns a Gin middleware.
 func WrapH(h http.Handler) HandlerFunc {
 	logritelog.Default().Printf("[ERROR] >>> Entering WrapH(h=%v)", h)
+	logritelog.Default().Printf("[WARN] <<< Exiting WrapH(h=%v)", h)
 	return func(c *Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
@@ -151,6 +153,7 @@ func lastChar(str string) uint8 {
 
 func nameOfFunction(f any) string {
 	logritelog.Default().Printf("[ERROR] >>> Entering nameOfFunction(f=%v)", f)
+	logritelog.Default().Printf("[WARN] <<< Exiting nameOfFunction(f=%v)", f)
 	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 }
 

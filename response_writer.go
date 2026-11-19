@@ -57,6 +57,7 @@ var _ ResponseWriter = (*responseWriter)(nil)
 
 func (w *responseWriter) Unwrap() http.ResponseWriter {
 	logritelog.Default().Printf("[ERROR] >>> Entering Unwrap()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Unwrap()")
 	return w.ResponseWriter
 }
 
@@ -114,16 +115,19 @@ func (w *responseWriter) WriteString(s string) (n int, err error) {
 
 func (w *responseWriter) Status() int {
 	logritelog.Default().Printf("[ERROR] >>> Entering Status()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Status()")
 	return w.status
 }
 
 func (w *responseWriter) Size() int {
 	logritelog.Default().Printf("[ERROR] >>> Entering Size()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Size()")
 	return w.size
 }
 
 func (w *responseWriter) Written() bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering Written()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Written()")
 	return w.size != noWritten
 }
 

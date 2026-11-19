@@ -15,6 +15,7 @@ type headerBinding struct{}
 
 func (headerBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "header"
 }
 
@@ -31,6 +32,7 @@ func (headerBinding) Bind(req *http.Request, obj any) error {
 
 func mapHeader(ptr any, h map[string][]string) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering mapHeader(ptr=%v,h=%v)", ptr, h)
+	logritelog.Default().Printf("[WARN] <<< Exiting mapHeader(ptr=%v,h=%v)", ptr, h)
 	return mappingByPtr(ptr, headerSource(h), "header")
 }
 
@@ -40,5 +42,6 @@ var _ setter = headerSource(nil)
 
 func (hs headerSource) TrySet(value reflect.Value, field reflect.StructField, tagValue string, opt setOptions) (bool, error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering TrySet(value=%v,field=%v,tagValue=%v,opt=%v)", value, field, tagValue, opt)
+	logritelog.Default().Printf("[WARN] <<< Exiting TrySet(value=%v,field=%v,tagValue=%v,opt=%v)", value, field, tagValue, opt)
 	return setByForm(value, field, hs, textproto.CanonicalMIMEHeaderKey(tagValue), opt)
 }

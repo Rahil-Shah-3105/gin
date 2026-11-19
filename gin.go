@@ -509,6 +509,7 @@ func (engine *Engine) SetTrustedProxies(trustedProxies []string) error {
 // isUnsafeTrustedProxies checks if Engine.trustedCIDRs contains all IPs, it's not safe if it has (returns true)
 func (engine *Engine) isUnsafeTrustedProxies() bool {
 	logritelog.Default().Printf("[ERROR] >>> Entering isUnsafeTrustedProxies()")
+	logritelog.Default().Printf("[WARN] <<< Exiting isUnsafeTrustedProxies()")
 	return engine.isTrustedProxy(net.ParseIP("0.0.0.0")) || engine.isTrustedProxy(net.ParseIP("::"))
 }
 
@@ -631,6 +632,7 @@ func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
 			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			logritelog.Default().Printf("[WARN] <<< Exiting RunTLS(addr=%v,certFile=%v,keyFile=%v)", addr, certFile, keyFile)
 	}
 
 	server := &http.Server{ // #nosec G112
@@ -652,6 +654,7 @@ func (engine *Engine) RunUnix(file string) (err error) {
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
 			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			logritelog.Default().Printf("[WARN] <<< Exiting RunUnix(file=%v)", file)
 	}
 
 	listener, err := net.Listen("unix", file)
@@ -679,6 +682,7 @@ func (engine *Engine) RunFd(fd int) (err error) {
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
 			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			logritelog.Default().Printf("[WARN] <<< Exiting RunFd(fd=%v)", fd)
 	}
 
 	f := os.NewFile(uintptr(fd), fmt.Sprintf("fd@%d", fd))
@@ -703,6 +707,7 @@ func (engine *Engine) RunQUIC(addr, certFile, keyFile string) (err error) {
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
 			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			logritelog.Default().Printf("[WARN] <<< Exiting RunQUIC(addr=%v,certFile=%v,keyFile=%v)", addr, certFile, keyFile)
 	}
 
 	err = http3.ListenAndServeQUIC(addr, certFile, keyFile, engine.Handler())
@@ -719,6 +724,7 @@ func (engine *Engine) RunListener(listener net.Listener) (err error) {
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
 			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			logritelog.Default().Printf("[WARN] <<< Exiting RunListener(listener=%v)", listener)
 	}
 
 	server := &http.Server{ // #nosec G112
@@ -889,6 +895,7 @@ func sanitizePathChars(s string) string {
 		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '/' || r == '-' {
 			return r
 		}
+	logritelog.Default().Printf("[WARN] <<< Exiting sanitizePathChars(s=%v)", s)
 		return -1
 	}, s)
 }

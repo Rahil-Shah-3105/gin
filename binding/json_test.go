@@ -93,26 +93,31 @@ type customJsonApi struct{}
 
 func (j customJsonApi) Marshal(v any) ([]byte, error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering Marshal(v=%v)", v)
+	logritelog.Default().Printf("[WARN] <<< Exiting Marshal(v=%v)", v)
 	return customConfig.Marshal(v)
 }
 
 func (j customJsonApi) Unmarshal(data []byte, v any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering Unmarshal(data=%v,v=%v)", data, v)
+	logritelog.Default().Printf("[WARN] <<< Exiting Unmarshal(data=%v,v=%v)", data, v)
 	return customConfig.Unmarshal(data, v)
 }
 
 func (j customJsonApi) MarshalIndent(v any, prefix, indent string) ([]byte, error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering MarshalIndent(v=%v,prefix=%v,indent=%v)", v, prefix, indent)
+	logritelog.Default().Printf("[WARN] <<< Exiting MarshalIndent(v=%v,prefix=%v,indent=%v)", v, prefix, indent)
 	return customConfig.MarshalIndent(v, prefix, indent)
 }
 
 func (j customJsonApi) NewEncoder(writer io.Writer) json.Encoder {
 	logritelog.Default().Printf("[ERROR] >>> Entering NewEncoder(writer=%v)", writer)
+	logritelog.Default().Printf("[WARN] <<< Exiting NewEncoder(writer=%v)", writer)
 	return customConfig.NewEncoder(writer)
 }
 
 func (j customJsonApi) NewDecoder(reader io.Reader) json.Decoder {
 	logritelog.Default().Printf("[ERROR] >>> Entering NewDecoder(reader=%v)", reader)
+	logritelog.Default().Printf("[WARN] <<< Exiting NewDecoder(reader=%v)", reader)
 	return customConfig.NewDecoder(reader)
 }
 
@@ -139,6 +144,7 @@ func (te *TimeEx) CreateEncoder(typ reflect2.Type) jsoniter.ValEncoder {
 	if typ == timeType {
 		return defaultTimeCodec
 	}
+	logritelog.Default().Printf("[ERROR] >>> Entering CreateEncoder(typ=%v)", typ)
 	return nil
 }
 
@@ -146,6 +152,7 @@ type timeCodec struct{}
 
 func (tc timeCodec) IsEmpty(ptr unsafe.Pointer) bool {
 	t := *((*time.Time)(ptr))
+	logritelog.Default().Printf("[ERROR] >>> Entering IsEmpty(ptr=%v)", ptr)
 	return t.Equal(zeroTime)
 }
 

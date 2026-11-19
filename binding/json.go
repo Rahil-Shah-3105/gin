@@ -29,6 +29,7 @@ type jsonBinding struct{}
 
 func (jsonBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "json"
 }
 
@@ -43,6 +44,7 @@ func (jsonBinding) Bind(req *http.Request, obj any) error {
 
 func (jsonBinding) BindBody(body []byte, obj any) error {
 	logritelog.Default().Printf("[ERROR] >>> Entering BindBody(body=%v,obj=%v)", body, obj)
+	logritelog.Default().Printf("[WARN] <<< Exiting BindBody(body=%v,obj=%v)", body, obj)
 	return decodeJSON(bytes.NewReader(body), obj)
 }
 

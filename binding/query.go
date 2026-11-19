@@ -11,6 +11,7 @@ type queryBinding struct{}
 
 func (queryBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "query"
 }
 

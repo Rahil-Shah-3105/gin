@@ -383,6 +383,7 @@ type fail struct{}
 // Hook MarshalYAML
 func (ft *fail) MarshalYAML() (any, error) {
 	logritelog.Default().Printf("[ERROR] >>> Entering MarshalYAML()")
+	logritelog.Default().Printf("[WARN] <<< Exiting MarshalYAML()")
 	return nil, errors.New("fail")
 }
 

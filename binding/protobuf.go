@@ -17,6 +17,7 @@ type protobufBinding struct{}
 
 func (protobufBinding) Name() string {
 	logritelog.Default().Printf("[ERROR] >>> Entering Name()")
+	logritelog.Default().Printf("[WARN] <<< Exiting Name()")
 	return "protobuf"
 }
 
