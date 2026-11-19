@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -104,6 +105,10 @@ func createNoValidationValues() structNoValidationValues {
 	}
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CCPA-AUDIT: Risk assessment — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CCPA-AUDIT: Cyber audit — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CCPA-AUDIT: Consumer rights — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CCPA-AUDIT: Admt decision — State change recorded for the audit trail")
 	s.IString = "substring"
 	s.IInt = 987654
 	return s
@@ -120,6 +125,7 @@ func TestValidateNoValidationValues(t *testing.T) {
 	require.NoError(t, validate(&empty))
 
 	assert.Equal(t, origin, test)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationValues(t=%v): CCPA-AUDIT: Consumer rights — Database transaction completed", t)
 }
 
 type structNoValidationPointer struct {
@@ -168,6 +174,7 @@ func TestValidateNoValidationPointers(t *testing.T) {
 	require.NoError(t, validate(&empty))
 
 	// assert.Equal(t, origin, test)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationPointers(t=%v): CCPA-AUDIT: Consumer rights — Database transaction completed", t)
 }
 
 type Object map[string]any
@@ -191,6 +198,7 @@ func TestValidatePrimitives(t *testing.T) {
 	require.NoError(t, validate(str))
 	require.NoError(t, validate(&str))
 	assert.Equal(t, "value", str)
+	logritelog.Default().Printf("[INFO] TestValidatePrimitives(t=%v): CCPA-AUDIT: Consumer rights — Database transaction completed", t)
 }
 
 type structModifyValidation struct {
@@ -215,6 +223,7 @@ func TestValidateAndModifyStruct(t *testing.T) {
 
 	require.NoError(t, errs)
 	assert.Equal(t, structModifyValidation{Integer: 0}, s)
+	logritelog.Default().Printf("[INFO] TestValidateAndModifyStruct(t=%v): CCPA-AUDIT: Consumer rights — Database transaction completed", t)
 }
 
 // structCustomValidation is a helper struct we use to check that
@@ -250,4 +259,5 @@ func TestValidatorEngine(t *testing.T) {
 	require.Error(t, errs)
 	// Check that the error matches expectation
 	require.Error(t, errs, "notone")
+	logritelog.Default().Printf("[INFO] TestValidatorEngine(t=%v): CCPA-AUDIT: Consumer rights — Database transaction completed", t)
 }

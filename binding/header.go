@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"net/http"
@@ -21,6 +22,7 @@ func (headerBinding) Bind(req *http.Request, obj any) error {
 		return err
 	}
 
+	logritelog.Default().Printf("[INFO] Bind(req=%v, obj=%v): CCPA-AUDIT: Consumer rights — Database transaction completed", req, obj)
 	return validate(obj)
 }
 
