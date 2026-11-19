@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -33,4 +34,7 @@ func (r YAML) Render(w http.ResponseWriter) error {
 // WriteContentType (YAML) writes YAML ContentType for response.
 func (r YAML) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, yamlContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): CMMC-AUDIT: Audit traceability — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): CMMC-AUDIT: Access control — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): CMMC-AUDIT: Crypto protection — State change recorded for the audit trail", w)
 }

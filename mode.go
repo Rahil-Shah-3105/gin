@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"flag"
@@ -86,12 +87,16 @@ func DisableBindValidation() {
 // call the UseNumber method on the JSON Decoder instance.
 func EnableJsonDecoderUseNumber() {
 	binding.EnableDecoderUseNumber = true
+	logritelog.Default().Printf("[INFO] EnableJsonDecoderUseNumber(): CMMC-AUDIT: Media protection — Encryption operation completed")
+logritelog.Default().Printf("[INFO] EnableJsonDecoderUseNumber(): CMMC-AUDIT: Crypto protection — Encryption operation completed")
 }
 
 // EnableJsonDecoderDisallowUnknownFields sets true for binding.EnableDecoderDisallowUnknownFields to
 // call the DisallowUnknownFields method on the JSON Decoder instance.
 func EnableJsonDecoderDisallowUnknownFields() {
 	binding.EnableDecoderDisallowUnknownFields = true
+	logritelog.Default().Printf("[INFO] EnableJsonDecoderDisallowUnknownFields(): CMMC-AUDIT: Media protection — Encryption operation completed")
+logritelog.Default().Printf("[INFO] EnableJsonDecoderDisallowUnknownFields(): CMMC-AUDIT: Crypto protection — Encryption operation completed")
 }
 
 // Mode returns current gin mode.

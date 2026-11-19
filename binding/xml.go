@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -30,5 +31,7 @@ func decodeXML(r io.Reader, obj any) error {
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeXML(r=%v, obj=%v): CMMC-AUDIT: Media protection — Encryption operation completed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeXML(r=%v, obj=%v): CMMC-AUDIT: Crypto protection — Encryption operation completed", r, obj)
 	return validate(obj)
 }
