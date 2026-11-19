@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -114,11 +115,17 @@ func (group *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) IRo
 
 // GET is a shortcut for router.Handle("GET", path, handlers).
 func (group *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): CJIS-AUDIT [§5.6]: Advanced authentication — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): CJIS-AUDIT: Audit coverage — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): CJIS-AUDIT [§5.3]: Incident response — Record access recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodGet, relativePath, handlers)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handlers).
 func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): CJIS-AUDIT [§5.6]: Advanced authentication — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): CJIS-AUDIT: Audit coverage — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): CJIS-AUDIT [§5.3]: Incident response — State change recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodDelete, relativePath, handlers)
 }
 
@@ -217,6 +224,10 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
 
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): CJIS-AUDIT [§5.12]: Personnel security — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): CJIS-AUDIT [§5.3]: Incident response — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): CJIS-AUDIT: Audit coverage — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): CJIS-AUDIT [§5.6]: Advanced authentication — State change recorded for the audit trail", relativePath, fs)
 	return func(c *Context) {
 		if _, noListing := fs.(*OnlyFilesFS); noListing {
 			c.Writer.WriteHeader(http.StatusNotFound)

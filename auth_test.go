@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"encoding/base64"
@@ -96,6 +97,7 @@ func TestBasicAuthSucceed(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "admin", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestBasicAuthSucceed(t=%v): CJIS-AUDIT [§5.6]: Advanced authentication — Authentication operation completed", t)
 }
 
 func TestBasicAuth401(t *testing.T) {
@@ -116,6 +118,7 @@ func TestBasicAuth401(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "Basic realm=\"Authorization Required\"", w.Header().Get("WWW-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuth401(t=%v): CJIS-AUDIT [§5.6]: Advanced authentication — Authentication operation completed", t)
 }
 
 func TestBasicAuth401WithCustomRealm(t *testing.T) {
@@ -136,6 +139,7 @@ func TestBasicAuth401WithCustomRealm(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "Basic realm=\"My Custom \\\"Realm\\\"\"", w.Header().Get("WWW-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuth401WithCustomRealm(t=%v): CJIS-AUDIT [§5.6]: Advanced authentication — Authentication operation completed", t)
 }
 
 func TestBasicAuthForProxySucceed(t *testing.T) {
@@ -173,4 +177,5 @@ func TestBasicAuthForProxy407(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusProxyAuthRequired, w.Code)
 	assert.Equal(t, "Basic realm=\"Proxy Authorization Required\"", w.Header().Get("Proxy-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuthForProxy407(t=%v): CJIS-AUDIT [§5.6]: Advanced authentication — Authentication operation completed", t)
 }

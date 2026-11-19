@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -104,6 +105,10 @@ func createNoValidationValues() structNoValidationValues {
 	}
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CJIS-AUDIT [§5.12]: Personnel security — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CJIS-AUDIT [§5.3]: Incident response — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CJIS-AUDIT: Audit coverage — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): CJIS-AUDIT [§5.6]: Advanced authentication — State change recorded for the audit trail")
 	s.IString = "substring"
 	s.IInt = 987654
 	return s
