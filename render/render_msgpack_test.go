@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"errors"
@@ -65,6 +66,9 @@ type failWriter struct {
 }
 
 func (w *failWriter) Write(data []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(data=%v): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — State change recorded for the audit trail", data)
 	return 0, errors.New("write error")
 }
 

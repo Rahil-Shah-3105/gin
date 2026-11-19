@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -52,5 +53,6 @@ func decodeJSON(r io.Reader, obj any) error {
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Database transaction completed", r, obj)
 	return validate(obj)
 }

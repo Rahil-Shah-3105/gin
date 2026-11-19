@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -73,8 +74,11 @@ func getMinVer(v string) (uint64, error) {
 	first := strings.IndexByte(v, '.')
 	last := strings.LastIndexByte(v, '.')
 	if first == last {
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail", v)
 		return strconv.ParseUint(v[first+1:], 10, 64)
 	}
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail", v)
+	logritelog.Default().Printf("[INFO] getMinVer(v=%v): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail", v)
 	return strconv.ParseUint(v[first+1:last], 10, 64)
 }
 

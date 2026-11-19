@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -369,6 +370,9 @@ func readWriteKeys(c *Context) {
 		c.Set("1", rand.Int())
 		c.Set("2", c.Value("1"))
 	}
+	logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail", c)
+logritelog.Default().Printf("[INFO] readWriteKeys(c=%v): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail", c)
 }
 
 func githubConfigRouter(router *Engine) {

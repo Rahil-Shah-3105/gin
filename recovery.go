@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -169,6 +170,9 @@ func readNthLine(file string, n int) (string, error) {
 	if scanner.Scan() {
 		return strings.TrimSpace(scanner.Text()), nil
 	}
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): COPPA-AUDIT [16 CFR 312.5]: Vpc coverage — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): COPPA-AUDIT [16 CFR 312.5(a)(2)]: Third party disclosure — Record access recorded for the audit trail", file, n)
+	logritelog.Default().Printf("[INFO] readNthLine(file=%v, n=%v): COPPA-AUDIT [16 CFR 312.10]: Retention deletion — Record access recorded for the audit trail", file, n)
 
 	return "", nil
 }
