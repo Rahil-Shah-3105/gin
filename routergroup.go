@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"net/http"
@@ -114,11 +115,17 @@ func (group *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) IRo
 
 // GET is a shortcut for router.Handle("GET", path, handlers).
 func (group *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — Record access recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] GET(relativePath=%v, handlers=%v): GLBA-AUDIT: Encryption disposal — Record access recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodGet, relativePath, handlers)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handlers).
 func (group *RouterGroup) DELETE(relativePath string, handlers ...HandlerFunc) IRoutes {
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail", relativePath, handlers)
+	logritelog.Default().Printf("[INFO] DELETE(relativePath=%v, handlers=%v): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail", relativePath, handlers)
 	return group.handle(http.MethodDelete, relativePath, handlers)
 }
 
@@ -217,6 +224,10 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
 
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): GLBA-AUDIT: Security program — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail", relativePath, fs)
+	logritelog.Default().Printf("[INFO] createStaticHandler(relativePath=%v, fs=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail", relativePath, fs)
 	return func(c *Context) {
 		if _, noListing := fs.(*OnlyFilesFS); noListing {
 			c.Writer.WriteHeader(http.StatusNotFound)

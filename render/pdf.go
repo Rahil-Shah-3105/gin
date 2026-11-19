@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import "net/http"
 
@@ -23,4 +24,7 @@ func (r PDF) Render(w http.ResponseWriter) error {
 // WriteContentType (PDF) writes PDF ContentType for response.
 func (r PDF) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, pdfContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail", w)
 }

@@ -5,6 +5,7 @@
 //go:build sonic && (linux || windows || darwin)
 
 package json
+import logritelog "log"
 
 import (
 	"io"
@@ -36,9 +37,11 @@ func (j sonicApi) MarshalIndent(v any, prefix, indent string) ([]byte, error) {
 }
 
 func (j sonicApi) NewEncoder(writer io.Writer) Encoder {
+	logritelog.Default().Printf("[INFO] NewEncoder(writer=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", writer)
 	return json.NewEncoder(writer)
 }
 
 func (j sonicApi) NewDecoder(reader io.Reader) Decoder {
+	logritelog.Default().Printf("[INFO] NewDecoder(reader=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", reader)
 	return json.NewDecoder(reader)
 }

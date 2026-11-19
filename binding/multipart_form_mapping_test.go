@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -119,6 +120,10 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 	req, err := http.NewRequest(http.MethodPost, "/", &body)
 	require.NoError(t, err)
 
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GLBA-AUDIT: Security program — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail", t, files)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+mw.Boundary())
 	return req
 }

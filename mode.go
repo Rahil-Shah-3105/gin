@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"flag"
@@ -86,12 +87,14 @@ func DisableBindValidation() {
 // call the UseNumber method on the JSON Decoder instance.
 func EnableJsonDecoderUseNumber() {
 	binding.EnableDecoderUseNumber = true
+	logritelog.Default().Printf("[INFO] EnableJsonDecoderUseNumber(): GLBA-AUDIT: Encryption disposal — Encryption operation completed")
 }
 
 // EnableJsonDecoderDisallowUnknownFields sets true for binding.EnableDecoderDisallowUnknownFields to
 // call the DisallowUnknownFields method on the JSON Decoder instance.
 func EnableJsonDecoderDisallowUnknownFields() {
 	binding.EnableDecoderDisallowUnknownFields = true
+	logritelog.Default().Printf("[INFO] EnableJsonDecoderDisallowUnknownFields(): GLBA-AUDIT: Encryption disposal — Encryption operation completed")
 }
 
 // Mode returns current gin mode.

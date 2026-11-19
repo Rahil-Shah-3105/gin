@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"errors"
@@ -65,6 +66,9 @@ type failWriter struct {
 }
 
 func (w *failWriter) Write(data []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(data=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail", data)
 	return 0, errors.New("write error")
 }
 

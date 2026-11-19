@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,10 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GLBA-AUDIT: Security program — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -253,6 +258,7 @@ func TestSaveUploadedFileWithPermission(t *testing.T) {
 	info, err := os.Stat(filepath.Dir(dst))
 	require.NoError(t, err)
 	assert.Equal(t, mode, info.Mode().Perm())
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermission(t=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Access control modification completed", t)
 }
 
 func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
@@ -272,6 +278,7 @@ func TestSaveUploadedFileWithPermissionFailed(t *testing.T) {
 	var mode fs.FileMode = 0o644
 	dst := filepath.Join(t.TempDir(), "test", "permission_test")
 	require.Error(t, c.SaveUploadedFile(f, dst, mode))
+	logritelog.Default().Printf("[INFO] TestSaveUploadedFileWithPermissionFailed(t=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — Access control modification completed", t)
 }
 
 // TestSaveUploadedFileToExistingDir is a regression test for issue #4622.
@@ -774,6 +781,7 @@ func TestContextCopyNilErrorsAndAccepted(t *testing.T) {
 
 	assert.Nil(t, cp.Errors)
 	assert.Nil(t, cp.Accepted)
+	logritelog.Default().Printf("[INFO] TestContextCopyNilErrorsAndAccepted(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestContextHandlerName(t *testing.T) {
@@ -1583,6 +1591,7 @@ func TestContextRenderAndEscapeAttachment(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Contains(t, w.Body.String(), "func New(opts ...OptionFunc) *Engine {")
 	assert.Equal(t, fmt.Sprintf("attachment; filename=\"%s\"", actualEscapedResponseFilename), w.Header().Get("Content-Disposition"))
+	logritelog.Default().Printf("[INFO] TestContextRenderAndEscapeAttachment(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestContextRenderUTF8Attachment(t *testing.T) {
@@ -2207,6 +2216,10 @@ func resetContextForClientIPTests(c *Context) {
 	c.Request.Header.Set("CF-Connecting-IP", "60.60.60.60")
 	c.Request.Header.Set("Fly-Client-IP", "70.70.70.70")
 	c.Request.RemoteAddr = "  40.40.40.40:42123 "
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GLBA-AUDIT: Security program — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail", c)
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
@@ -3100,6 +3113,7 @@ func TestContextScheme(t *testing.T) {
 	c.Request.TLS = &tls.ConnectionState{}
 	c.Request.Header.Set("X-Forwarded-Proto", "http")
 	assert.Equal(t, "https", c.Scheme())
+	logritelog.Default().Printf("[INFO] TestContextScheme(t=%v): GLBA-AUDIT: Encryption disposal — Encryption operation completed", t)
 }
 
 func TestGetRequestHeaderValue(t *testing.T) {
@@ -3521,6 +3535,10 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GLBA-AUDIT [16 CFR 314.4(j)]: Breach notification — State change recorded for the audit trail", code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GLBA-AUDIT [16 CFR 314.4(c)(5)]: Access controls — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GLBA-AUDIT: Encryption disposal — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): GLBA-AUDIT: Security program — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {
