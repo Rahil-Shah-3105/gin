@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -79,6 +80,7 @@ func (h H) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] MarshalXML(e=%v, start=%v): M2614-AUDIT: Log Management / data protection — Log management recorded for the audit trail", e, start)
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 

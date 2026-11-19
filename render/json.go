@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"bytes"
@@ -178,6 +179,9 @@ func (r AsciiJSON) Render(w http.ResponseWriter) error {
 // WriteContentType (AsciiJSON) writes JSON ContentType.
 func (r AsciiJSON) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, jsonASCIIContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", w)
 }
 
 // Render (PureJSON) writes custom ContentType and encodes the given interface object.
@@ -190,5 +194,9 @@ func (r PureJSON) Render(w http.ResponseWriter) error {
 
 // WriteContentType (PureJSON) writes custom ContentType.
 func (r PureJSON) WriteContentType(w http.ResponseWriter) {
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", w)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): M2614-AUDIT: Outcome 10: automated alerting — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): M2614-AUDIT: Outcome 11: CEM + THIRF capability — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): M2614-AUDIT: Retention: 6 months searchable / 12 months retrievable — State change recorded for the audit trail", w)
 	writeContentType(w, jsonContentType)
 }

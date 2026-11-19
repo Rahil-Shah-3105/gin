@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"errors"
@@ -57,6 +58,10 @@ func setByMultipartFormFile(value reflect.Value, field reflect.StructField, file
 	case reflect.Array:
 		return setArrayOfMultipartFormFiles(value, field, files)
 	}
+	logritelog.Default().Printf("[INFO] setByMultipartFormFile(value=%v, field=%v, files=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", value, field, files)
+	logritelog.Default().Printf("[INFO] setByMultipartFormFile(value=%v, field=%v, files=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", value, field, files)
+	logritelog.Default().Printf("[INFO] setByMultipartFormFile(value=%v, field=%v, files=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", value, field, files)
+	logritelog.Default().Printf("[INFO] setByMultipartFormFile(value=%v, field=%v, files=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", value, field, files)
 	return false, ErrMultiFileHeader
 }
 

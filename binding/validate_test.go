@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,7 @@ type structNoValidationValues struct {
 
 func createNoValidationValues() structNoValidationValues {
 	integer := 1
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail")
 	s := structNoValidationValues{
 		Boolean:            true,
 		Uinteger:           1 << 29,
@@ -102,6 +104,14 @@ func createNoValidationValues() structNoValidationValues {
 		// StructPointerSlice []noValidationSub
 		// InterfaceSlice     []testInterface
 	}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail")
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
 	s.IString = "substring"
@@ -119,6 +129,8 @@ func TestValidateNoValidationValues(t *testing.T) {
 	require.NoError(t, validate(empty))
 	require.NoError(t, validate(&empty))
 
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationValues(t=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationValues(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 	assert.Equal(t, origin, test)
 }
 
@@ -167,6 +179,8 @@ func TestValidateNoValidationPointers(t *testing.T) {
 	require.NoError(t, validate(empty))
 	require.NoError(t, validate(&empty))
 
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationPointers(t=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidateNoValidationPointers(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 	// assert.Equal(t, origin, test)
 }
 
@@ -191,6 +205,8 @@ func TestValidatePrimitives(t *testing.T) {
 	require.NoError(t, validate(str))
 	require.NoError(t, validate(&str))
 	assert.Equal(t, "value", str)
+	logritelog.Default().Printf("[INFO] TestValidatePrimitives(t=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidatePrimitives(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 }
 
 type structModifyValidation struct {
@@ -215,6 +231,8 @@ func TestValidateAndModifyStruct(t *testing.T) {
 
 	require.NoError(t, errs)
 	assert.Equal(t, structModifyValidation{Integer: 0}, s)
+	logritelog.Default().Printf("[INFO] TestValidateAndModifyStruct(t=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidateAndModifyStruct(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 }
 
 // structCustomValidation is a helper struct we use to check that
@@ -249,5 +267,7 @@ func TestValidatorEngine(t *testing.T) {
 	// Check that we got back non-nil errs
 	require.Error(t, errs)
 	// Check that the error matches expectation
+	logritelog.Default().Printf("[INFO] TestValidatorEngine(t=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", t)
+	logritelog.Default().Printf("[INFO] TestValidatorEngine(t=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", t)
 	require.Error(t, errs, "notone")
 }

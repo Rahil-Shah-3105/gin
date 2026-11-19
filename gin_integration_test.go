@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bufio"
@@ -387,6 +388,7 @@ func TestWithHttptestWithAutoSelectedPort(t *testing.T) {
 	defer ts.Close()
 
 	testRequest(t, ts.URL+"/example")
+	logritelog.Default().Printf("[INFO] TestWithHttptestWithAutoSelectedPort(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestConcurrentHandleContext(t *testing.T) {
@@ -401,6 +403,7 @@ func TestConcurrentHandleContext(t *testing.T) {
 	iterations := 200
 	wg.Add(iterations)
 	for range iterations {
+	logritelog.Default().Printf("[INFO] TestConcurrentHandleContext(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 		go func() {
 			req, err := http.NewRequest(http.MethodGet, "/", nil)
 			assert.NoError(t, err)
@@ -575,6 +578,7 @@ func TestTreeRunDynamicRouting(t *testing.T) {
 	testRequest(t, ts.URL+"/a/dd", "404 Not Found")
 	testRequest(t, ts.URL+"/addr/dd/aa", "404 Not Found")
 	testRequest(t, ts.URL+"/something/secondthing/121", "404 Not Found")
+	logritelog.Default().Printf("[INFO] TestTreeRunDynamicRouting(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func isWindows() bool {
@@ -604,4 +608,5 @@ func TestEscapedColon(t *testing.T) {
 	testRequest(t, ts.URL+"/r/r/r123", "", "/r/r/:r")
 	testRequest(t, ts.URL+"/r/r/:r", "", "/r/r/\\:r")
 	testRequest(t, ts.URL+"/r/r/r:r", "", "/r/r/r\\:r")
+	logritelog.Default().Printf("[INFO] TestEscapedColon(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }

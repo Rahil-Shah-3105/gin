@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"encoding/base64"
@@ -94,6 +95,9 @@ func TestBasicAuthSucceed(t *testing.T) {
 	req.Header.Set("Authorization", authorizationHeader("admin", "password"))
 	router.ServeHTTP(w, req)
 
+	logritelog.Default().Printf("[INFO] TestBasicAuthSucceed(t=%v): M2614-AUDIT: Outcome 1: user attribution — Authentication operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuthSucceed(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuthSucceed(t=%v): SOC2-AUDIT [CC6.1]: Authentication operation completed", t)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "admin", w.Body.String())
 }
@@ -116,6 +120,9 @@ func TestBasicAuth401(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "Basic realm=\"Authorization Required\"", w.Header().Get("WWW-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuth401(t=%v): M2614-AUDIT: Outcome 1: user attribution — Authentication operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuth401(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuth401(t=%v): SOC2-AUDIT [CC6.1]: Authentication operation completed", t)
 }
 
 func TestBasicAuth401WithCustomRealm(t *testing.T) {
@@ -136,6 +143,9 @@ func TestBasicAuth401WithCustomRealm(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "Basic realm=\"My Custom \\\"Realm\\\"\"", w.Header().Get("WWW-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuth401WithCustomRealm(t=%v): M2614-AUDIT: Outcome 1: user attribution — Authentication operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuth401WithCustomRealm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuth401WithCustomRealm(t=%v): SOC2-AUDIT [CC6.1]: Authentication operation completed", t)
 }
 
 func TestBasicAuthForProxySucceed(t *testing.T) {
@@ -153,6 +163,7 @@ func TestBasicAuthForProxySucceed(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "admin", w.Body.String())
+	logritelog.Default().Printf("[INFO] TestBasicAuthForProxySucceed(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestBasicAuthForProxy407(t *testing.T) {
@@ -173,4 +184,7 @@ func TestBasicAuthForProxy407(t *testing.T) {
 	assert.False(t, called)
 	assert.Equal(t, http.StatusProxyAuthRequired, w.Code)
 	assert.Equal(t, "Basic realm=\"Proxy Authorization Required\"", w.Header().Get("Proxy-Authenticate"))
+	logritelog.Default().Printf("[INFO] TestBasicAuthForProxy407(t=%v): M2614-AUDIT: Outcome 1: user attribution — Authentication operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuthForProxy407(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
+	logritelog.Default().Printf("[INFO] TestBasicAuthForProxy407(t=%v): SOC2-AUDIT [CC6.1]: Authentication operation completed", t)
 }

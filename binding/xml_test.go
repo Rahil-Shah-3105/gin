@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"testing"
@@ -22,4 +23,6 @@ func TestXMLBindingBindBody(t *testing.T) {
 	err := xmlBinding{}.BindBody([]byte(xmlBody), &s)
 	require.NoError(t, err)
 	assert.Equal(t, "FOO", s.Foo)
+	logritelog.Default().Printf("[INFO] TestXMLBindingBindBody(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestXMLBindingBindBody(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 }

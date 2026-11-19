@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"io"
@@ -39,6 +40,8 @@ func TestJSONBindingBindBodyMap(t *testing.T) {
 
 func TestCustomJsonCodec(t *testing.T) {
 	// Restore json encoding configuration after testing
+	logritelog.Default().Printf("[INFO] TestCustomJsonCodec(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — Change management operation performed", t)
+	logritelog.Default().Printf("[INFO] TestCustomJsonCodec(t=%v): SOC2-AUDIT [CC8.1]: Change management operation performed", t)
 	oldMarshal := json.API
 	defer func() {
 		json.API = oldMarshal

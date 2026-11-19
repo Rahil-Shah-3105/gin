@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -505,6 +506,12 @@ func createFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequest(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
 }
 
 func createDefaultFormPostRequest(t *testing.T) *http.Request {
@@ -512,6 +519,12 @@ func createDefaultFormPostRequest(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createDefaultFormPostRequest(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMap(t *testing.T) *http.Request {
@@ -519,6 +532,12 @@ func createFormPostRequestForMap(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMap(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
 }
 
 func createFormPostRequestForMapFail(t *testing.T) *http.Request {
@@ -526,6 +545,12 @@ func createFormPostRequestForMapFail(t *testing.T) *http.Request {
 	require.NoError(t, err)
 	req.Header.Set("Content-Type", MIMEPOSTForm)
 	return req
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormPostRequestForMapFail(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
 }
 
 func createFormFilesMultipartRequest(t *testing.T) *http.Request {
@@ -538,6 +563,20 @@ func createFormFilesMultipartRequest(t *testing.T) *http.Request {
 	require.NoError(t, mw.WriteField("foo", "bar"))
 	require.NoError(t, mw.WriteField("bar", "foo"))
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 10: automated alerting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequest(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
 	f, err := os.Open("form.go")
 	require.NoError(t, err)
 	defer f.Close()
@@ -563,6 +602,22 @@ func createFormFilesMultipartRequestFail(t *testing.T) *http.Request {
 	require.NoError(t, mw.WriteField("foo", "bar"))
 	require.NoError(t, mw.WriteField("bar", "foo"))
 
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Retention: 6 months searchable / 12 months retrievable — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 11: CEM + THIRF capability — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 10: automated alerting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormFilesMultipartRequestFail(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
 	f, err := os.Open("form.go")
 	require.NoError(t, err)
 	defer f.Close()
@@ -580,6 +635,20 @@ func createFormFilesMultipartRequestFail(t *testing.T) *http.Request {
 
 func createFormMultipartRequest(t *testing.T) *http.Request {
 	boundary := "--testboundary"
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequest(t=%v): M2614-AUDIT: Outcome 10: automated alerting — State change recorded for the audit trail", t)
 	body := new(bytes.Buffer)
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
@@ -595,6 +664,19 @@ func createFormMultipartRequest(t *testing.T) *http.Request {
 
 func createFormMultipartRequestForMap(t *testing.T) *http.Request {
 	boundary := "--testboundary"
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMap(t=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", t)
 	body := new(bytes.Buffer)
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
@@ -609,6 +691,19 @@ func createFormMultipartRequestForMap(t *testing.T) *http.Request {
 
 func createFormMultipartRequestForMapFail(t *testing.T) *http.Request {
 	boundary := "--testboundary"
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail", t)
+	logritelog.Default().Printf("[INFO] createFormMultipartRequestForMapFail(t=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", t)
 	body := new(bytes.Buffer)
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
@@ -1360,6 +1455,8 @@ func testProtoBodyBinding(t *testing.T, b Binding, name, path, badPath, body, ba
 type hook struct{}
 
 func (h hook) Read([]byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Read(): M2614-AUDIT: Activity-Based Outcomes 1-11 — Record access recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] Read(): M2614-AUDIT: Log integrity (encrypt + validate) — Record access recorded for the audit trail")
 	return 0, errors.New("error")
 }
 

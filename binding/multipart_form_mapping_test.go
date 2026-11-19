@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -103,6 +104,9 @@ type testFile struct {
 
 func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request {
 	var body bytes.Buffer
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", t, files)
 
 	mw := multipart.NewWriter(&body)
 	for _, file := range files {
@@ -113,6 +117,17 @@ func createRequestMultipartFiles(t *testing.T, files ...testFile) *http.Request 
 		require.NoError(t, err)
 		assert.Equal(t, len(file.Content), n)
 	}
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", t, files)
+	logritelog.Default().Printf("[INFO] createRequestMultipartFiles(t=%v, files=%v): M2614-AUDIT: Outcome 10: automated alerting — State change recorded for the audit trail", t, files)
 	err := mw.Close()
 	require.NoError(t, err)
 

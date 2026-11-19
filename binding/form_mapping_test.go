@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"encoding"
@@ -66,6 +67,7 @@ func TestMappingBaseTypes(t *testing.T) {
 		actual := val.Elem().Field(0).Interface()
 		assert.Equal(t, tt.expect, actual, testName)
 	}
+	logritelog.Default().Printf("[INFO] TestMappingBaseTypes(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingDefault(t *testing.T) {
@@ -82,6 +84,7 @@ func TestMappingDefault(t *testing.T) {
 	assert.Equal(t, 9, s.Int)
 	assert.Equal(t, []int{9}, s.Slice)
 	assert.Equal(t, [1]int{9}, s.Array)
+	logritelog.Default().Printf("[INFO] TestMappingDefault(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingSkipField(t *testing.T) {
@@ -92,6 +95,7 @@ func TestMappingSkipField(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, 0, s.A)
+	logritelog.Default().Printf("[INFO] TestMappingSkipField(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingIgnoreField(t *testing.T) {
@@ -104,6 +108,7 @@ func TestMappingIgnoreField(t *testing.T) {
 
 	assert.Equal(t, 9, s.A)
 	assert.Equal(t, 0, s.B)
+	logritelog.Default().Printf("[INFO] TestMappingIgnoreField(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingUnexportedField(t *testing.T) {
@@ -116,6 +121,7 @@ func TestMappingUnexportedField(t *testing.T) {
 
 	assert.Equal(t, 9, s.A)
 	assert.Equal(t, 0, s.b)
+	logritelog.Default().Printf("[INFO] TestMappingUnexportedField(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingPrivateField(t *testing.T) {
@@ -125,6 +131,7 @@ func TestMappingPrivateField(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"field": {"6"}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, 0, s.f)
+	logritelog.Default().Printf("[INFO] TestMappingPrivateField(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingUnknownFieldType(t *testing.T) {
@@ -135,6 +142,7 @@ func TestMappingUnknownFieldType(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"U": {"unknown"}}, "form")
 	require.Error(t, err)
 	assert.Equal(t, errUnknownType, err)
+	logritelog.Default().Printf("[INFO] TestMappingUnknownFieldType(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingURI(t *testing.T) {
@@ -144,6 +152,7 @@ func TestMappingURI(t *testing.T) {
 	err := mapURI(&s, map[string][]string{"field": {"6"}})
 	require.NoError(t, err)
 	assert.Equal(t, 6, s.F)
+	logritelog.Default().Printf("[INFO] TestMappingURI(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingForm(t *testing.T) {
@@ -153,6 +162,7 @@ func TestMappingForm(t *testing.T) {
 	err := mapForm(&s, map[string][]string{"field": {"6"}})
 	require.NoError(t, err)
 	assert.Equal(t, 6, s.F)
+	logritelog.Default().Printf("[INFO] TestMappingForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingFormFieldNotSent(t *testing.T) {
@@ -162,6 +172,7 @@ func TestMappingFormFieldNotSent(t *testing.T) {
 	err := mapForm(&s, map[string][]string{})
 	require.NoError(t, err)
 	assert.Equal(t, "defVal", s.F)
+	logritelog.Default().Printf("[INFO] TestMappingFormFieldNotSent(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingFormWithEmptyToDefault(t *testing.T) {
@@ -171,6 +182,7 @@ func TestMappingFormWithEmptyToDefault(t *testing.T) {
 	err := mapForm(&s, map[string][]string{"field": {""}})
 	require.NoError(t, err)
 	assert.Equal(t, "DefVal", s.F)
+	logritelog.Default().Printf("[INFO] TestMappingFormWithEmptyToDefault(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMapFormWithTag(t *testing.T) {
@@ -225,6 +237,7 @@ func TestMappingTime(t *testing.T) {
 	}
 	err = mapForm(&wrongTime, map[string][]string{"Time": {"wrong"}})
 	require.Error(t, err)
+	logritelog.Default().Printf("[INFO] TestMappingTime(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type bindTestData struct {
@@ -249,6 +262,7 @@ func TestMappingTimeUnixNano(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, v.need, v.got)
 	}
+	logritelog.Default().Printf("[INFO] TestMappingTimeUnixNano(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingTimeDuration(t *testing.T) {
@@ -279,6 +293,7 @@ func TestMappingTimeDuration(t *testing.T) {
 	// error
 	err = mappingByPtr(&s, formSource{"D": {"wrong"}}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("[INFO] TestMappingTimeDuration(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingSlice(t *testing.T) {
@@ -299,6 +314,7 @@ func TestMappingSlice(t *testing.T) {
 	// error
 	err = mappingByPtr(&s, formSource{"slice": {"wrong"}}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("[INFO] TestMappingSlice(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingArray(t *testing.T) {
@@ -322,6 +338,7 @@ func TestMappingArray(t *testing.T) {
 	// error - wrong value
 	err = mappingByPtr(&s, formSource{"array": {"wrong"}}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("[INFO] TestMappingArray(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCollectionFormat(t *testing.T) {
@@ -361,6 +378,7 @@ func TestMappingCollectionFormat(t *testing.T) {
 	assert.Equal(t, [2]int{1, 2}, s.ArraySsv)
 	assert.Equal(t, [2]int{1, 2}, s.ArrayTsv)
 	assert.Equal(t, [2]int{1, 2}, s.ArrayPipes)
+	logritelog.Default().Printf("[INFO] TestMappingCollectionFormat(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCollectionFormatInvalid(t *testing.T) {
@@ -379,6 +397,7 @@ func TestMappingCollectionFormatInvalid(t *testing.T) {
 		"array_csv": {"1,2"},
 	}, "form")
 	require.Error(t, err)
+	logritelog.Default().Printf("[INFO] TestMappingCollectionFormatInvalid(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingMultipleDefaultWithCollectionFormat(t *testing.T) {
@@ -427,6 +446,7 @@ func TestMappingMultipleDefaultWithCollectionFormat(t *testing.T) {
 	assert.Equal(t, [2]string{"1", "2"}, s.ArrayStringSsv)
 	assert.Equal(t, [2]string{"1", "2"}, s.ArrayStringTsv)
 	assert.Equal(t, [2]string{"1", "2"}, s.ArrayStringPipes)
+	logritelog.Default().Printf("[INFO] TestMappingMultipleDefaultWithCollectionFormat(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingStructField(t *testing.T) {
@@ -439,6 +459,7 @@ func TestMappingStructField(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"J": {`{"I": 9}`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, 9, s.J.I)
+	logritelog.Default().Printf("[INFO] TestMappingStructField(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingPtrField(t *testing.T) {
@@ -472,6 +493,7 @@ func TestMappingPtrField(t *testing.T) {
 	assert.Len(t, req2.Items, 2)
 	assert.EqualValues(t, 1, req2.Items[0].Key)
 	assert.EqualValues(t, 2, req2.Items[1].Key)
+	logritelog.Default().Printf("[INFO] TestMappingPtrField(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingMapField(t *testing.T) {
@@ -482,6 +504,7 @@ func TestMappingMapField(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"M": {`{"one": 1}`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, map[string]int{"one": 1}, s.M)
+	logritelog.Default().Printf("[INFO] TestMappingMapField(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingIgnoredCircularRef(t *testing.T) {
@@ -492,6 +515,7 @@ func TestMappingIgnoredCircularRef(t *testing.T) {
 
 	err := mappingByPtr(&s, formSource{}, "form")
 	require.NoError(t, err)
+	logritelog.Default().Printf("[INFO] TestMappingIgnoredCircularRef(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type customUnmarshalParamHex int
@@ -513,6 +537,7 @@ func TestMappingCustomUnmarshalParamHexWithFormTag(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 245, s.Foo)
+	logritelog.Default().Printf("[INFO] TestMappingCustomUnmarshalParamHexWithFormTag(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomUnmarshalParamHexWithURITag(t *testing.T) {
@@ -523,6 +548,7 @@ func TestMappingCustomUnmarshalParamHexWithURITag(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 245, s.Foo)
+	logritelog.Default().Printf("[INFO] TestMappingCustomUnmarshalParamHexWithURITag(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomUnmarshalParamHexDefault(t *testing.T) {
@@ -533,6 +559,7 @@ func TestMappingCustomUnmarshalParamHexDefault(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 0xf5, s.Foo)
+	logritelog.Default().Printf("[INFO] TestMappingCustomUnmarshalParamHexDefault(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type customUnmarshalParamType struct {
@@ -562,6 +589,7 @@ func TestMappingCustomStructTypeWithFormTag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomStructTypeWithFormTag(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomStructTypeWithURITag(t *testing.T) {
@@ -574,6 +602,7 @@ func TestMappingCustomStructTypeWithURITag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomStructTypeWithURITag(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomPointerStructTypeWithFormTag(t *testing.T) {
@@ -586,6 +615,7 @@ func TestMappingCustomPointerStructTypeWithFormTag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomPointerStructTypeWithFormTag(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomPointerStructTypeWithURITag(t *testing.T) {
@@ -598,6 +628,7 @@ func TestMappingCustomPointerStructTypeWithURITag(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomPointerStructTypeWithURITag(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type customPath []string
@@ -622,6 +653,7 @@ func TestMappingCustomSliceUri(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceForm(t *testing.T) {
@@ -633,6 +665,7 @@ func TestMappingCustomSliceForm(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceStopsWhenError(t *testing.T) {
@@ -642,6 +675,7 @@ func TestMappingCustomSliceStopsWhenError(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"path": {"invalid"}}, "form")
 	require.ErrorContains(t, err, "invalid format")
 	require.Empty(t, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceStopsWhenError(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceOfSliceUri(t *testing.T) {
@@ -651,6 +685,7 @@ func TestMappingCustomSliceOfSliceUri(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []customPath{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceOfSliceUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceOfSliceForm(t *testing.T) {
@@ -660,6 +695,7 @@ func TestMappingCustomSliceOfSliceForm(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []customPath{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceOfSliceForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type objectID [12]byte
@@ -699,6 +735,7 @@ func TestMappingCustomArrayUri(t *testing.T) {
 
 	expected, _ := convertTo(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomArrayForm(t *testing.T) {
@@ -711,6 +748,7 @@ func TestMappingCustomArrayForm(t *testing.T) {
 
 	expected, _ := convertTo(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomArrayOfArrayUri(t *testing.T) {
@@ -723,6 +761,7 @@ func TestMappingCustomArrayOfArrayUri(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []objectID{id1, id2}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayOfArrayUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomArrayOfArrayForm(t *testing.T) {
@@ -735,6 +774,7 @@ func TestMappingCustomArrayOfArrayForm(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []objectID{id1, id2}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayOfArrayForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // ====  TextUnmarshaler tests START ====
@@ -760,6 +800,7 @@ func TestMappingCustomUnmarshalTextHexUri(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"field": {`f5`}}, "uri")
 	require.NoError(t, err)
 	assert.EqualValues(t, 245, s.Field)
+	logritelog.Default().Printf("[INFO] TestMappingCustomUnmarshalTextHexUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomUnmarshalTextHexForm(t *testing.T) {
@@ -769,6 +810,7 @@ func TestMappingCustomUnmarshalTextHexForm(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"field": {`f5`}}, "form")
 	require.NoError(t, err)
 	assert.EqualValues(t, 245, s.Field)
+	logritelog.Default().Printf("[INFO] TestMappingCustomUnmarshalTextHexForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomUnmarshalTextHexDefault(t *testing.T) {
@@ -778,6 +820,7 @@ func TestMappingCustomUnmarshalTextHexDefault(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"field1": {}}, "form")
 	require.NoError(t, err)
 	assert.EqualValues(t, 0xf5, s.Field)
+	logritelog.Default().Printf("[INFO] TestMappingCustomUnmarshalTextHexDefault(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type customUnmarshalTextType struct {
@@ -809,6 +852,7 @@ func TestMappingCustomStructTypeUnmarshalTextForm(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomStructTypeUnmarshalTextForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomStructTypeUnmarshalTextUri(t *testing.T) {
@@ -821,6 +865,7 @@ func TestMappingCustomStructTypeUnmarshalTextUri(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomStructTypeUnmarshalTextUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomPointerStructTypeUnmarshalTextForm(t *testing.T) {
@@ -833,6 +878,7 @@ func TestMappingCustomPointerStructTypeUnmarshalTextForm(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomPointerStructTypeUnmarshalTextForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomPointerStructTypeUnmarshalTextUri(t *testing.T) {
@@ -845,6 +891,7 @@ func TestMappingCustomPointerStructTypeUnmarshalTextUri(t *testing.T) {
 	assert.Equal(t, "file", s.FileData.Protocol)
 	assert.Equal(t, "/foo", s.FileData.Path)
 	assert.Equal(t, "happiness", s.FileData.Name)
+	logritelog.Default().Printf("[INFO] TestMappingCustomPointerStructTypeUnmarshalTextUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type customPathUnmarshalText []string
@@ -871,6 +918,7 @@ func TestMappingCustomSliceUnmarshalTextUri(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceUnmarshalTextUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceUnmarshalTextForm(t *testing.T) {
@@ -882,6 +930,7 @@ func TestMappingCustomSliceUnmarshalTextForm(t *testing.T) {
 
 	assert.Equal(t, "bar", s.FileData[0])
 	assert.Equal(t, "foo", s.FileData[1])
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceUnmarshalTextForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceUnmarshalTextStopsWhenError(t *testing.T) {
@@ -891,6 +940,7 @@ func TestMappingCustomSliceUnmarshalTextStopsWhenError(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"path": {"invalid"}}, "form")
 	require.ErrorContains(t, err, "invalid format")
 	require.Empty(t, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceUnmarshalTextStopsWhenError(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceOfSliceUnmarshalTextUri(t *testing.T) {
@@ -900,6 +950,7 @@ func TestMappingCustomSliceOfSliceUnmarshalTextUri(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []customPathUnmarshalText{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceOfSliceUnmarshalTextUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceOfSliceUnmarshalTextForm(t *testing.T) {
@@ -909,6 +960,7 @@ func TestMappingCustomSliceOfSliceUnmarshalTextForm(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"path": {"bar/foo,bar/foo/spam"}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []customPathUnmarshalText{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceOfSliceUnmarshalTextForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomSliceOfSliceUnmarshalTextDefault(t *testing.T) {
@@ -918,6 +970,7 @@ func TestMappingCustomSliceOfSliceUnmarshalTextDefault(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"path": {}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []customPathUnmarshalText{{"bar", "foo"}, {"bar", "foo", "spam"}}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomSliceOfSliceUnmarshalTextDefault(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type objectIDUnmarshalText [12]byte
@@ -949,6 +1002,7 @@ func TestMappingCustomArrayUnmarshalTextUri(t *testing.T) {
 
 	expected, _ := convertToOidUnmarshalText(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayUnmarshalTextUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomArrayUnmarshalTextForm(t *testing.T) {
@@ -961,6 +1015,7 @@ func TestMappingCustomArrayUnmarshalTextForm(t *testing.T) {
 
 	expected, _ := convertToOidUnmarshalText(val)
 	assert.Equal(t, expected, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayUnmarshalTextForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomArrayOfArrayUnmarshalTextUri(t *testing.T) {
@@ -973,6 +1028,7 @@ func TestMappingCustomArrayOfArrayUnmarshalTextUri(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "uri")
 	require.NoError(t, err)
 	assert.Equal(t, []objectIDUnmarshalText{id1, id2}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayOfArrayUnmarshalTextUri(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomArrayOfArrayUnmarshalTextForm(t *testing.T) {
@@ -985,6 +1041,7 @@ func TestMappingCustomArrayOfArrayUnmarshalTextForm(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {`664a062ac74a8ad104e0e80e,664a062ac74a8ad104e0e80f`}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []objectIDUnmarshalText{id1, id2}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayOfArrayUnmarshalTextForm(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMappingCustomArrayOfArrayUnmarshalTextDefault(t *testing.T) {
@@ -997,6 +1054,7 @@ func TestMappingCustomArrayOfArrayUnmarshalTextDefault(t *testing.T) {
 	err := mappingByPtr(&s, formSource{"ids": {}}, "form")
 	require.NoError(t, err)
 	assert.Equal(t, []objectIDUnmarshalText{id1, id2}, s.FileData)
+	logritelog.Default().Printf("[INFO] TestMappingCustomArrayOfArrayUnmarshalTextDefault(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // If someone specifies parser=TextUnmarshaler and it's not defined for the type, gin should revert to using its default
@@ -1014,6 +1072,7 @@ func TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyBindUnmarshalerDef
 
 	assert.EqualValues(t, 0xf5, s.Hex)
 	assert.EqualValues(t, 0xf5, s.HexByUnmarshalText) // reverts to BindUnmarshaler binding
+	logritelog.Default().Printf("[INFO] TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyBindUnmarshalerDefined(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // If someone does not specify parser=TextUnmarshaler even when it's defined for the type, gin should ignore the
@@ -1032,6 +1091,7 @@ func TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyTextUnmarshalerDef
 
 	assert.EqualValues(t, 11, s.Hex)                  // this is using default int binding, not our custom hex binding. 0x11 should be 17 in decimal
 	assert.EqualValues(t, 0x11, s.HexByUnmarshalText) // correct expected value for normal hex binding
+	logritelog.Default().Printf("[INFO] TestMappingUsingBindUnmarshalerAndTextUnmarshalerWhenOnlyTextUnmarshalerDefined(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 type customHexUnmarshalParamAndUnmarshalText int
@@ -1061,6 +1121,7 @@ func TestMappingUsingTextUnmarshalerWhenBindUnmarshalerAlsoDefined(t *testing.T)
 	require.NoError(t, err)
 
 	assert.EqualValues(t, 0xf5, s.Hex)
+	logritelog.Default().Printf("[INFO] TestMappingUsingTextUnmarshalerWhenBindUnmarshalerAlsoDefined(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // ====  TextUnmarshaler tests END ====
@@ -1143,4 +1204,5 @@ func TestMappingEmptyValues(t *testing.T) {
 		assert.Equal(t, []int{1, 2, 3}, s.SliceMulti)
 		assert.Equal(t, []int{1, 2, 3}, s.SliceCsv)
 	})
+	logritelog.Default().Printf("[INFO] TestMappingEmptyValues(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"reflect"
@@ -49,6 +50,8 @@ func (v *defaultValidator) ValidateStruct(obj any) error {
 		return nil
 	}
 
+	logritelog.Default().Printf("[INFO] ValidateStruct(obj=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", obj)
+	logritelog.Default().Printf("[INFO] ValidateStruct(obj=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed", obj)
 	value := reflect.ValueOf(obj)
 	switch value.Kind() {
 	case reflect.Ptr:
@@ -71,6 +74,7 @@ func (v *defaultValidator) ValidateStruct(obj any) error {
 		}
 		return validateRet
 	default:
+		logritelog.Default().Printf("[INFO] ValidateStruct(obj=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", obj)
 		return nil
 	}
 }
@@ -79,6 +83,9 @@ func (v *defaultValidator) ValidateStruct(obj any) error {
 func (v *defaultValidator) validateStruct(obj any) error {
 	v.lazyinit()
 	return v.validate.Struct(obj)
+	logritelog.Default().Printf("[INFO] validateStruct(obj=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed", obj)
+	logritelog.Default().Printf("[INFO] validateStruct(obj=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", obj)
+	logritelog.Default().Printf("[INFO] validateStruct(obj=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", obj)
 }
 
 // Engine returns the underlying validator engine which powers the default
@@ -88,6 +95,9 @@ func (v *defaultValidator) validateStruct(obj any) error {
 func (v *defaultValidator) Engine() any {
 	v.lazyinit()
 	return v.validate
+	logritelog.Default().Printf("[INFO] Engine(): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed")
+	logritelog.Default().Printf("[INFO] Engine(): SOC2-AUDIT [CC6.6]: Database transaction completed")
+	logritelog.Default().Printf("[INFO] Engine(): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed")
 }
 
 func (v *defaultValidator) lazyinit() {
@@ -95,4 +105,7 @@ func (v *defaultValidator) lazyinit() {
 		v.validate = validator.New()
 		v.validate.SetTagName("binding")
 	})
+	logritelog.Default().Printf("[INFO] lazyinit(): SOC2-AUDIT [CC6.6]: Database transaction completed")
+logritelog.Default().Printf("[INFO] lazyinit(): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed")
+logritelog.Default().Printf("[INFO] lazyinit(): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed")
 }

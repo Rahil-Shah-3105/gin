@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"encoding/xml"
@@ -156,22 +157,36 @@ func (w *errorWriter) WriteHeader(statusCode int) {
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): SOC2-AUDIT [CC7.1]: System operation completed with status %v", statusCode, statusCode)
+	logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", statusCode)
+logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", statusCode)
+logritelog.Default().Printf("[INFO] WriteHeader(statusCode=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", statusCode)
 	w.ResponseRecorder.WriteHeader(statusCode)
 }
 
 func (w *errorWriter) Write(buf []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(buf=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", buf)
 	w.writeCount++
 	if (w.bufString != "" && string(buf) == w.bufString) || (w.ErrThreshold > 0 && w.writeCount >= w.ErrThreshold) {
 		return 0, errors.New(`write error`)
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", buf)
 	if w.ResponseRecorder == nil {
 		w.ResponseRecorder = httptest.NewRecorder()
 	}
+	logritelog.Default().Printf("[INFO] Write(buf=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", buf)
+	logritelog.Default().Printf("[INFO] Write(buf=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", buf)
+	logritelog.Default().Printf("[INFO] Write(buf=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", buf)
+	logritelog.Default().Printf("[INFO] Write(buf=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", buf)
 	return w.ResponseRecorder.Write(buf)
 }
 
 func (w *errorWriter) reset() {
 	w.writeCount = 0
+	logritelog.Default().Printf("[INFO] reset(): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] reset(): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] reset(): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail")
+logritelog.Default().Printf("[INFO] reset(): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail")
 	w.ResponseRecorder = httptest.NewRecorder()
 }
 
@@ -302,6 +317,7 @@ func (h xmlmap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	}
 
+	logritelog.Default().Printf("[INFO] MarshalXML(e=%v, start=%v): M2614-AUDIT: Log Management / data protection — Log management recorded for the audit trail", e, start)
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
@@ -520,6 +536,7 @@ func TestRenderRedirect(t *testing.T) {
 
 	// only improve coverage
 	data2.WriteContentType(w)
+	logritelog.Default().Printf("[INFO] TestRenderRedirect(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestRenderData(t *testing.T) {

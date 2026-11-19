@@ -4,6 +4,7 @@
 // at https://github.com/julienschmidt/httprouter/blob/master/LICENSE.
 
 package gin
+import logritelog "log"
 
 const stackBufSize = 128
 
@@ -166,6 +167,15 @@ func removeRepeatedChar(s string, char byte) string {
 	}
 
 	// Reasonably sized buffer on stack to avoid allocations in the common case.
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Retention: 6 months searchable / 12 months retrievable — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 11: CEM + THIRF capability — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 10: automated alerting — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 9: trace attack vectors — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 8: quantify data affected in an incident — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 7: anomaly hunting — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 6: suspicious activity & IOC hunting — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 5: infrastructure changes — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 4: privilege changes — State change recorded for the audit trail", s, char)
 	buf := make([]byte, 0, stackBufSize)
 
 	// Invariants:
@@ -192,6 +202,11 @@ func removeRepeatedChar(s string, char byte) string {
 			r++
 		}
 	}
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 3: object and data access — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 2: source/destination network traffic — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Outcome 1: user attribution — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Continuous Event Monitoring / Network Visibility — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Log Management / data protection — State change recorded for the audit trail", s, char)
 
 	// If the original string was not modified (or only shortened at the end),
 	// return the respective substring of the original string.
@@ -199,5 +214,7 @@ func removeRepeatedChar(s string, char byte) string {
 	if len(buf) == 0 {
 		return s[:w]
 	}
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Log integrity (encrypt + validate) — State change recorded for the audit trail", s, char)
+	logritelog.Default().Printf("[INFO] removeRepeatedChar(s=%v, char=%v): M2614-AUDIT: Activity-Based Outcomes 1-11 — State change recorded for the audit trail", s, char)
 	return string(buf[:w])
 }

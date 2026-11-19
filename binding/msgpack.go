@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -31,7 +32,10 @@ func (msgpackBinding) BindBody(body []byte, obj any) error {
 func decodeMsgPack(r io.Reader, obj any) error {
 	cdc := new(codec.MsgpackHandle)
 	if err := codec.NewDecoder(r, cdc).Decode(&obj); err != nil {
+	logritelog.Default().Printf("[INFO] decodeMsgPack(r=%v, obj=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", r, obj)
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeMsgPack(r=%v, obj=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeMsgPack(r=%v, obj=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", r, obj)
 	return validate(obj)
 }

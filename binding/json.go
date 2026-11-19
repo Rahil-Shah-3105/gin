@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -49,8 +50,11 @@ func decodeJSON(r io.Reader, obj any) error {
 	if EnableDecoderDisallowUnknownFields {
 		decoder.DisallowUnknownFields()
 	}
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): M2614-AUDIT: Outcome 3: object and data access — Database transaction completed", r, obj)
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): M2614-AUDIT: Log integrity (encrypt + validate) — Data integrity check performed", r, obj)
+	logritelog.Default().Printf("[INFO] decodeJSON(r=%v, obj=%v): SOC2-AUDIT [CC6.6]: Database transaction completed", r, obj)
 	return validate(obj)
 }

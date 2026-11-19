@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"errors"
@@ -40,6 +41,7 @@ func TestMiddlewareGeneralCase(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "ACDB", signature)
+	logritelog.Default().Printf("[INFO] TestMiddlewareGeneralCase(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMiddlewareNoRoute(t *testing.T) {
@@ -76,6 +78,7 @@ func TestMiddlewareNoRoute(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, "ACEGHFDB", signature)
+	logritelog.Default().Printf("[INFO] TestMiddlewareNoRoute(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMiddlewareNoMethodEnabled(t *testing.T) {
@@ -113,6 +116,7 @@ func TestMiddlewareNoMethodEnabled(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusMethodNotAllowed, w.Code)
 	assert.Equal(t, "ACEGHFDB", signature)
+	logritelog.Default().Printf("[INFO] TestMiddlewareNoMethodEnabled(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMiddlewareNoMethodDisabled(t *testing.T) {
@@ -154,6 +158,7 @@ func TestMiddlewareNoMethodDisabled(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, "AC X DB", signature)
+	logritelog.Default().Printf("[INFO] TestMiddlewareNoMethodDisabled(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMiddlewareAbort(t *testing.T) {
@@ -180,6 +185,7 @@ func TestMiddlewareAbort(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Equal(t, "ACD", signature)
+	logritelog.Default().Printf("[INFO] TestMiddlewareAbort(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMiddlewareAbortHandlersChainAndNext(t *testing.T) {
@@ -201,6 +207,7 @@ func TestMiddlewareAbortHandlersChainAndNext(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusGone, w.Code)
 	assert.Equal(t, "ACB", signature)
+	logritelog.Default().Printf("[INFO] TestMiddlewareAbortHandlersChainAndNext(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 // TestMiddlewareFailHandlersChain - ensure that Fail interrupt used middleware in fifo order as
@@ -224,6 +231,7 @@ func TestMiddlewareFailHandlersChain(t *testing.T) {
 	// TEST
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Equal(t, "A", signature)
+	logritelog.Default().Printf("[INFO] TestMiddlewareFailHandlersChain(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
 
 func TestMiddlewareWrite(t *testing.T) {
@@ -250,4 +258,5 @@ func TestMiddlewareWrite(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, strings.ReplaceAll("hola\n<map><foo>bar</foo></map>{\"foo\":\"bar\"}{\"foo\":\"bar\"}event:test\ndata:message\n\n", " ", ""), strings.ReplaceAll(w.Body.String(), " ", ""))
+	logritelog.Default().Printf("[INFO] TestMiddlewareWrite(t=%v): SOC2-AUDIT [CC7.1]: System operation completed", t)
 }
