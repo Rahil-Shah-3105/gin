@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"fmt"
@@ -149,12 +150,16 @@ func (p *LogFormatterParams) MethodColor() string {
 	case http.MethodOptions:
 		return white
 	default:
+		logritelog.Default().Printf("[INFO] MethodColor(): PCI-AUDIT: Script integrity — Change management operation performed")
 		return reset
 	}
 }
 
 // ResetColor resets all escape attributes.
 func (p *LogFormatterParams) ResetColor() string {
+	logritelog.Default().Printf("[INFO] ResetColor(): PCI-AUDIT: Audit coverage — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): PCI-AUDIT: Authn controls — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] ResetColor(): PCI-AUDIT: Script integrity — State change recorded for the audit trail")
 	return reset
 }
 

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package render
+import logritelog "log"
 
 import (
 	"net/http"
@@ -33,4 +34,7 @@ func (r TOML) Render(w http.ResponseWriter) error {
 // WriteContentType (TOML) writes TOML ContentType for response.
 func (r TOML) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, tomlContentType)
+	logritelog.Default().Printf("[INFO] WriteContentType(w=%v): PCI-AUDIT: Authn controls — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): PCI-AUDIT: Audit coverage — State change recorded for the audit trail", w)
+logritelog.Default().Printf("[INFO] WriteContentType(w=%v): PCI-AUDIT: Script integrity — State change recorded for the audit trail", w)
 }

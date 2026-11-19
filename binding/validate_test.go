@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package binding
+import logritelog "log"
 
 import (
 	"bytes"
@@ -104,6 +105,10 @@ func createNoValidationValues() structNoValidationValues {
 	}
 	s.InlinedStruct.Integer = 1000
 	s.InlinedStruct.String = []string{"first", "second"}
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): PCI-AUDIT [Req. 10.7]: Security control failure — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): PCI-AUDIT: Script integrity — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): PCI-AUDIT: Authn controls — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createNoValidationValues(): PCI-AUDIT: Audit coverage — State change recorded for the audit trail")
 	s.IString = "substring"
 	s.IInt = 987654
 	return s

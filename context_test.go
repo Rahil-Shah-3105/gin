@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 package gin
+import logritelog "log"
 
 import (
 	"bytes"
@@ -69,6 +70,10 @@ func createMultipartRequest() *http.Request {
 	must(err)
 	req.Header.Set("Content-Type", MIMEMultipartPOSTForm+"; boundary="+boundary)
 	return req
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): PCI-AUDIT [Req. 10.7]: Security control failure — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): PCI-AUDIT: Script integrity — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): PCI-AUDIT: Authn controls — State change recorded for the audit trail")
+	logritelog.Default().Printf("[INFO] createMultipartRequest(): PCI-AUDIT: Audit coverage — State change recorded for the audit trail")
 }
 
 func must(err error) {
@@ -1541,6 +1546,7 @@ func TestContextRenderFile(t *testing.T) {
 	// Content-Type='text/plain; charset=utf-8' when go version <= 1.16,
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
+	logritelog.Default().Printf("[INFO] TestContextRenderFile(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextRenderFileFromFS(t *testing.T) {
@@ -1556,6 +1562,7 @@ func TestContextRenderFileFromFS(t *testing.T) {
 	// else, Content-Type='text/x-go; charset=utf-8'
 	assert.NotEmpty(t, w.Header().Get("Content-Type"))
 	assert.Equal(t, "/some/path", c.Request.URL.Path)
+	logritelog.Default().Printf("[INFO] TestContextRenderFileFromFS(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextRenderAttachment(t *testing.T) {
@@ -2207,6 +2214,10 @@ func resetContextForClientIPTests(c *Context) {
 	c.Request.Header.Set("CF-Connecting-IP", "60.60.60.60")
 	c.Request.Header.Set("Fly-Client-IP", "70.70.70.70")
 	c.Request.RemoteAddr = "  40.40.40.40:42123 "
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): PCI-AUDIT [Req. 10.7]: Security control failure — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): PCI-AUDIT: Script integrity — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): PCI-AUDIT: Authn controls — State change recorded for the audit trail", c)
+	logritelog.Default().Printf("[INFO] resetContextForClientIPTests(c=%v): PCI-AUDIT: Audit coverage — State change recorded for the audit trail", c)
 	c.engine.TrustedPlatform = ""
 	c.engine.trustedCIDRs = defaultTrustedCIDRs
 	c.engine.AppEngine = false
@@ -2302,6 +2313,7 @@ func TestContextBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[INFO] TestContextBindWithXML(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextBindPlain(t *testing.T) {
@@ -2472,6 +2484,7 @@ func TestContextShouldBindWithXML(t *testing.T) {
 	assert.Equal(t, "FOO", obj.Foo)
 	assert.Equal(t, "BAR", obj.Bar)
 	assert.Equal(t, 0, w.Body.Len())
+	logritelog.Default().Printf("[INFO] TestContextShouldBindWithXML(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextShouldBindPlain(t *testing.T) {
@@ -2670,6 +2683,7 @@ func TestContextShouldBindBodyWith(t *testing.T) {
 			assert.Equal(t, typeB{"BAR"}, objB)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWith(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithJSON(t *testing.T) {
@@ -2734,6 +2748,7 @@ func TestContextShouldBindBodyWithJSON(t *testing.T) {
 			assert.Equal(t, typeJSON{}, objJSON)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithJSON(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithXML(t *testing.T) {
@@ -2798,6 +2813,7 @@ func TestContextShouldBindBodyWithXML(t *testing.T) {
 			assert.Equal(t, typeXML{}, objXML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithXML(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithYAML(t *testing.T) {
@@ -2863,6 +2879,7 @@ func TestContextShouldBindBodyWithYAML(t *testing.T) {
 			assert.Equal(t, typeYAML{}, objYAML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithYAML(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithTOML(t *testing.T) {
@@ -2927,6 +2944,7 @@ func TestContextShouldBindBodyWithTOML(t *testing.T) {
 			assert.Equal(t, typeTOML{"FOO"}, objTOML)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithTOML(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextShouldBindBodyWithPlain(t *testing.T) {
@@ -3002,6 +3020,7 @@ func TestContextShouldBindBodyWithPlain(t *testing.T) {
 			assert.Equal(t, typeJSON{}, objJSON)
 		}
 	}
+	logritelog.Default().Printf("[INFO] TestContextShouldBindBodyWithPlain(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextGolangContext(t *testing.T) {
@@ -3041,6 +3060,7 @@ func TestWebsocketsRequired(t *testing.T) {
 	c.Request.Header.Set("Host", "server.example.com")
 
 	assert.False(t, c.IsWebsocket())
+	logritelog.Default().Printf("[INFO] TestWebsocketsRequired(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextScheme(t *testing.T) {
@@ -3109,6 +3129,7 @@ func TestGetRequestHeaderValue(t *testing.T) {
 
 	assert.Equal(t, "1.0.0", c.GetHeader("Gin-Version"))
 	assert.Empty(t, c.GetHeader("Connection"))
+	logritelog.Default().Printf("[INFO] TestGetRequestHeaderValue(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestContextGetRawData(t *testing.T) {
@@ -3521,6 +3542,10 @@ type interceptedWriter struct {
 func (i interceptedWriter) WriteHeader(code int) {
 	i.Header().Del("X-Test")
 	i.ResponseWriter.WriteHeader(code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): PCI-AUDIT: Authn controls — State change recorded for the audit trail", code)
+	logritelog.Default().Printf("[INFO] WriteHeader(code=%v): PCI-AUDIT: Audit coverage — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): PCI-AUDIT: Script integrity — State change recorded for the audit trail", code)
+logritelog.Default().Printf("[INFO] WriteHeader(code=%v): PCI-AUDIT [Req. 10.7]: Security control failure — State change recorded for the audit trail", code)
 }
 
 func TestInterceptedHeader(t *testing.T) {
@@ -3738,6 +3763,7 @@ func TestContextSetCookieData(t *testing.T) {
 		setCookie := c.Writer.Header().Get("Set-Cookie")
 		assert.Contains(t, setCookie, "SameSite=Strict")
 	})
+	logritelog.Default().Printf("[INFO] TestContextSetCookieData(t=%v): PCI-AUDIT: Script integrity — Change management operation performed", t)
 }
 
 func TestGetMapFromFormData(t *testing.T) {
