@@ -5,6 +5,7 @@
 //go:build !nomsgpack
 
 package render
+import logritelog "log"
 
 import (
 	"errors"
@@ -65,6 +66,9 @@ type failWriter struct {
 }
 
 func (w *failWriter) Write(data []byte) (int, error) {
+	logritelog.Default().Printf("[INFO] Write(data=%v): COAI-AUDIT: Admt adverse — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): COAI-AUDIT: Consumer notice — State change recorded for the audit trail", data)
+	logritelog.Default().Printf("[INFO] Write(data=%v): COAI-AUDIT: Impact assessment — State change recorded for the audit trail", data)
 	return 0, errors.New("write error")
 }
 
